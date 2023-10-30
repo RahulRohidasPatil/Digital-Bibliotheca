@@ -2,7 +2,7 @@
 
 | Name | Email | Github Username |
 |---|---|---|
-| Rahul Patil  | rahul-rohidas.patil@informatik.hs-fulda.de  | RahulPatil03  |
+| Rahul Patil  | rahul-rohidas.patil@informatik.hs-fulda.de  | RahulRohidasPatil  |
 | MD Monorul Islam  | md-monoanul.islam@informatik.hs-fulda.de  |   |
 | Hauva Vali  | hauva.vali@informatik.hs-fulda.de  | hauvavali  |
 | Amar Sharma  | amar-kiram.sharma@informatik.hs-fulda.de  | plasma31  |
