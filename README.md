@@ -7,4 +7,5 @@
 | Hauva Vali  | hauva.vali@informatik.hs-fulda.de  | hauvavali  | Git Master |
 | Amar Sharma  | amar-kiram.sharma@informatik.hs-fulda.de  | plasma31  | Fullstack Developer |
 | Parsa Rashidikia  | parsa.rashidikia@informatik.hs-fulda.de  | Parso0A  | Team Leader |
+| Omar Ojarov  | omar.ojarov@informatik.hs-fulda.de  | kakalygaday  | Fullstack |
 |   |   |   |
