@@ -2,6 +2,8 @@ import numeral from 'numeral';
 
 // ----------------------------------------------------------------------
 
+numeral.locale('de');
+
 export function fNumber(number) {
   return numeral(number).format();
 }

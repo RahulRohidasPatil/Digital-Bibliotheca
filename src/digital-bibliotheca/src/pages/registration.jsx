@@ -4,32 +4,31 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { setCookie } from "cookies-next";
 import { registrateUser } from "../apis/registration";
 
-type Inputs = {
-  firstName: string;
-  lastName: string;
-  age: number;
-  emailAddress: string;
-  password: string;
-  phone: string;
-  address: string;
-  role: number;
-};
+// type Inputs = {
+//   firstName: string,
+//   lastName: string,
+//   age: number,
+//   emailAddress: string,
+//   password: string,
+//   phone: string,
+//   address: string,
+//   role: number,
+// };
 
 export default function RegForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => onFinish(data);
+  } = useForm();
+  const onSubmit = (data) => onFinish(data);
 
-
-//   const router = useRouter();
+  //   const router = useRouter();
 
   //note: right now the user needs to input all data-fields so the registration-process is working (because of the type-definition?)
   //so to test it type in all fields, even if some of them are not needed for the backend/API
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values) => {
     const resp = await registrateUser({
       firstName: values.firstName,
       lastName: values.lastName,
@@ -39,7 +38,7 @@ export default function RegForm() {
       phone: values.phone,
       address: values.address,
       role: 1,
-    }).catch( (err: any) => console.log(err));
+    }).catch((err) => console.log(err));
 
     if (resp && resp.status === 200) {
       setCookie("token", resp.data.data);
@@ -71,23 +70,23 @@ export default function RegForm() {
               placeholder="Last Name"
             />
             {errors.lastName && <span>Last name is required</span>}
-            <input
-              {...register("age", { required: true })}
-              placeholder="Age"
-            />
+            <input {...register("age", { required: true })} placeholder="Age" />
             {errors.age && <span>age is required</span>}
             <input
-              {...register("emailAddress", { required: true, pattern: {
-                value: /^[A-Za-z0-9._%+-]+@[\w-]+\.hs-fulda\.de$/i,
-                message: "Please enter a valid email"
-              }, })}
+              {...register("emailAddress", {
+                required: true,
+                pattern: {
+                  value: /^[A-Za-z0-9._%+-]+@[\w-]+\.hs-fulda\.de$/i,
+                  message: "Please enter a valid email",
+                },
+              })}
               placeholder="example@department.hs-fulda.de"
               required
               className="input"
             />
             {errors.emailAddress && <span>{errors.emailAddress.message}</span>}
             <input
-            type='password'
+              type="password"
               {...register("password", { required: true })}
               placeholder="password"
             />
@@ -100,7 +99,7 @@ export default function RegForm() {
             <input
               {...register("address", { required: false })}
               placeholder="Address"
-            />  
+            />
             {errors.address && <span>address is required</span>}
             {/* <input
               type="number"
@@ -113,9 +112,7 @@ export default function RegForm() {
             <button className="btn">Sign Up</button>
           </form>
         </div>
-        <div className="col-2">
-          {/* <img src={bgImg.src} alt="" /> */}
-        </div>
+        <div className="col-2">{/* <img src={bgImg.src} alt="" /> */}</div>
       </div>
     </section>
   );

@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography';
 import { fCurrency } from 'src/utils/format-number';
 
 import Label from 'src/components/label';
-import { ColorPreview } from 'src/components/color-utils';
 
 // ----------------------------------------------------------------------
 
@@ -34,7 +33,7 @@ export default function ShopProductCard({ product }) {
     <Box
       component="img"
       alt={product.name}
-      src={product.cover}
+      src={product.FilePath}
       sx={{
         top: 0,
         width: 1,
@@ -55,10 +54,10 @@ export default function ShopProductCard({ product }) {
           textDecoration: 'line-through',
         }}
       >
-        {product.priceSale && fCurrency(product.priceSale)}
+        {product.price && fCurrency(product.Price)}
       </Typography>
       &nbsp;
-      {fCurrency(product.price)}
+      {fCurrency(product.Price)}
     </Typography>
   );
 
@@ -72,11 +71,18 @@ export default function ShopProductCard({ product }) {
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <Link color="inherit" underline="hover" variant="subtitle2" noWrap>
-          {product.name}
+          {product.Title}
         </Link>
-
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={product.colors} />
+        <Typography sx={{ margin: '0 !important' }} variant="caption">
+          {product.Description}
+        </Typography>
+        <Stack
+          direction="row"
+          sx={{ margin: '0 !important' }}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          {/* <ColorPreview colors={product.colors} /> */}
           {renderPrice}
         </Stack>
       </Stack>
