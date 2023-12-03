@@ -2,6 +2,22 @@ import numeral from 'numeral';
 
 // ----------------------------------------------------------------------
 
+numeral.register('locale', 'fr', {
+  delimiters: {
+    thousands: ' ',
+    decimal: ',',
+  },
+  abbreviations: {
+    thousand: 'k',
+    million: 'm',
+    billion: 'b',
+    trillion: 't',
+  },
+
+  currency: {
+    symbol: '€',
+  },
+});
 numeral.locale('de');
 
 export function fNumber(number) {

@@ -6,7 +6,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import { fCurrency } from 'src/utils/format-number';
+// import { fCurrency } from 'src/utils/format-number';
 
 import Label from 'src/components/label';
 
@@ -54,10 +54,10 @@ export default function ShopProductCard({ product }) {
           textDecoration: 'line-through',
         }}
       >
-        {product.price && fCurrency(product.Price)}
+        {product.SalePrice && `€${product.SalePrice}`}
       </Typography>
       &nbsp;
-      {fCurrency(product.Price)}
+      {`€${product.Price}`}
     </Typography>
   );
 
