@@ -32,7 +32,7 @@ export default function ShopProductCard({ product }) {
   const renderImg = (
     <Box
       component="img"
-      alt={product.name}
+      alt={product.Title}
       src={product.FilePath}
       sx={{
         top: 0,
