@@ -20,14 +20,14 @@ var environment = process.env.ENVIRONMENT;
 
 var config = environment == "production" ? production_config : local_config;
 
-const connection = mysql.createConnection(config);
+var connection = mysql.createConnection(config);
 
 function reconnect(connection) {
   console.log("\n New connection tentative...");
   //- Destroy the current connection variable
   if (connection) connection.destroy();
   //- Create a new one
-  var connection = mysql.createConnection(db_config);
+  var connection = mysql.createConnection(config);
 
   //- Try to reconnect
   connection.connect(function (err) {
@@ -42,6 +42,7 @@ function reconnect(connection) {
 }
 
 connection.on("error", function (err) {
+  console.log(err)
   //- The server close the connection.
   console.log(
     "/!\\ Cannot establish a connection with the database. /!\\ (" +
