@@ -69,7 +69,7 @@ export default function ProductsView() {
 
       <Grid container spacing={3}>
         {mediaItems.map((media) => (
-          <Grid key={media.id} xs={12} sm={6} md={3}>
+          <Grid key={media.Id} xs={12} sm={6} md={3}>
             <ProductCard product={media} />
           </Grid>
         ))}
