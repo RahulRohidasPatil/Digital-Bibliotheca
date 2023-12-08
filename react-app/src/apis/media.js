@@ -6,3 +6,5 @@ export const searchMedia = ({ searchTerm }) =>
   });
 
 export const getAllMedia = () => axiosInstance().get(`/media`);
+
+export const getMedia = (id) => axiosInstance().get(`/media/${id}`);

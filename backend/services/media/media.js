@@ -28,7 +28,8 @@ const media = {
   },
   getMedia: async function (req, res) {
     try {
-      let query = "SELECT * from media WHERE Id=1";
+      const id = req.params.id;
+      let query = `SELECT * from media WHERE Id=${id}`;
       let response = await connection.query(query);
       res.status(200).send({ data: response[0] });
     } catch (e) {
