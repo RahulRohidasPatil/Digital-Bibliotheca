@@ -26,6 +26,16 @@ const media = {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
+  getMedia: async function (req, res) {
+    try {
+      let query = "SELECT * from media WHERE Id=1";
+      let response = await connection.query(query);
+      res.status(200).send({ data: response[0] });
+    } catch (e) {
+      console.log("Error", e);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  }
 };
 
 module.exports = media;
