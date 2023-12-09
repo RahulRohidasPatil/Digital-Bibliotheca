@@ -38,9 +38,10 @@
           ".json"
         ]
       }
-    }
+    },
   },
   "rules": {
+    
     "no-alert": 0,
     "camelcase": 0,
     "no-console": 0,
@@ -91,6 +92,12 @@
       1,
       {
         "ignoreCase": false
+      }
+    ],
+    "import/no-unresolved": [
+      2,
+      {
+        "ignore": ["src/.+"]
       }
     ],
     // unused-imports
