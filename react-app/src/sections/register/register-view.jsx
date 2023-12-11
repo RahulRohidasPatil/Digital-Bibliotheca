@@ -135,8 +135,16 @@ export default function RegisterView() {
             fullWidth
             type="password"
             {...register('password', { required: true })}
-            placeholder="password"
+            placeholder="Password"
             label="Password"
+          />
+          <TextField
+            sx={{ mt: 2 }}
+            fullWidth
+            type="password"
+            {...register('confirmPassword', { required: true })}
+            placeholder="Confirm Password"
+            label="ConfirmPassword"
           />
           {errors.password && (
             <Typography variant="body2" color="red">
