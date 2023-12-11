@@ -1,14 +1,14 @@
 import { Box, Button, Card, Container, Grid, Rating, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMedia } from "src/apis/media";
+import { getByID } from "src/apis/media";
 
 export default function ProductInfoPage() {
     const { id } = useParams();
     const [product, setproduct] = useState();
 
     useEffect(() => {
-        getMedia(id)
+        getByID(id)
             .then(response => setproduct(response.data.data[0]));
     }, [id]);
 
