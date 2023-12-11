@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { UploadContact } from 'src/sections/contact';
+import { UploadContent } from 'src/sections/content';
 
 // ----------------------------------------------------------------------
 
@@ -8,10 +8,10 @@ export default function Upload() {
   return (
     <>
       <Helmet>
-        <title> Upload Contact | Minimal UI </title>
+        <title> Upload Media | Minimal UI </title>
       </Helmet>
 
-      <UploadContact />
+      <UploadContent />
     </>
   );
 }
