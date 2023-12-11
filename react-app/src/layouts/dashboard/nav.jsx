@@ -51,7 +51,7 @@ export default function Nav({ openNav, onCloseNav }) {
       }}
     >
       <Avatar
-        alt={user.FirstName}
+        alt={user?.FirstName}
         sx={{
           width: 36,
           height: 36,
@@ -59,7 +59,7 @@ export default function Nav({ openNav, onCloseNav }) {
           background: 'darkgrey',
         }}
       >
-        {user.FirstName.charAt(0).toUpperCase()}
+        {user?.FirstName.charAt(0).toUpperCase()}
       </Avatar>
       <Box sx={{ ml: 2 }}>
         <Typography variant="subtitle2">{`${user?.FirstName}  ${user?.FamilyName}`}</Typography>

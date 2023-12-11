@@ -75,7 +75,7 @@ export default function AccountPopover() {
             background: 'darkgrey',
           }}
         >
-          {user.FirstName.charAt(0).toUpperCase()}
+          {user?.FirstName.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -99,7 +99,7 @@ export default function AccountPopover() {
             {`${user?.FirstName}  ${user?.FamilyName}`}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user.EmailAddress}
+            {user?.EmailAddress}
           </Typography>
         </Box>
 
