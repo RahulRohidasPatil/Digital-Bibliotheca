@@ -35,10 +35,10 @@ export default function RegisterView() {
 
   const [snackbar, showSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(false);
-  const { setUser } = useUser();
+  const { setUser, user } = useUser();
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn && Boolean(isLoggedIn)) {
+    if (isLoggedIn && Boolean(isLoggedIn) && user) {
       router.replace('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,7 +47,7 @@ export default function RegisterView() {
     register,
     handleSubmit,
     formState: { errors },
-    watch
+    watch,
   } = useForm();
 
   const onSubmit = async (values) => {
@@ -66,11 +66,11 @@ export default function RegisterView() {
     });
 
     if (resp && resp.status === 200) {
-      const user = resp.data.data;
+      const userValue = resp.data.data;
       setCookie('token', `Bearer ${resp.data.token}`);
       localStorage.setItem('isLoggedIn', true);
-      localStorage.setItem('user', user);
-      setUser(user);
+      localStorage.setItem('user', userValue);
+      setUser(userValue);
       router.replace('/');
     }
   };
@@ -153,8 +153,10 @@ export default function RegisterView() {
             sx={{ mt: 2 }}
             fullWidth
             type="password"
-            {...register('confirmPassword', { required: true,
-            validate: (val) => val === watch('password')})}
+            {...register('confirmPassword', {
+              required: true,
+              validate: (val) => val === watch('password'),
+            })}
             placeholder="Confirm Password"
             label="ConfirmPassword"
           />

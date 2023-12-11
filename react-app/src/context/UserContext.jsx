@@ -11,9 +11,18 @@ const UserProvider = ({ children }) => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('user');
       if (saved) {
-        const initialValue = JSON.parse(saved);
-        console.log(initialValue);
-        return initialValue;
+        if (
+          /^[\],:{}\s]*$/.test(
+            saved
+              .replace(/\\["\\/bfnrtu]/g, '@')
+              .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?/g, ']')
+              .replace(/(?:^|:|,)(?:\s*\[)+/g, '')
+          )
+        ) {
+          const initialValue = JSON.parse(saved);
+          console.log(initialValue);
+          return initialValue;
+        }
       }
     }
 
