@@ -9,7 +9,7 @@ export default function ProductInfoPage() {
 
     useEffect(() => {
         getMedia(id)
-            .then(response => setproduct(response.data.data));
+            .then(response => setproduct(response.data.data[0]));
     }, [id]);
 
     return <Container>
