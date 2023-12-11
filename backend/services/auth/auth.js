@@ -1,6 +1,10 @@
 var connection = require("../../utils/connection");
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const auth = {
   register: async function (req, res) {
@@ -18,7 +22,21 @@ const auth = {
         (role = req.body.role),
       ];
       let response = await connection.query(query, values);
-      return res.json(response);
+      console.log(response);
+      if (response && response.insertId) {
+        let Id = response.insertId;
+        const query = "SELECT * FROM user WHERE Id = ?";
+        let userResponse = await connection.query(query, [Id]);
+        if (userResponse && userResponse.length > 0) {
+          let user = userResponse[0];
+          const token = jwt.sign(user, JWT_SECRET, { expiresIn: "7d" });
+          return res.json({
+            message: "Registration Successful",
+            data: user,
+            token,
+          });
+        }
+      }
     } catch (e) {
       console.log("Error", e);
       if (e.code == "ER_DUP_ENTRY") {
@@ -45,7 +63,8 @@ const auth = {
       }
 
       // Compare the provided password with the hashed password from the database
-      const hashedPassword = results[0].Password;
+      let user = results[0];
+      const hashedPassword = user.Password;
       bcrypt.compare(password, hashedPassword, (bcryptErr, match) => {
         if (bcryptErr) {
           console.error("Error comparing passwords: " + bcryptErr);
@@ -58,7 +77,10 @@ const auth = {
         }
 
         // Successful login
-        return res.json({ message: "Login successful" });
+        console.log(user);
+        delete user.Password;
+        const token = jwt.sign(user, JWT_SECRET, { expiresIn: "7d" });
+        return res.json({ message: "Login successful", data: user, token });
       });
     });
   },

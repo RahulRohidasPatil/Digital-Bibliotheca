@@ -1,4 +1,6 @@
 import { useState } from 'react';
+// import { useRouter } from 'src/routes/hooks';
+
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
@@ -11,6 +13,15 @@ import Header from './header';
 
 export default function DashboardLayout({ children }) {
   const [openNav, setOpenNav] = useState(false);
+  // const router = useRouter();
+
+  // useEffect(() => {
+  //   const isLoggedIn = localStorage.getItem('isLoggedIn');
+  //   if (!isLoggedIn) {
+  //     router.replace('/register');
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
     <>
