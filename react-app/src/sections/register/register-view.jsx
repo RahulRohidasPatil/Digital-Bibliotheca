@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { setCookie } from 'cookies-next';
 
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -24,7 +25,7 @@ import { useForm } from 'react-hook-form';
 import Logo from 'src/components/logo';
 // import Iconify from 'src/components/iconify';
 import { registerUser } from 'src/apis/auth';
-
+import { useUser } from 'src/hooks/use-user';
 // ----------------------------------------------------------------------
 
 export default function RegisterView() {
@@ -34,7 +35,7 @@ export default function RegisterView() {
 
   const [snackbar, showSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(false);
-
+  const { setUser } = useUser();
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn && Boolean(isLoggedIn)) {
@@ -64,7 +65,11 @@ export default function RegisterView() {
     });
 
     if (resp && resp.status === 200) {
+      const user = resp.data.data;
+      setCookie('token', `Bearer ${resp.data.token}`);
       localStorage.setItem('isLoggedIn', true);
+      localStorage.setItem('user', user);
+      setUser(user);
       router.replace('/');
     }
   };
