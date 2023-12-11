@@ -46,6 +46,7 @@ export default function RegisterView() {
     register,
     handleSubmit,
     formState: { errors },
+    watch
   } = useForm();
 
   const onSubmit = async (values) => {
@@ -138,17 +139,23 @@ export default function RegisterView() {
             placeholder="Password"
             label="Password"
           />
+          {errors.password && (
+            <Typography variant="body2" color="red">
+              Password is required
+            </Typography>
+          )}
           <TextField
             sx={{ mt: 2 }}
             fullWidth
             type="password"
-            {...register('confirmPassword', { required: true })}
+            {...register('confirmPassword', { required: true,
+            validate: (val) => val === watch('password')})}
             placeholder="Confirm Password"
             label="ConfirmPassword"
           />
-          {errors.password && (
+          {errors.confirmPassword && (
             <Typography variant="body2" color="red">
-              Password is required
+              Passwords do not match.
             </Typography>
           )}
           <TextField
