@@ -4,7 +4,7 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from 'src/layouts/dashboard';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
-export const UploadContactPage = lazy(() => import('src/pages/upload-contact'));
+export const UploadContentPage = lazy(() => import('src/pages/upload-content'));
 export const BlogPage = lazy(() => import('src/pages/blog'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const LoginPage = lazy(() => import('src/pages/login'));
@@ -28,7 +28,7 @@ export default function Router() {
         { element: <IndexPage />, index: true },
         { path: 'user', element: <UserPage /> },
         { path: 'search', element: <ProductsPage /> },
-        { path: 'upload-contact', element: <UploadContactPage /> },
+        { path: 'upload-content', element: <UploadContentPage /> },
         { path: 'blog', element: <BlogPage /> },
       ],
     },

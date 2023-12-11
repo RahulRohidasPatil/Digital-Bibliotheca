@@ -3,7 +3,7 @@ import { TextField, Button, Grid, Box } from '@mui/material';
 import SelectInputWithChip from './Select-Input';
 import FileUploader from './file-uploader/FileUploader';
 
-const UploadContact = () => {
+const UploadContent = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -116,4 +116,4 @@ const UploadContact = () => {
   );
 };
 
-export default UploadContact;
+export default UploadContent;

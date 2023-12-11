@@ -20,8 +20,8 @@ const navConfig = [
   // },
 
   {
-    title: 'Upload Contact',
-    path: '/upload-contact',
+    title: 'Upload Content',
+    path: '/upload-content',
     icon: <Iconify icon="eva:person-outline" />,
   },
   {
