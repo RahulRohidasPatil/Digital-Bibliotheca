@@ -26,7 +26,7 @@ const media = {
       let query =
         "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`, `FilePath`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
       const values = [
-        req.body.OwnerId,
+        req.user.id,
         req.body.Title,
         req.body.Description,
         req.body.MediaType,
@@ -81,7 +81,7 @@ const media = {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
-  
+
   search: async function (req, res) {
     var searchTerm = req.body.searchTerm;
     console.log(searchTerm);
