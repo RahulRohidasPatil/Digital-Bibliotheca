@@ -18,10 +18,21 @@ const navConfig = [
   //   path: '/user',
   //   icon: icon('ic_user'),
   // },
+
+  {
+    title: 'Upload Content',
+    path: '/upload-content',
+    icon: <Iconify icon="eva:person-outline" />,
+  },
   {
     title: 'Search',
     path: '/search',
     icon: <Iconify icon="eva:search-fill" />,
+  },
+  {
+    title: 'My Uploads',
+    path: '/my-uploads',
+    icon: <Iconify icon="eva:arrow-upward-fill" />,
   },
 ];
 

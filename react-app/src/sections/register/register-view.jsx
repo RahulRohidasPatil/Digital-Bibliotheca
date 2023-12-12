@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { setCookie } from 'cookies-next';
 
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -24,7 +25,7 @@ import { useForm } from 'react-hook-form';
 import Logo from 'src/components/logo';
 // import Iconify from 'src/components/iconify';
 import { registerUser } from 'src/apis/auth';
-
+import { useUser } from 'src/hooks/use-user';
 // ----------------------------------------------------------------------
 
 export default function RegisterView() {
@@ -34,10 +35,10 @@ export default function RegisterView() {
 
   const [snackbar, showSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(false);
-
+  const { setUser, user } = useUser();
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn && Boolean(isLoggedIn)) {
+    if (isLoggedIn && Boolean(isLoggedIn) && user) {
       router.replace('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,6 +47,7 @@ export default function RegisterView() {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm();
 
   const onSubmit = async (values) => {
@@ -64,7 +66,11 @@ export default function RegisterView() {
     });
 
     if (resp && resp.status === 200) {
+      const userValue = resp.data.data;
+      setCookie('token', `Bearer ${resp.data.token}`);
       localStorage.setItem('isLoggedIn', true);
+      localStorage.setItem('user', userValue);
+      setUser(userValue);
       router.replace('/');
     }
   };
@@ -135,12 +141,28 @@ export default function RegisterView() {
             fullWidth
             type="password"
             {...register('password', { required: true })}
-            placeholder="password"
+            placeholder="Password"
             label="Password"
           />
           {errors.password && (
             <Typography variant="body2" color="red">
               Password is required
+            </Typography>
+          )}
+          <TextField
+            sx={{ mt: 2 }}
+            fullWidth
+            type="password"
+            {...register('confirmPassword', {
+              required: true,
+              validate: (val) => val === watch('password'),
+            })}
+            placeholder="Confirm Password"
+            label="ConfirmPassword"
+          />
+          {errors.confirmPassword && (
+            <Typography variant="body2" color="red">
+              Passwords do not match.
             </Typography>
           )}
           <TextField

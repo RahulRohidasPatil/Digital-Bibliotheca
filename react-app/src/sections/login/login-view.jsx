@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { setCookie } from 'cookies-next';
 import Box from '@mui/material/Box';
 // import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
@@ -26,6 +27,8 @@ import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 import { loginUser } from 'src/apis/auth';
 
+import { useUser } from 'src/hooks/use-user';
+
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
@@ -37,7 +40,7 @@ export default function LoginView() {
 
   const [snackbar, showSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(false);
-
+  const { setUser, user } = useUser();
   const {
     register,
     handleSubmit,
@@ -46,7 +49,7 @@ export default function LoginView() {
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn && Boolean(isLoggedIn)) {
+    if (isLoggedIn && Boolean(isLoggedIn) && user) {
       router.replace('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,7 +66,11 @@ export default function LoginView() {
     });
 
     if (resp && resp.status === 200) {
+      const userValue = resp.data.data;
+      setCookie('token', `Bearer ${resp.data.token}`);
       localStorage.setItem('isLoggedIn', true);
+      localStorage.setItem('user', JSON.stringify(userValue));
+      setUser(userValue);
       router.replace('/');
     }
   };

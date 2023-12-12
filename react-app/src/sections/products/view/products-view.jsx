@@ -34,15 +34,19 @@ export default function ProductsView() {
     if (value && value.length > 3) {
       const searchTerm = value;
       const response = await searchMedia({ searchTerm });
-      console.log(response.data.data);
-      setMediaItems(response.data.data);
+      if (response.data?.data) {
+        setMediaItems(response.data.data);
+      }
     } else if (!value) {
       fetchAllMedia();
     }
   };
   const fetchAllMedia = async () => {
     const response = await getAllMedia();
-    setMediaItems(response.data.data);
+    console.log(response);
+    if (response.data?.data) {
+      setMediaItems(response.data.data);
+    }
   };
 
   return (
@@ -52,24 +56,24 @@ export default function ProductsView() {
       </Typography>
 
       <Grid container spacing={2}>
-        <Grid xs={3} md={3} textAlign="center">
+        <Grid xs={12} md={3} textAlign="center">
           <ProductFilters
             openFilter={openFilter}
             onOpenFilter={handleOpenFilter}
             onCloseFilter={handleCloseFilter}
           />
         </Grid>
-        <Grid xs={6} md={6}>
+        <Grid xs={12} md={6}>
           <MediaSearch onSearch={handleSearch} />
         </Grid>
-        <Grid xs={3} md={3} textAlign="center">
+        <Grid xs={12} md={3} textAlign="center">
           <ProductSort />
         </Grid>
       </Grid>
 
       <Grid container spacing={3}>
         {mediaItems.map((media) => (
-          <Grid key={media.id} xs={12} sm={6} md={3}>
+          <Grid key={`ProductCard_${media.Id}`} xs={6} sm={6} md={3}>
             <ProductCard product={media} />
           </Grid>
         ))}
