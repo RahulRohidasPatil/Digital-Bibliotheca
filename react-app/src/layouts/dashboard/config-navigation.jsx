@@ -29,6 +29,11 @@ const navConfig = [
     path: '/search',
     icon: <Iconify icon="eva:search-fill" />,
   },
+  {
+    title: 'My Uploads',
+    path: '/my-uploads',
+    icon: <Iconify icon="eva:arrow-upward-fill" />,
+  },
 ];
 
 export default navConfig;
