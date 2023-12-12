@@ -1,4 +1,4 @@
-import { Box, Button, Card, Container, Grid, Rating, Typography } from "@mui/material";
+import { Box, Button, Card, Chip, Container, Grid, Rating, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
@@ -42,17 +42,15 @@ export default function ProductInfoPage() {
                         </Box>
                     </Card>
                     <Typography sx={{ marginTop: 2 }} variant="caption" component="div">
-                        Description: {product?.Description}
-                    </Typography>
-                    <Typography sx={{ marginTop: 2 }} variant="caption" component="div">
-                        Pricing: {product?.Price}
+                        {product?.Description}
                     </Typography>
                     <Typography sx={{ marginTop: 2 }} variant="caption" component="div">
                         Content Type: {product?.MediaType}
                     </Typography>
-                    <Typography sx={{ marginTop: 2 }} variant="caption" component="div">
-                        Released on: {product?.CreatedDate.split('T')[0]}
-                    </Typography>
+                    <div style={{ marginTop: 15 }}>
+                        <Chip label={`${product?.Price} €`} variant="outlined" sx={{ mr: 2 }} />
+                        <Chip label={product?.CreatedDate.split('T')[0]} variant="outlined" />
+                    </div>
                 </Grid>
                 <Grid item xs={6}>
                     <Typography sx={{ marginTop: 2, fontSize: 20 }} variant="caption" component="div">
