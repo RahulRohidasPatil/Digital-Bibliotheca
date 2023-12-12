@@ -13,13 +13,12 @@ export default function MyUploadsPage() {
 
     const fetchAllMedia = async () => {
         const response = await getAllMedia();
-        console.log(15, response.data.data);
         setMediaItems(response.data.data);
     };
 
     return <>
         <Helmet>
-            <title> Products | Minimal UI </title>
+            <title>My Uploads | Minimal UI</title>
         </Helmet>
         <Container>
             <Typography variant="h4" sx={{ mb: 5 }}>
