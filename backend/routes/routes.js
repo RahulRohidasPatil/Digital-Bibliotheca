@@ -6,9 +6,13 @@ require("dotenv").config();
 
 var mediaRoutes = require("../services/media/media-routes");
 var authRoutes = require("../services/auth/auth-routes");
+var chatRoutes = require("../services/chat/chat-routes");
+var messageRoutes = require("../services/message/message-routes");
 
 app.use("/media", middleware, mediaRoutes);
 app.use("/auth", authRoutes);
+app.use("/chat", middleware, chatRoutes);
+app.use("/message",middleware, messageRoutes);
 
 function middleware(req, res, next) {
   const { authorization } = req.headers;
