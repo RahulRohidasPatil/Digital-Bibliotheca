@@ -1,4 +1,21 @@
 var connection = require("../../utils/connection");
+const firebase = require('firebase/app');
+const {getStorage, ref, uploadBytes, getDownloadURL} = require('firebase/storage');
+const formidable = require('express-formidable');
+const fsPromises = require('fs').promises;
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAWBoNN0YjVQf8hSNPp5OATbb_L3vEDLLk",
+  authDomain: "gdsd-6c209.firebaseapp.com",
+  projectId: "gdsd-6c209",
+  storageBucket: "gdsd-6c209.appspot.com",
+  messagingSenderId: "953421522259",
+  appId: "1:953421522259:web:b4e9334f053585698bada6"
+};
+
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+
+const storage = getStorage(firebaseApp)
 
 const media = {
   getAllMedia: async function (req, res) {
@@ -22,29 +39,38 @@ const media = {
     }
   },
   addMedia: async function (req, res) {
-    try {
-      let query =
-        "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`, `FilePath`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
-      const values = [
-        req.body.OwnerId,
-        req.body.Title,
-        req.body.Description,
-        req.body.MediaType,
-        req.body.IsApproved,
-        req.body.Price,
-        req.body.IsActive,
-        req.body.CreatedDate,
-        req.body.FilePath,
-        req.body.DemoFilePath,
-        req.body.DeliveryMethod,
-      ];
-      console.log(req.body);
-      let response = await connection.query(query, [values]);
-      res.status(200).send({ data: response });
-    } catch (e) {
-      console.log("Error", e);
-      res.status(500).send({ message: "Internal Server Error" });
-    }
+    formidable()(req,res,async (err)=>{
+      if(err){
+        console.log(err)
+      }
+      try {    
+        //console.log(req.files.FilePath.length,"length");
+        
+        var fileUrl = await uploadFile(req.files.FilePath);
+        console.log(fileUrl)
+        let query =
+          "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`, `FilePath`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
+        const values = [
+          req.fields.OwnerId,
+          req.fields.Title,
+          req.fields.Description,
+          req.fields.MediaType,
+          parseInt(req.fields.IsApproved || 0),
+          req.fields.Price,
+          parseInt(req.fields.IsActive || 0),
+          req.fields.CreatedDate,
+          fileUrl || '',
+          req.fields.DemoFilePath,
+          req.fields.DeliveryMethod,
+        ];
+        let response = await connection.query(query, [values]);
+        res.status(200).send({ data: response });
+      } catch (e) {
+        console.log("Error", e);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+    })
+    
   },
   updateMedia: async function (req, res) {
     try {
@@ -81,7 +107,6 @@ const media = {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
-  
   search: async function (req, res) {
     var searchTerm = req.body.searchTerm;
     console.log(searchTerm);
@@ -97,6 +122,31 @@ const media = {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
+
 };
+
+const uploadFile = async (file) => {
+  try {
+    if (!file) {
+      return res.status(400).send('No file uploaded.');
+    }
+
+    const fileName = file.name;
+    const fileBuffer = await fsPromises.readFile(file.path);
+
+    const storageRef = ref(storage, `${fileName}`);
+    const snapshot = await uploadBytes(storageRef, fileBuffer);
+
+    // Get download URL
+    const downloadURL= await getDownloadURL(snapshot.ref);
+    return (downloadURL)
+
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    res.status(500).send('Internal Server Error');
+  }
+  
+
+}
 
 module.exports = media;
