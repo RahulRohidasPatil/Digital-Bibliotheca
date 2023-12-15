@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import PropTypes from 'prop-types';
 import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
@@ -17,7 +17,11 @@ const SORT_OPTIONS = [
   { value: 'priceAsc', label: 'Price: Low-High' },
 ];
 
-export default function ShopProductSort() {
+ShopProductSort.propTypes = {
+  setSortBy: PropTypes.func,
+};
+
+export default function ShopProductSort({ setSortBy }) {
   const [open, setOpen] = useState(null);
   const [selectedOption, setSelectedOption] = useState(SORT_OPTIONS[0]);
 
