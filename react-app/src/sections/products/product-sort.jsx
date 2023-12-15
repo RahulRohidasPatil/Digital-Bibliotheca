@@ -19,13 +19,15 @@ const SORT_OPTIONS = [
 
 export default function ShopProductSort() {
   const [open, setOpen] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(SORT_OPTIONS[0]);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (optionValue) => {
     setOpen(null);
+    setSelectedOption(SORT_OPTIONS.find(option => option.value === optionValue));
   };
 
   return (
@@ -38,7 +40,7 @@ export default function ShopProductSort() {
       >
         Sort By:&nbsp;
         <Typography component="span" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-          Newest
+          {selectedOption.label}
         </Typography>
       </Button>
 
@@ -59,7 +61,7 @@ export default function ShopProductSort() {
         }}
       >
         {SORT_OPTIONS.map((option) => (
-          <MenuItem key={option.value} selected={option.value === 'newest'} onClick={handleClose}>
+          <MenuItem key={option.value} selected={option.value === selectedOption.value} onClick={() => handleClose(option.value)}>
             {option.label}
           </MenuItem>
         ))}
