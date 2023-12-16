@@ -20,18 +20,6 @@ export default function ProductsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState();
 
-  useEffect(() => {
-    fetchAllMedia();
-  }, []);
-
-  const handleOpenFilter = () => {
-    setOpenFilter(true);
-  };
-
-  const handleCloseFilter = () => {
-    setOpenFilter(false);
-  };
-
   const handleSearch = useCallback(async () => {
     if (searchTerm && searchTerm.length > 3) {
       const response = await searchMedia({ searchTerm });
@@ -46,6 +34,14 @@ export default function ProductsView() {
   useEffect(() => {
     handleSearch();
   }, [handleSearch]);
+
+  const handleOpenFilter = () => {
+    setOpenFilter(true);
+  };
+
+  const handleCloseFilter = () => {
+    setOpenFilter(false);
+  };
 
   const fetchAllMedia = async () => {
     const response = await getAllMedia();

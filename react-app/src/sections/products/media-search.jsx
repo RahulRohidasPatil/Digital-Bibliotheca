@@ -4,7 +4,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Iconify from 'src/components/iconify';
 import PropTypes from 'prop-types';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 MediaSearch.propTypes = {
@@ -13,8 +13,6 @@ MediaSearch.propTypes = {
 
 export default function MediaSearch({ setSearchTerm }) {
   const [timeoutId, setTimeoutId] = useState();
-
-  useEffect(() => () => { if (timeoutId) clearTimeout(timeoutId) }, [timeoutId]);
 
   function onSearch(value){
     if (timeoutId) clearTimeout(timeoutId);
