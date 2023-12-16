@@ -11,14 +11,14 @@ import { searchMedia, getAllMedia } from 'src/apis/media';
 import MediaSearch from '../media-search';
 import ProductCard from '../product-card';
 import ProductSort from '../product-sort';
-import ProductFilters from '../product-filters';
+import ProductFilters, { SORT_OPTIONS } from '../product-filters';
 // ----------------------------------------------------------------------
 
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [mediaItems, setMediaItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortOption, setSortOption] = useState();
+  const [sortOption, setSortOption] = useState(SORT_OPTIONS[0]);
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -29,7 +29,7 @@ export default function ProductsView() {
   };
 
   const fetchAllMedia = useCallback(async () => {
-    const response = await getAllMedia(sortOption?.value);
+    const response = await getAllMedia(sortOption.value);
     if (response.data?.data) setMediaItems(response.data.data);
   }, [sortOption]);
 
