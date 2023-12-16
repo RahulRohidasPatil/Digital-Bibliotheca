@@ -1,11 +1,10 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { listClasses } from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-
+import { useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -18,12 +17,14 @@ const SORT_OPTIONS = [
 ];
 
 ShopProductSort.propTypes = {
-  setSortBy: PropTypes.func,
+  sortOption: PropTypes.object,
+  setSortOption: PropTypes.func,
 };
 
-export default function ShopProductSort({ setSortBy }) {
+export default function ShopProductSort({ sortOption, setSortOption }) {
   const [open, setOpen] = useState(null);
-  const [selectedOption, setSelectedOption] = useState(SORT_OPTIONS[0]);
+
+  useEffect(() => setSortOption(SORT_OPTIONS[0]), [setSortOption]);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -31,7 +32,7 @@ export default function ShopProductSort({ setSortBy }) {
 
   const handleClose = (optionValue) => {
     setOpen(null);
-    setSelectedOption(SORT_OPTIONS.find(option => option.value === optionValue));
+    setSortOption(SORT_OPTIONS.find(option => option.value === optionValue));
   };
 
   return (
@@ -44,7 +45,7 @@ export default function ShopProductSort({ setSortBy }) {
       >
         Sort By:&nbsp;
         <Typography component="span" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-          {selectedOption.label}
+          {sortOption?.label}
         </Typography>
       </Button>
 
@@ -65,7 +66,7 @@ export default function ShopProductSort({ setSortBy }) {
         }}
       >
         {SORT_OPTIONS.map((option) => (
-          <MenuItem key={option.value} selected={option.value === selectedOption.value} onClick={() => handleClose(option.value)}>
+          <MenuItem key={option.value} selected={option.value === sortOption?.value} onClick={() => handleClose(option.value)}>
             {option.label}
           </MenuItem>
         ))}

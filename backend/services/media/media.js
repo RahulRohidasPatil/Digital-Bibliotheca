@@ -81,9 +81,10 @@ const media = {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
-  
+
   search: async function (req, res) {
     var searchTerm = req.body.searchTerm;
+    const sortOption = req.body.sortOption;
     console.log(searchTerm);
     try {
       console.log(searchTerm);

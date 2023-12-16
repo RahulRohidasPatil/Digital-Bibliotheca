@@ -17,7 +17,7 @@ import ProductFilters from '../product-filters';
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [mediaItems, setMediaItems] = useState([]);
-  const [sortBy, setSortBy] = useState(null);
+  const [sortOption, setSortOption] = useState(null);
 
   useEffect(() => {
     fetchAllMedia();
@@ -34,7 +34,7 @@ export default function ProductsView() {
   const handleSearch = async (value) => {
     if (value && value.length > 3) {
       const searchTerm = value;
-      const response = await searchMedia({ searchTerm, sortBy });
+      const response = await searchMedia({ searchTerm, sortOption: sortOption?.value });
       if (response.data?.data) {
         setMediaItems(response.data.data);
       }
@@ -68,7 +68,7 @@ export default function ProductsView() {
           <MediaSearch onSearch={handleSearch} />
         </Grid>
         <Grid xs={12} md={3} textAlign="center">
-          <ProductSort setSortBy={setSortBy} />
+          <ProductSort sortOption={sortOption} setSortOption={setSortOption} />
         </Grid>
       </Grid>
 
