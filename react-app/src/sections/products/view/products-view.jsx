@@ -17,19 +17,12 @@ import ProductFilters from '../product-filters';
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [mediaItems, setMediaItems] = useState([]);
-  const [sortOption, setSortOption] = useState(null);
-
-  const fetchAllMedia = useCallback(async () => {
-    const response = await getAllMedia(sortOption?.value);
-    console.log(response);
-    if (response.data?.data) {
-      setMediaItems(response.data.data);
-    }
-  }, [sortOption]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortOption, setSortOption] = useState();
 
   useEffect(() => {
     fetchAllMedia();
-  }, [fetchAllMedia]);
+  }, []);
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -39,15 +32,26 @@ export default function ProductsView() {
     setOpenFilter(false);
   };
 
-  const handleSearch = async (value) => {
-    if (value && value.length > 3) {
-      const searchTerm = value;
+  const handleSearch = useCallback(async () => {
+    if (searchTerm && searchTerm.length > 3) {
       const response = await searchMedia({ searchTerm });
       if (response.data?.data) {
         setMediaItems(response.data.data);
       }
-    } else if (!value) {
+    } else if (!searchTerm) {
       fetchAllMedia();
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch]);
+
+  const fetchAllMedia = async () => {
+    const response = await getAllMedia();
+    console.log(response);
+    if (response.data?.data) {
+      setMediaItems(response.data.data);
     }
   };
 
@@ -66,7 +70,7 @@ export default function ProductsView() {
           />
         </Grid>
         <Grid xs={12} md={6}>
-          <MediaSearch onSearch={handleSearch} />
+          <MediaSearch setSearchTerm={setSearchTerm} />
         </Grid>
         <Grid xs={12} md={3} textAlign="center">
           <ProductSort sortOption={sortOption} setSortOption={setSortOption} />
