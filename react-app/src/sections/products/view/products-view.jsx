@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -19,9 +19,17 @@ export default function ProductsView() {
   const [mediaItems, setMediaItems] = useState([]);
   const [sortOption, setSortOption] = useState(null);
 
+  const fetchAllMedia = useCallback(async () => {
+    const response = await getAllMedia(sortOption?.value);
+    console.log(response);
+    if (response.data?.data) {
+      setMediaItems(response.data.data);
+    }
+  }, [sortOption]);
+
   useEffect(() => {
     fetchAllMedia();
-  }, []);
+  }, [fetchAllMedia]);
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -40,13 +48,6 @@ export default function ProductsView() {
       }
     } else if (!value) {
       fetchAllMedia();
-    }
-  };
-  const fetchAllMedia = async () => {
-    const response = await getAllMedia();
-    console.log(response);
-    if (response.data?.data) {
-      setMediaItems(response.data.data);
     }
   };
 

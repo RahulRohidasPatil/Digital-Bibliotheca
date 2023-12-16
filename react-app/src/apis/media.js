@@ -5,6 +5,6 @@ export const searchMedia = ({ searchTerm, sortOption }) =>
     searchTerm, sortOption
   });
 
-export const getAllMedia = () => axiosInstance().get(`/media`);
+export const getAllMedia = (sortOption) => axiosInstance().get(`/media?sortOption=${sortOption}`);
 
 export const getByID = (id) => axiosInstance().get(`/media/${id}`);

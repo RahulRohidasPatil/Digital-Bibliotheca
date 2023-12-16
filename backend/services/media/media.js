@@ -2,8 +2,24 @@ var connection = require("../../utils/connection");
 
 const media = {
   getAllMedia: async function (req, res) {
+    const sortOption = req.query.sortOption;
+    console.log(6, sortOption);
+
     try {
       let query = "SELECT * from media WHERE isActive = 1 AND isApproved=1";
+
+      switch (sortOption) {
+        case 'featured':
+          break;
+        case 'newest':
+          query += ' order by CreatedDate desc';
+          break;
+        case 'priceDesc':
+          break;
+        case 'priceAsc':
+          break;
+      }
+
       let response = await connection.query(query);
       res.status(200).send({ data: response });
     } catch (e) {
@@ -84,7 +100,6 @@ const media = {
   
   search: async function (req, res) {
     var searchTerm = req.body.searchTerm;
-    const sortOption = req.body.sortOption;
     console.log(searchTerm);
     try {
       console.log(searchTerm);
