@@ -14,8 +14,10 @@ const media = {
           query += ' order by CreatedDate desc';
           break;
         case 'priceDesc':
+          query += ' order by Price desc';
           break;
         case 'priceAsc':
+          query += ' order by Price asc';
           break;
       }
 
