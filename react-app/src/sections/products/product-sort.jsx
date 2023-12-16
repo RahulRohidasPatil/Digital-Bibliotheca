@@ -31,9 +31,9 @@ export default function ShopProductSort({ sortOption, setSortOption }) {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = (optionValue) => {
+  const handleClose = (option) => {
     setOpen(null);
-    setSortOption(SORT_OPTIONS.find(option => option.value === optionValue));
+    setSortOption(option);
   };
 
   return (
@@ -67,7 +67,7 @@ export default function ShopProductSort({ sortOption, setSortOption }) {
         }}
       >
         {SORT_OPTIONS.map((option) => (
-          <MenuItem key={option.value} selected={option.value === sortOption?.value} onClick={() => handleClose(option.value)}>
+          <MenuItem key={option.value} selected={option.value === sortOption?.value} onClick={() => handleClose(option)}>
             {option.label}
           </MenuItem>
         ))}
