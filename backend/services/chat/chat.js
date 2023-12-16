@@ -40,7 +40,7 @@ const chatService = {
             let query = "SELECT * FROM chat WHERE ( `SenderId` = ? AND `RecipientId` = ?) OR ( `SenderId` = ? AND `RecipientId` = ?)"
             const values = [`${sender}`, `${recipient}`, `${recipient}`, `${sender}`]
             let response = await connection.query(query, values);
-            if (response.length > 0) return response[0].id;
+            if (response.length > 0) return response[0].Id;
             else throw "Chat not found";
         }
         catch(e) {
@@ -50,10 +50,12 @@ const chatService = {
 
     getUserChats: async function(req, res){
         try{
-            let query = "SELECT * FROM chat WHERE `SenderId` = ? OR `RecipientId` = ?"
+            let query = "SELECT chat.Id as `ChatId`, user.Id as `UserId`, user.FirstName, user.FamilyName FROM chat INNER JOIN user ON (chat.SenderId = user.Id OR chat.RecipientId = user.Id) WHERE chat.SenderId = ? OR chat.RecipientId = ?"
             const values = [`${req.params.userId}`, `${req.params.userId}`];
             let response = await connection.query(query, values);
-            if (response.length > 0) res.status(200).send({data: response[0]});
+            if (response.length > 0) {
+                res.status(200).send({data: response.filter((item) => item.UserId != req.params.userId)});
+            }
             else res.status(400).send({message: "Chat not found"});
         }
         catch(e){
