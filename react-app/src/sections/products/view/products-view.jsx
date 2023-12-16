@@ -20,6 +20,19 @@ export default function ProductsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState();
 
+  const handleOpenFilter = () => {
+    setOpenFilter(true);
+  };
+
+  const handleCloseFilter = () => {
+    setOpenFilter(false);
+  };
+
+  const fetchAllMedia = useCallback(async () => {
+    const response = await getAllMedia(sortOption.value);
+    if (response.data?.data) setMediaItems(response.data.data);
+  }, [sortOption]);
+
   const handleSearch = useCallback(async () => {
     if (searchTerm && searchTerm.length > 3) {
       const response = await searchMedia({ searchTerm });
@@ -29,27 +42,11 @@ export default function ProductsView() {
     } else if (!searchTerm) {
       fetchAllMedia();
     }
-  }, [searchTerm]);
+  }, [searchTerm, fetchAllMedia]);
 
   useEffect(() => {
     handleSearch();
   }, [handleSearch]);
-
-  const handleOpenFilter = () => {
-    setOpenFilter(true);
-  };
-
-  const handleCloseFilter = () => {
-    setOpenFilter(false);
-  };
-
-  const fetchAllMedia = async () => {
-    const response = await getAllMedia();
-    console.log(response);
-    if (response.data?.data) {
-      setMediaItems(response.data.data);
-    }
-  };
 
   return (
     <Container>
