@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
@@ -25,8 +25,6 @@ ShopProductSort.propTypes = {
 export default function ShopProductSort({ sortOption, setSortOption }) {
   const [open, setOpen] = useState(null);
 
-  useEffect(() => setSortOption(SORT_OPTIONS[0]), [setSortOption]);
-
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
@@ -46,7 +44,7 @@ export default function ShopProductSort({ sortOption, setSortOption }) {
       >
         Sort By:&nbsp;
         <Typography component="span" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-          {sortOption?.label}
+          {sortOption.label}
         </Typography>
       </Button>
 
@@ -67,7 +65,7 @@ export default function ShopProductSort({ sortOption, setSortOption }) {
         }}
       >
         {SORT_OPTIONS.map((option) => (
-          <MenuItem key={option.value} selected={option.value === sortOption?.value} onClick={() => handleClose(option)}>
+          <MenuItem key={option.value} selected={option.value === sortOption.value} onClick={() => handleClose(option)}>
             {option.label}
           </MenuItem>
         ))}
