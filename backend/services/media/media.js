@@ -101,11 +101,27 @@ const media = {
   
   search: async function (req, res) {
     var searchTerm = req.body.searchTerm;
+    const sortOption = req.body.sortOption;
     console.log(searchTerm);
     try {
       console.log(searchTerm);
       let query =
         "SELECT * from media WHERE( title LIKE ? OR description LIKE ?) AND  isActive = 1 AND isApproved=1";
+
+      switch (sortOption) {
+        case 'featured':
+          break;
+        case 'newest':
+          query += ' order by CreatedDate desc';
+          break;
+        case 'priceDesc':
+          query += ' order by Price desc';
+          break;
+        case 'priceAsc':
+          query += ' order by Price asc';
+          break;
+      }
+
       let values = [`%${searchTerm}%`, `%${searchTerm}%`];
       let response = await connection.query(query, values);
       res.status(200).send({ data: response });
