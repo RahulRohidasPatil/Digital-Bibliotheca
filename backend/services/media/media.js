@@ -10,6 +10,18 @@ const media = {
 
       if (filters.mediaTypes.length) query += ` and MediaType in (${filters.mediaTypes.join(',')})`;
 
+      switch (filters.price) {
+        case 'below':
+          query += ' and Price < 25';
+          break;
+        case 'between':
+          query += ' and Price >= 25 and Price < 75';
+          break;
+        case 'above':
+          query += ' and Price >= 75';
+          break;
+      }
+
       switch (sortOption) {
         case 'featured':
           break;

@@ -35,9 +35,9 @@ export const MEDIA_TYPE_OPTIONS = [
 export const CATEGORY_OPTIONS = ['All', 'Shose', 'Apparel', 'Accessories'];
 export const RATING_OPTIONS = ['up4Star', 'up3Star', 'up2Star', 'up1Star'];
 export const PRICE_OPTIONS = [
-  { value: 'below', label: 'Below $25' },
-  { value: 'between', label: 'Between $25 - $75' },
-  { value: 'above', label: 'Above $75' },
+  { value: 'below', label: 'Below €25' },
+  { value: 'between', label: 'Between €25 - €75' },
+  { value: 'above', label: 'Above €75' },
 ];
 export const COLOR_OPTIONS = [
   '#00AB55',
@@ -54,22 +54,29 @@ export const COLOR_OPTIONS = [
 
 export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter, setFilters }) {
   const [mediaTypes, setMediaTypes] = useState([]);
+  const [price, setPrice] = useState();
 
-  function handleCheckboxChange(checked, value) {
+  function handleMediaTypeChange(checked, value) {
     if (checked) setMediaTypes([...mediaTypes, value]);
     else setMediaTypes(mediaTypes.filter(item => item !== value));
   };
 
   useEffect(() => {
-    setFilters({ mediaTypes });
-  }, [mediaTypes, setFilters]);
+    setFilters({ mediaTypes, price });
+  }, [mediaTypes, price, setFilters]);
 
-  const renderGender = (
+  const renderMediaTypes = (
     <Stack spacing={1}>
       <Typography variant="subtitle2">Media Type</Typography>
       <FormGroup>
         {MEDIA_TYPE_OPTIONS.map(({ value, label }) => (
-          <FormControlLabel key={value} control={<Checkbox onChange={(event) => handleCheckboxChange(event.target.checked, value)} />} label={label} />
+          <FormControlLabel
+            key={value}
+            control={<Checkbox
+              onChange={(event) => handleMediaTypeChange(event.target.checked, value)}
+              checked={mediaTypes.includes(value)}
+            />}
+            label={label} />
         ))}
       </FormGroup>
     </Stack>
@@ -107,7 +114,10 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
           <FormControlLabel
             key={item.value}
             value={item.value}
-            control={<Radio />}
+            control={<Radio
+              onChange={(event) => setPrice(event.target.value)}
+              checked={price === item.value}
+            />}
             label={item.label}
           />
         ))}
@@ -183,7 +193,7 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
 
         <Scrollbar>
           <Stack spacing={3} sx={{ p: 3 }}>
-            {renderGender}
+            {renderMediaTypes}
 
             {renderCategory}
 
