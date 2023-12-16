@@ -42,7 +42,7 @@ export default function ProductsView() {
   const handleSearch = async (value) => {
     if (value && value.length > 3) {
       const searchTerm = value;
-      const response = await searchMedia({ searchTerm, sortOption: sortOption?.value });
+      const response = await searchMedia({ searchTerm });
       if (response.data?.data) {
         setMediaItems(response.data.data);
       }

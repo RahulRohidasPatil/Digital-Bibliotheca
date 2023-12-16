@@ -3,7 +3,6 @@ var connection = require("../../utils/connection");
 const media = {
   getAllMedia: async function (req, res) {
     const sortOption = req.query.sortOption;
-    console.log(6, sortOption);
 
     try {
       let query = "SELECT * from media WHERE isActive = 1 AND isApproved=1";

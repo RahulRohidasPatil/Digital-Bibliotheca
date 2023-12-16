@@ -1,8 +1,8 @@
 import { axiosInstance } from '../utils/axios';
 
-export const searchMedia = ({ searchTerm, sortOption }) =>
+export const searchMedia = ({ searchTerm }) =>
   axiosInstance().post(`/media/search`, {
-    searchTerm, sortOption
+    searchTerm,
   });
 
 export const getAllMedia = (sortOption) => axiosInstance().get(`/media?sortOption=${sortOption}`);
