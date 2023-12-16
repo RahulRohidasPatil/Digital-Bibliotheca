@@ -1,4 +1,5 @@
 var connection = require("../../utils/connection");
+const { applyFiltersOnQuery, applySortOptionOnQuery } = require("../../utils/utils");
 
 const media = {
   getAllMedia: async function (req, res) {
@@ -8,33 +9,8 @@ const media = {
     try {
       let query = "SELECT * from media WHERE isActive = 1 AND isApproved=1";
 
-      if (filters.mediaTypes.length) query += ` and MediaType in (${filters.mediaTypes.join(',')})`;
-
-      switch (filters.price) {
-        case 'below':
-          query += ' and Price < 25';
-          break;
-        case 'between':
-          query += ' and Price >= 25 and Price < 75';
-          break;
-        case 'above':
-          query += ' and Price >= 75';
-          break;
-      }
-
-      switch (sortOption) {
-        case 'featured':
-          break;
-        case 'newest':
-          query += ' order by CreatedDate desc';
-          break;
-        case 'priceDesc':
-          query += ' order by Price desc';
-          break;
-        case 'priceAsc':
-          query += ' order by Price asc';
-          break;
-      }
+      query = applyFiltersOnQuery(query, filters);
+      query = applySortOptionOnQuery(query, sortOption);
 
       let response = await connection.query(query);
       res.status(200).send({ data: response });
@@ -117,25 +93,15 @@ const media = {
   search: async function (req, res) {
     var searchTerm = req.body.searchTerm;
     const sortOption = req.body.sortOption;
+    const filters = req.body.filters;
     console.log(searchTerm);
     try {
       console.log(searchTerm);
       let query =
         "SELECT * from media WHERE( title LIKE ? OR description LIKE ?) AND  isActive = 1 AND isApproved=1";
 
-      switch (sortOption) {
-        case 'featured':
-          break;
-        case 'newest':
-          query += ' order by CreatedDate desc';
-          break;
-        case 'priceDesc':
-          query += ' order by Price desc';
-          break;
-        case 'priceAsc':
-          query += ' order by Price asc';
-          break;
-      }
+      query = applyFiltersOnQuery(query, filters);
+      query = applySortOptionOnQuery(query, sortOption);
 
       let values = [`%${searchTerm}%`, `%${searchTerm}%`];
       let response = await connection.query(query, values);

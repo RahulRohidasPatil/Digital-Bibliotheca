@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import Radio from '@mui/material/Radio';
 import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
-import Rating from '@mui/material/Rating';
+// import Rating from '@mui/material/Rating';
 import Divider from '@mui/material/Divider';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
@@ -16,7 +16,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-import { ColorPicker } from 'src/components/color-utils';
+// import { ColorPicker } from 'src/components/color-utils';
 
 // ----------------------------------------------------------------------
 
@@ -30,9 +30,14 @@ export const MEDIA_TYPE_OPTIONS = [
   { value: 0, label: 'Audio' },
   { value: 1, label: 'Video' },
   { value: 2, label: 'Image' },
-  { value: 3, label: 'Document' },
+  { value: 3, label: 'Document' }
 ];
-export const CATEGORY_OPTIONS = ['All', 'Shose', 'Apparel', 'Accessories'];
+export const UPLOADED_OPTIONS = [
+  { value: 0, label: '1 Week Ago' },
+  { value: 1, label: '1 Month Ago' },
+  { value: 2, label: '6 Months Ago' },
+  { value: 3, label: '1 Year Ago' }
+];
 export const RATING_OPTIONS = ['up4Star', 'up3Star', 'up2Star', 'up1Star'];
 export const PRICE_OPTIONS = [
   { value: 'below', label: 'Below €25' },
@@ -54,16 +59,24 @@ export const COLOR_OPTIONS = [
 
 export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter, setFilters }) {
   const [mediaTypes, setMediaTypes] = useState([]);
-  const [price, setPrice] = useState();
+  const [price, setPrice] = useState(null);
+  const [uploaded, setUploaded] = useState(null);
 
   function handleMediaTypeChange(checked, value) {
     if (checked) setMediaTypes([...mediaTypes, value]);
     else setMediaTypes(mediaTypes.filter(item => item !== value));
   };
 
+  function clearAll(){
+    setMediaTypes([]);
+    setPrice(null);
+    setUploaded(null);
+    onCloseFilter();
+  }
+
   useEffect(() => {
-    setFilters({ mediaTypes, price });
-  }, [mediaTypes, price, setFilters]);
+    setFilters({ mediaTypes, price, uploaded });
+  }, [mediaTypes, price, setFilters, uploaded]);
 
   const renderMediaTypes = (
     <Stack spacing={1}>
@@ -84,27 +97,34 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
 
   const renderCategory = (
     <Stack spacing={1}>
-      <Typography variant="subtitle2">Category</Typography>
+      <Typography variant="subtitle2">Uploaded</Typography>
       <RadioGroup>
-        {CATEGORY_OPTIONS.map((item) => (
-          <FormControlLabel key={item} value={item} control={<Radio />} label={item} />
+        {UPLOADED_OPTIONS.map((item) => (
+          <FormControlLabel
+            key={item.value}
+            value={item.value}
+            control={<Radio
+              onChange={() => setUploaded(item.value)}
+              checked={uploaded === item.value}
+            />}
+            label={item.label} />
         ))}
       </RadioGroup>
     </Stack>
   );
 
-  const renderColors = (
-    <Stack spacing={1}>
-      <Typography variant="subtitle2">Colors</Typography>
-      <ColorPicker
-        name="colors"
-        selected={[]}
-        colors={COLOR_OPTIONS}
-        onSelectColor={(color) => [].includes(color)}
-        sx={{ maxWidth: 38 * 4 }}
-      />
-    </Stack>
-  );
+  // const renderColors = (
+  //   <Stack spacing={1}>
+  //     <Typography variant="subtitle2">Colors</Typography>
+  //     <ColorPicker
+  //       name="colors"
+  //       selected={[]}
+  //       colors={COLOR_OPTIONS}
+  //       onSelectColor={(color) => [].includes(color)}
+  //       sx={{ maxWidth: 38 * 4 }}
+  //     />
+  //   </Stack>
+  // );
 
   const renderPrice = (
     <Stack spacing={1}>
@@ -125,36 +145,36 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
     </Stack>
   );
 
-  const renderRating = (
-    <Stack spacing={1}>
-      <Typography variant="subtitle2">Rating</Typography>
-      <RadioGroup>
-        {RATING_OPTIONS.map((item, index) => (
-          <FormControlLabel
-            key={item}
-            value={item}
-            control={
-              <Radio
-                disableRipple
-                color="default"
-                icon={<Rating readOnly value={4 - index} />}
-                checkedIcon={<Rating readOnly value={4 - index} />}
-                sx={{
-                  '&:hover': { bgcolor: 'transparent' },
-                }}
-              />
-            }
-            label="& Up"
-            sx={{
-              my: 0.5,
-              borderRadius: 1,
-              '&:hover': { opacity: 0.48 },
-            }}
-          />
-        ))}
-      </RadioGroup>
-    </Stack>
-  );
+  // const renderRating = (
+  //   <Stack spacing={1}>
+  //     <Typography variant="subtitle2">Rating</Typography>
+  //     <RadioGroup>
+  //       {RATING_OPTIONS.map((item, index) => (
+  //         <FormControlLabel
+  //           key={item}
+  //           value={item}
+  //           control={
+  //             <Radio
+  //               disableRipple
+  //               color="default"
+  //               icon={<Rating readOnly value={4 - index} />}
+  //               checkedIcon={<Rating readOnly value={4 - index} />}
+  //               sx={{
+  //                 '&:hover': { bgcolor: 'transparent' },
+  //               }}
+  //             />
+  //           }
+  //           label="& Up"
+  //           sx={{
+  //             my: 0.5,
+  //             borderRadius: 1,
+  //             '&:hover': { opacity: 0.48 },
+  //           }}
+  //         />
+  //       ))}
+  //     </RadioGroup>
+  //   </Stack>
+  // );
 
   return (
     <>
@@ -197,11 +217,11 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
 
             {renderCategory}
 
-            {renderColors}
+            {/* {renderColors} */}
 
             {renderPrice}
 
-            {renderRating}
+            {/* {renderRating} */}
           </Stack>
         </Scrollbar>
 
@@ -213,6 +233,7 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
             color="inherit"
             variant="outlined"
             startIcon={<Iconify icon="ic:round-clear-all" />}
+            onClick={() => clearAll()}
           >
             Clear All
           </Button>

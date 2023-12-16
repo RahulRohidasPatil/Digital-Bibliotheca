@@ -36,14 +36,14 @@ export default function ProductsView() {
 
   const handleSearch = useCallback(async () => {
     if (searchTerm && searchTerm.length > 3) {
-      const response = await searchMedia({ searchTerm, sortOption: sortOption.value });
+      const response = await searchMedia({ searchTerm, sortOption: sortOption.value, filters });
       if (response.data?.data) {
         setMediaItems(response.data.data);
       }
     } else if (!searchTerm) {
       fetchAllMedia();
     }
-  }, [fetchAllMedia, searchTerm, sortOption.value]);
+  }, [fetchAllMedia, filters, searchTerm, sortOption.value]);
 
   useEffect(() => {
     handleSearch();
