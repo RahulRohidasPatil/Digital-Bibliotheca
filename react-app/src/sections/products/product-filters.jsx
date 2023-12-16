@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Radio from '@mui/material/Radio';
@@ -26,7 +26,12 @@ export const SORT_OPTIONS = [
   { value: 'priceDesc', label: 'Price: High-Low' },
   { value: 'priceAsc', label: 'Price: Low-High' },
 ];
-export const GENDER_OPTIONS = ['Men', 'Women', 'Kids'];
+export const MEDIA_TYPE_OPTIONS = [
+  { value: 0, label: 'Audio' },
+  { value: 1, label: 'Video' },
+  { value: 2, label: 'Image' },
+  { value: 3, label: 'Document' },
+];
 export const CATEGORY_OPTIONS = ['All', 'Shose', 'Apparel', 'Accessories'];
 export const RATING_OPTIONS = ['up4Star', 'up3Star', 'up2Star', 'up1Star'];
 export const PRICE_OPTIONS = [
@@ -47,13 +52,24 @@ export const COLOR_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter }) {
+export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter, setFilters }) {
+  const [mediaTypes, setMediaTypes] = useState([]);
+
+  function handleCheckboxChange(checked, value) {
+    if (checked) setMediaTypes([...mediaTypes, value]);
+    else setMediaTypes(mediaTypes.filter(item => item !== value));
+  };
+
+  useEffect(() => {
+    setFilters({ mediaTypes });
+  }, [mediaTypes, setFilters]);
+
   const renderGender = (
     <Stack spacing={1}>
-      <Typography variant="subtitle2">Gender</Typography>
+      <Typography variant="subtitle2">Media Type</Typography>
       <FormGroup>
-        {GENDER_OPTIONS.map((item) => (
-          <FormControlLabel key={item} control={<Checkbox />} label={item} />
+        {MEDIA_TYPE_OPTIONS.map(({ value, label }) => (
+          <FormControlLabel key={value} control={<Checkbox onChange={(event) => handleCheckboxChange(event.target.checked, value)} />} label={label} />
         ))}
       </FormGroup>
     </Stack>
@@ -200,4 +216,5 @@ ProductFilters.propTypes = {
   openFilter: PropTypes.bool,
   onOpenFilter: PropTypes.func,
   onCloseFilter: PropTypes.func,
+  setFilters: PropTypes.func
 };

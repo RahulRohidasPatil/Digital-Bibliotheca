@@ -3,9 +3,12 @@ var connection = require("../../utils/connection");
 const media = {
   getAllMedia: async function (req, res) {
     const sortOption = req.query.sortOption;
+    const filters = JSON.parse(req.query.filters);
 
     try {
       let query = "SELECT * from media WHERE isActive = 1 AND isApproved=1";
+
+      if (filters.mediaTypes.length) query += ` and MediaType in (${filters.mediaTypes.join(',')})`;
 
       switch (sortOption) {
         case 'featured':

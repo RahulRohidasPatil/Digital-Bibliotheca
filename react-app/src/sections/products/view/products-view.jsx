@@ -19,6 +19,7 @@ export default function ProductsView() {
   const [mediaItems, setMediaItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState(SORT_OPTIONS[0]);
+  const [filters, setFilters] = useState({ mediaTypes: [] });
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -29,9 +30,9 @@ export default function ProductsView() {
   };
 
   const fetchAllMedia = useCallback(async () => {
-    const response = await getAllMedia(sortOption.value);
+    const response = await getAllMedia(sortOption.value, JSON.stringify(filters));
     if (response.data?.data) setMediaItems(response.data.data);
-  }, [sortOption]);
+  }, [sortOption, filters]);
 
   const handleSearch = useCallback(async () => {
     if (searchTerm && searchTerm.length > 3) {
@@ -42,7 +43,7 @@ export default function ProductsView() {
     } else if (!searchTerm) {
       fetchAllMedia();
     }
-  }, [searchTerm, sortOption, fetchAllMedia]);
+  }, [fetchAllMedia, searchTerm, sortOption.value]);
 
   useEffect(() => {
     handleSearch();
@@ -60,6 +61,7 @@ export default function ProductsView() {
             openFilter={openFilter}
             onOpenFilter={handleOpenFilter}
             onCloseFilter={handleCloseFilter}
+            setFilters={setFilters}
           />
         </Grid>
         <Grid xs={12} md={6}>
