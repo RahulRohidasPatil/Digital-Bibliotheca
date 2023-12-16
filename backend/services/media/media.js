@@ -2,6 +2,7 @@ var connection = require("../../utils/connection");
 const firebase = require('firebase/app');
 const {getStorage, ref, uploadBytes, getDownloadURL} = require('firebase/storage');
 const formidable = require('express-formidable');
+const { randomUUID } = require("crypto");
 const fsPromises = require('fs').promises;
 
 const firebaseConfig = {
@@ -39,17 +40,18 @@ const media = {
     }
   },
   addMedia: async function (req, res) {
-    formidable()(req,res,async (err)=>{
+    formidable({multiples:true})(req,res,async (err)=>{
       if(err){
         console.log(err)
+        res.status(500).send({ message: "Internal Server Error" });
       }
+      let insertId = NULL;
       try {    
         //console.log(req.files.FilePath.length,"length");
         
-        var fileUrl = await uploadFile(req.files.FilePath);
-        console.log(fileUrl)
+        //var fileUrl = await 
         let query =
-          "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`, `FilePath`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
+          "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
         const values = [
           req.fields.OwnerId,
           req.fields.Title,
@@ -59,14 +61,21 @@ const media = {
           req.fields.Price,
           parseInt(req.fields.IsActive || 0),
           req.fields.CreatedDate,
-          fileUrl || '',
+          
           req.fields.DemoFilePath,
           req.fields.DeliveryMethod,
         ];
         let response = await connection.query(query, [values]);
+        insertId = response.insertId
+        let downloadUrls = await uploadFile(req.files.Files,insertId);
+        console.log(downloadUrls)
         res.status(200).send({ data: response });
       } catch (e) {
         console.log("Error", e);
+        //Incase the media gets added but the upload files function throws an error the below query removes the empty media entry
+        if(insertId){
+          "DELETE FROM media WHERE Id = insertId";
+        }
         res.status(500).send({ message: "Internal Server Error" });
       }
     })
@@ -125,28 +134,33 @@ const media = {
 
 };
 
-const uploadFile = async (file) => {
+const uploadFile = async (files,mediaId) => {
   try {
-    if (!file) {
+    if (!files) {
       return res.status(400).send('No file uploaded.');
     }
+    const uploadPromises = files.map(async (file)=>{
+      const fileName = `${randomUUID()}_${file.name}`;
+      const fileBuffer= await fsPromises.readFile(file.path);
 
-    const fileName = file.name;
-    const fileBuffer = await fsPromises.readFile(file.path);
+      const storageRef = ref(storage, `${fileName}`);
+      const snapshot = await uploadBytes(storageRef, fileBuffer);
 
-    const storageRef = ref(storage, `${fileName}`);
-    const snapshot = await uploadBytes(storageRef, fileBuffer);
-
-    // Get download URL
-    const downloadURL= await getDownloadURL(snapshot.ref);
-    return (downloadURL)
-
+      const downloadURL= await getDownloadURL(snapshot.ref);
+      let query = 'INSERT INTO file (MediaId, FilePath) VALUES (?, ?)';
+      const values = [
+      mediaId,
+      downloadURL
+    ]
+      await connection.query(query, values);
+      return downloadURL;
+    });
+    const downloadURLs = await Promise.all(uploadPromises);
+    return downloadURLs;
   } catch (error) {
     console.error('Error uploading file:', error);
-    res.status(500).send('Internal Server Error');
+    throw (error)
   }
-  
-
 }
 
 module.exports = media;
