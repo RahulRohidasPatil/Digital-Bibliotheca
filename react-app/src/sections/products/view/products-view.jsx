@@ -29,7 +29,7 @@ export default function ProductsView() {
   };
 
   const fetchAllMedia = useCallback(async () => {
-    const response = await getAllMedia(sortOption.value);
+    const response = await getAllMedia(sortOption?.value);
     if (response.data?.data) setMediaItems(response.data.data);
   }, [sortOption]);
 
