@@ -4,31 +4,31 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Iconify from 'src/components/iconify';
 import PropTypes from 'prop-types';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 MediaSearch.propTypes = {
-  onSearch: PropTypes.func,
+  setSearchTerm: PropTypes.func,
 };
 
-export default function MediaSearch({ onSearch }) {
-  const [searchTerm, setSearchTerm] = useState('');
+export default function MediaSearch({ setSearchTerm }) {
+  const [timeoutId, setTimeoutId] = useState();
 
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      console.log(searchTerm);
-      onSearch(searchTerm);
+  function onSearch(value){
+    if (timeoutId) clearTimeout(timeoutId);
+
+    const newTimeoutId = setTimeout(() => {
+      console.log(value);
+      setSearchTerm(value);
     }, 1000);
-
-    return () => clearTimeout(delayDebounceFn);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm]);
+    setTimeoutId(newTimeoutId);
+  }
 
   return (
     <TextField
       fullWidth
       placeholder="Search post..."
-      onChange={(e) => setSearchTerm(e.target.value)}
+      onChange={(e) => onSearch(e.target.value)}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">

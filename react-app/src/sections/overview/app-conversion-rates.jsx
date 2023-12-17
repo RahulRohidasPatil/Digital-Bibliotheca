@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 
-import { fNumber } from 'src/utils/format-number';
+// import { fNumber } from 'src/utils/format-number';
 
 import Chart, { useChart } from 'src/components/chart';
 
@@ -20,7 +20,7 @@ export default function AppConversionRates({ title, subheader, chart, ...other }
     tooltip: {
       marker: { show: false },
       y: {
-        formatter: (value) => fNumber(value),
+        formatter: (value) => value,
         title: {
           formatter: () => '',
         },
