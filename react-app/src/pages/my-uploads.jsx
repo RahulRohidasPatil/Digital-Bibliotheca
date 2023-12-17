@@ -3,18 +3,24 @@ import { Container, Paper, Table, TableBody, TableCell, TableContainer, TableHea
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { getByUserId } from 'src/apis/media';
+import { useUser } from 'src/hooks/use-user';
 
 export default function MyUploadsPage() {
     const [mediaItems, setMediaItems] = useState([]);
 
-    useEffect(() => {
-        fetchUserCreatedContent();
-    }, []);
+    const { user } = useUser();
 
-    const fetchUserCreatedContent = async () => {
-        const response = await getByUserId();
-        setMediaItems(response.data.data);
-    };
+    useEffect(() => {
+        const fetchUserCreatedContent = async () => {
+            console.log(user.Id);
+            const response = await getByUserId(user.Id);
+            setMediaItems(response.data.data);
+        };
+
+        fetchUserCreatedContent();
+    }, [user.Id]);
+
+    
 
     return <>
         <Helmet>
@@ -48,7 +54,7 @@ export default function MyUploadsPage() {
                                 <TableCell align="center">{row.CreatedDate.split('T')[0]}</TableCell>
                                 <TableCell align="center">{row.Price}</TableCell>
                                 <TableCell align="center">{row.DeliveryMethod}</TableCell>
-                                <TableCell align="center">{row.IsApproved.data === 1 ? 'Approved' : 'Pending'}</TableCell>
+                                <TableCell align="center">{row.IsApproved.data[0] === 1 ? 'Approved' : 'Pending'}</TableCell>
                                 <TableCell align="center">
                                     <Icon icon="mdi-light:pencil" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
                                     <Icon icon="mdi-light:delete" fontSize={20} style={{ cursor: 'pointer' }} />
