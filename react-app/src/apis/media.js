@@ -14,6 +14,8 @@ export const getAllMedia = (sortOption, filters) => {
 
 export const getByID = (id) => axiosInstance().get(`/media/${id}`);
 
+export const getByUserId = (ownerId) => axiosInstance().get(`/media/getuploadedmedia/${ownerId}`)
+
 export const addMedia = ({ title, description, mediaType, price, uploadFiles, demoFile, deliveryMethod }) => {
   const formData = new FormData();
 

@@ -2,17 +2,17 @@ import { Icon } from '@iconify/react';
 import { Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { getAllMedia } from 'src/apis/media';
+import { getByUserId } from 'src/apis/media';
 
 export default function MyUploadsPage() {
     const [mediaItems, setMediaItems] = useState([]);
 
     useEffect(() => {
-        fetchAllMedia();
+        fetchUserCreatedContent();
     }, []);
 
-    const fetchAllMedia = async () => {
-        const response = await getAllMedia();
+    const fetchUserCreatedContent = async () => {
+        const response = await getByUserId();
         setMediaItems(response.data.data);
     };
 
@@ -48,7 +48,7 @@ export default function MyUploadsPage() {
                                 <TableCell align="center">{row.CreatedDate.split('T')[0]}</TableCell>
                                 <TableCell align="center">{row.Price}</TableCell>
                                 <TableCell align="center">{row.DeliveryMethod}</TableCell>
-                                <TableCell align="center">{row.IsApproved.data}</TableCell>
+                                <TableCell align="center">{row.IsApproved.data === 1 ? 'Approved' : 'Pending'}</TableCell>
                                 <TableCell align="center">
                                     <Icon icon="mdi-light:pencil" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
                                     <Icon icon="mdi-light:delete" fontSize={20} style={{ cursor: 'pointer' }} />
