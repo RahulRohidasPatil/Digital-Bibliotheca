@@ -32,23 +32,6 @@ export default function AppView() {
       </Typography>
 
       <Grid container spacing={3}>
-        {/* <Grid xs={12} sm={6} md={6}>
-          <AppWidgetSummary
-            title="Purchased Media"
-            total={714000}
-            color="success"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
-          />
-        </Grid>
-
-        <Grid xs={12} sm={6} md={6}>
-          <AppWidgetSummary
-            title="Item Orders"
-            total={1723315}
-            color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
-          />
-        </Grid> */}
         <Grid xs={12} sm={12} md={12}>
           <Typography variant="h5">Categories</Typography>
         </Grid>

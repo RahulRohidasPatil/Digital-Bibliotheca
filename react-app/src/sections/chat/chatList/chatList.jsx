@@ -6,27 +6,31 @@ import { useUser } from '../../../hooks/use-user';
 import ChatItem from './chatItem';
 
 export default function ChatList() {
-    const {user} = useUser();
+  const { user } = useUser();
 
-    const [userChats, setUserChats] = useState([]);
+  const [userChats, setUserChats] = useState([]);
 
-    const loadUserChats = useCallback(async () => {
-        const response = await getUserChats(user.Id)
-        setUserChats(response.data.data);
-        console.log(userChats);
-    }, [user.Id, userChats]);
+  const loadUserChats = useCallback(async () => {
+    const response = await getUserChats(user.Id);
+    setUserChats(response.data.data);
+  }, [user.Id]);
 
-    useEffect(() => {
-        loadUserChats();
-    }, [loadUserChats]);
+  useEffect(() => {
+    loadUserChats();
+  }, [loadUserChats]);
 
-    return(
-        <Container>
-            <Typography variant="h4" sx={{ mb: 5 }}>
+  return (
+    <Container>
+      <Typography variant="h4" sx={{ mb: 5 }}>
         Chats
       </Typography>
-         {userChats.map((item) => (<ChatItem key={item.ChatId} target={item.UserId} name={`${item.FirstName} ${item.FamilyName}`}/>))} 
-        </Container>
-        
-    );
-} 
+      {userChats.map((item) => (
+        <ChatItem
+          key={item.ChatId}
+          target={item.UserId}
+          name={`${item.FirstName} ${item.FamilyName}`}
+        />
+      ))}
+    </Container>
+  );
+}
