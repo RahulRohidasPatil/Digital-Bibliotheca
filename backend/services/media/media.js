@@ -61,7 +61,7 @@ const media = {
         let query =
           "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
         const values = [
-          req.fields.OwnerId,
+          req.user.Id,
           req.fields.Title,
           req.fields.Description,
           req.fields.MediaType,
