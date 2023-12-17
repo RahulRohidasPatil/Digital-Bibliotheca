@@ -9,8 +9,10 @@ var authRoutes = require("../services/auth/auth-routes");
 var chatRoutes = require("../services/chat/chat-routes");
 var messageRoutes = require("../services/message/message-routes");
 var userRoutes = require("../services/user/user-routes");
+var dashboardRoutes = require("../services/dashboard/dashboard-routes");
 
 app.use("/media", middleware, mediaRoutes);
+app.use("/dashboard", middleware, dashboardRoutes);
 app.use("/auth", authRoutes);
 app.use("/chat", middleware, chatRoutes);
 app.use("/message",middleware, messageRoutes);
