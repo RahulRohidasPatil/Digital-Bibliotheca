@@ -23,11 +23,12 @@ import { useRouter } from 'src/routes/hooks';
 import { bgGradient } from 'src/theme/css';
 import { useForm } from 'react-hook-form';
 
-import Logo from 'src/components/logo';
+// import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 import { loginUser } from 'src/apis/auth';
 
 import { useUser } from 'src/hooks/use-user';
+import { Toolbar } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -153,13 +154,30 @@ export default function LoginView() {
         height: 1,
       }}
     >
-      <Logo
+      {/* <Logo
         sx={{
           position: 'fixed',
           top: { xs: 16, md: 24 },
           left: { xs: 16, md: 24 },
         }}
-      />
+      /> */}
+      <Toolbar
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          position: 'fixed',
+          top: { xs: 0, md: 0 },
+          color: 'white',
+          backgroundColor: 'green',
+        }}
+      >
+        <span>
+          Fulda University of Applied Sciences Software Engineering Project, Fall 2023 For
+          Demonstration Only
+        </span>
+      </Toolbar>
 
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card
