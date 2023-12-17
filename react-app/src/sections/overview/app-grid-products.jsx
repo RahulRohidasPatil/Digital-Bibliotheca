@@ -7,6 +7,7 @@ import { getMediaByType } from 'src/apis/dashboard';
 import { useEffect, useState } from 'react';
 import { Button, CardContent } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import ProductCard from '../products/product-card';
@@ -49,7 +50,15 @@ export default function AppGridProducts({ title, subheader, mediaType, ...other 
   };
   return (
     <Card {...other}>
-      <CardHeader title={title} subheader={subheader} action={<Button>See More</Button>} />
+      <CardHeader
+        title={title}
+        subheader={subheader}
+        action={
+          <Button LinkComponent={Link} to="/search" state={{ mediaType }}>
+            See More
+          </Button>
+        }
+      />
       <CardContent>
         <StyledGrid
           id="DashboardMediaTypeList"

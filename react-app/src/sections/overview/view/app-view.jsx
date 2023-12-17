@@ -16,7 +16,7 @@ import { useUser } from 'src/hooks/use-user';
 // import AppTrafficBySite from '../app-traffic-by-site';
 // import AppCurrentSubject from '../app-current-subject';
 // import AppConversionRates from '../app-conversion-rates';
-import AppWidgetSummary from '../app-widget-summary';
+// import AppWidgetSummary from '../app-widget-summary';
 
 import AppGridProducts from '../app-grid-products';
 import AppCategory from '../app-category';
@@ -32,7 +32,7 @@ export default function AppView() {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid xs={12} sm={6} md={6}>
+        {/* <Grid xs={12} sm={6} md={6}>
           <AppWidgetSummary
             title="Purchased Media"
             total={714000}
@@ -48,7 +48,7 @@ export default function AppView() {
             color="warning"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
           />
-        </Grid>
+        </Grid> */}
         <Grid xs={12} sm={12} md={12}>
           <Typography variant="h5">Categories</Typography>
         </Grid>
