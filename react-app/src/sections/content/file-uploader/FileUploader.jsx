@@ -8,9 +8,11 @@ FileUploader.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
   multiple: PropTypes.bool,
+  formData: PropTypes.object,
+  setFormData: PropTypes.func
 };
 
-function FileUploader({ label, name, multiple = true }) {
+function FileUploader({ label, name, multiple = true, formData, setFormData }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const fileInputRef = useRef(null);
 
@@ -31,6 +33,7 @@ function FileUploader({ label, name, multiple = true }) {
       updatedFiles.push(file);
     }
     setUploadedFiles(updatedFiles);
+    setFormData({ ...formData, [name]: [...formData[name], ...updatedFiles] });
   };
 
   const handleRemoveFile = (index) => {

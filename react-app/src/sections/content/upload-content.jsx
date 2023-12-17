@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Box } from '@mui/material';
+import { addMedia } from 'src/apis/media';
 import SelectInputWithChip from './Select-Input';
 import FileUploader from './file-uploader/FileUploader';
+
+const mediaTypeNames = ['Image', 'Video', 'Audio', 'Document', 'Link'];
+
+const deliveryMethods = ['Instant', 'Contact']
 
 const UploadContent = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    mediaType: [],
+    mediaType: 0,
     price: 0,
-    demoFile: null,
+    deliveryMethod: 0,
+    demoFile: [],
     uploadFiles: [],
   });
 
@@ -24,7 +30,7 @@ const UploadContent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Add your form submission logic here
-    console.log('Form data submitted:', formData);
+    addMedia(formData).then(value => e.target.reset());
   };
 
   return (
@@ -50,6 +56,8 @@ const UploadContent = () => {
 
             <div>
               <TextField
+                name="description"
+                onChange={handleInputChange}
                 id="outlined-multiline-static"
                 label="Description"
                 multiline
@@ -76,7 +84,14 @@ const UploadContent = () => {
                 marginTop: '16px',
               }}
             >
-              <SelectInputWithChip />
+              <SelectInputWithChip formData={formData} setFormData={setFormData} label="Media Type" name="mediaType" items={mediaTypeNames}/>
+            </div>
+            <div
+              style={{
+                marginTop: '16px',
+              }}
+            >
+            <SelectInputWithChip sx={{marginTop: '10'}} formData={formData} setFormData={setFormData} label="DeliveryMethod" name="deliveryMethod" items={deliveryMethods}/>
             </div>
           </Grid>
 
@@ -86,10 +101,10 @@ const UploadContent = () => {
                 marginBottom: '10px',
               }}
             >
-              <FileUploader label="Demo File (optional)" name="demo" />
+              <FileUploader label="Demo File (optional)" formData={formData} setFormData={setFormData} name="demoFile" multiple={false} />
             </div>
             <div>
-              <FileUploader label="File" name="File" />
+              <FileUploader label="File" name="uploadFiles" formData={formData} setFormData={setFormData}/>
             </div>
           </Grid>
         </Grid>

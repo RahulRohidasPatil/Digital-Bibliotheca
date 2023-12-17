@@ -33,7 +33,7 @@ export default function ShopProductCard({ product }) {
     <Box
       component="img"
       alt={product.Title}
-      src={product.FilePath}
+      src={product.DemoFilePath}
       sx={{
         top: 0,
         width: 1,
@@ -70,7 +70,13 @@ export default function ShopProductCard({ product }) {
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link href={`/product/${product.Id}`} color="inherit" underline="hover" variant="subtitle2" noWrap>
+        <Link
+          href={`/product/${product.Id}`}
+          color="inherit"
+          underline="hover"
+          variant="subtitle2"
+          noWrap
+        >
           {product.Title}
         </Link>
         <Typography sx={{ margin: '0 !important' }} variant="caption">

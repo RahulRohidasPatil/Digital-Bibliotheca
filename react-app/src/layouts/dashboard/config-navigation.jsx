@@ -34,6 +34,16 @@ const navConfig = [
     path: '/my-uploads',
     icon: <Iconify icon="eva:arrow-upward-fill" />,
   },
+  {
+    title: 'My Media',
+    path: '/my-media',
+    icon: <Iconify icon="eva:arrow-downward-fill" />,
+  },
+  {
+    title: 'Chats',
+    path: '/chats',
+    icon: <Iconify icon="mdi:chat-outline" />,
+  },
 ];
 
 export default navConfig;

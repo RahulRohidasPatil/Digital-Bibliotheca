@@ -3,15 +3,46 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 import { getByID } from "src/apis/media";
+import { useUser } from "src/hooks/use-user";
+import { purchaseMedia } from "src/apis/purchase";
 
 export default function ProductInfoPage() {
     const { id } = useParams();
     const [product, setproduct] = useState();
+    const {user} = useUser();
+
+    const [showPurchaseButton, setShowPurchasebutton] = useState(true)
 
     useEffect(() => {
         getByID(id)
             .then(response => setproduct(response.data.data[0]));
     }, [id]);
+
+    const setContentTypeLabel = (type) => {
+        switch(type){
+            case 1:
+                return 'Image';
+            case 2:
+                return 'Video';
+            case 3:
+                return 'Audio';
+            case 4:
+                return 'Document';
+            case 5:
+                return 'Link';
+            default:
+                return 'Image';
+        }
+    }
+
+    const setDeliveryMethodLabel = (deliveryMethod) => deliveryMethod === '2' ? 'Contact' : 'Instant';
+
+    
+
+    const buyMedia = async () => {
+        purchaseMedia({customerId: user.Id, mediaId: id})
+        setShowPurchasebutton(false)
+    }
 
     return <>
         <Helmet>
@@ -30,7 +61,7 @@ export default function ProductInfoPage() {
                             <Box
                                 component="img"
                                 alt={product?.name}
-                                src={product?.FilePath}
+                                src={product?.DemoFilePath}
                                 sx={{
                                     top: 0,
                                     width: 1,
@@ -45,7 +76,10 @@ export default function ProductInfoPage() {
                         {product?.Description}
                     </Typography>
                     <Typography sx={{ marginTop: 2 }} variant="caption" component="div">
-                        Content Type: {product?.MediaType}
+                        {setContentTypeLabel(product?.MediaType)}
+                    </Typography>
+                    <Typography sx={{ marginTop: 2 }} variant="caption" component="div">
+                        Delivery: {setDeliveryMethodLabel(product?.DeliveyMethod)}
                     </Typography>
                     <div style={{ marginTop: 15 }}>
                         <Chip label={`${product?.Price} €`} variant="outlined" sx={{ mr: 2 }} />
@@ -80,9 +114,18 @@ export default function ProductInfoPage() {
                         variant="outlined"
                         onClick={() => {
                             console.log('Initiate chat with creator');
+                            window.location.replace(`/chats/${product.OwnerId}`);
                         }}
                     >
                         Chat with Creator
+                    </Button>
+                    <Button
+                        
+                        sx={{ marginTop: 1, marginLeft: 2, display: showPurchaseButton ? '' : 'none' }}
+                        variant="outlined"
+                        onClick={buyMedia}
+                    >
+                        Purchase
                     </Button>
                 </Grid>
             </Grid>

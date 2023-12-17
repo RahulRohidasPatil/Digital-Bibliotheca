@@ -233,6 +233,11 @@ export default function RegisterView() {
           imgUrl: '/assets/background/overlay_4.jpg',
         }),
         height: 1,
+        display: 'flex',
+        flexDirection: 'column',
+
+        overflow: 'hidden',
+        overflowY: 'scroll',
       }}
     >
       <Logo
@@ -243,7 +248,7 @@ export default function RegisterView() {
         }}
       />
 
-      <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
+      <Stack alignItems="center" justifyContent="center">
         <Card
           sx={{
             p: 5,
