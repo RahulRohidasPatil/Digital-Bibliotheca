@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -20,6 +21,7 @@ export default function ProductsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState(SORT_OPTIONS[0]);
   const [filters, setFilters] = useState({ mediaTypes: [] });
+  const location = useLocation();
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -29,6 +31,12 @@ export default function ProductsView() {
     setOpenFilter(false);
   };
 
+  const checkIfPreFilterPresent = useCallback(async () => {
+    if (location && location.state && location.state.mediaType) {
+      setFilters({ mediaTypes: [location.state.mediaType] });
+      console.log(location.state);
+    }
+  }, [location]);
   const fetchAllMedia = useCallback(async () => {
     const response = await getAllMedia(sortOption.value, JSON.stringify(filters));
     if (response.data?.data) setMediaItems(response.data.data);
@@ -49,6 +57,9 @@ export default function ProductsView() {
     handleSearch();
   }, [handleSearch]);
 
+  useEffect(() => {
+    checkIfPreFilterPresent();
+  }, [checkIfPreFilterPresent]);
   return (
     <Container>
       <Typography variant="h4" sx={{ mb: 5 }}>
