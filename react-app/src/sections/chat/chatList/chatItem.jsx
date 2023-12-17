@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 import { alpha } from '@mui/material/styles';
-
+import PropTypes from 'prop-types';
 
 export default function ChatItem({name, target}){
     return(
@@ -27,8 +27,7 @@ export default function ChatItem({name, target}){
                     border: (theme) => `solid 2px ${theme.palette.background.default}`,
                     background: 'darkgrey',
                     }}
-                >         
-                </Avatar>
+                 />
                 <Typography sx={{mx: 2}} variant='caption'>
                     <Link href={`/chats/${target}`} color="inherit" underline="hover" variant="subtitle2" noWrap>
                         {name}
@@ -38,3 +37,8 @@ export default function ChatItem({name, target}){
         
     )
 }
+
+ChatItem.propTypes = {
+    name: PropTypes.any,
+    target: PropTypes.any
+};
