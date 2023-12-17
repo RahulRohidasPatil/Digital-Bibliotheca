@@ -34,7 +34,6 @@ const StyledGrid = styled(Grid)(() => ({
 }));
 
 export default function Messages() {
-
   const [pastMessages, setPastMessages] = useState([]);
 
   const [messageContent, setMessageContent] = useState([]);
@@ -107,7 +106,7 @@ export default function Messages() {
   };
 
   return (
-    <Container maxWidth="xl">
+    <Container maxHeight="l" maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 2, ml: 5 }}>
         {targetName}
       </Typography>
@@ -117,8 +116,11 @@ export default function Messages() {
         sx={{
           display: 'block',
           width: '95%',
+
           pl: 3,
-          height: '90%',
+          height: '80%',
+          maxHeight: '80%',
+          minHeight: '80%',
         }}
       >
         <StyledGrid
@@ -172,7 +174,6 @@ export default function Messages() {
       </Grid>
     </Container>
   );
-
 }
 
 /* eslint-disable */
