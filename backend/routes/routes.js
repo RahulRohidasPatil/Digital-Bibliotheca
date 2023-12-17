@@ -10,6 +10,7 @@ var chatRoutes = require("../services/chat/chat-routes");
 var messageRoutes = require("../services/message/message-routes");
 var userRoutes = require("../services/user/user-routes");
 var dashboardRoutes = require("../services/dashboard/dashboard-routes");
+var purchaseRoutes = require("../services/purchase/purchase-routes");
 
 app.use("/media", middleware, mediaRoutes);
 app.use("/dashboard", middleware, dashboardRoutes);
@@ -17,6 +18,7 @@ app.use("/auth", authRoutes);
 app.use("/chat", middleware, chatRoutes);
 app.use("/message",middleware, messageRoutes);
 app.use("/user", middleware, userRoutes);
+app.use("/purchase", middleware, purchaseRoutes);
 
 function middleware(req, res, next) {
   const { authorization } = req.headers;

@@ -1,23 +1,9 @@
 var connection = require("../../utils/connection");
-const firebase = require('firebase/app');
-const {getStorage, ref, uploadBytes, getDownloadURL} = require('firebase/storage');
 const formidable = require('express-formidable');
-const { randomUUID } = require("crypto");
-const fsPromises = require('fs').promises;
+
 const { applyFiltersOnQuery, applySortOptionOnQuery } = require("../../utils/utils");
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAWBoNN0YjVQf8hSNPp5OATbb_L3vEDLLk",
-  authDomain: "gdsd-6c209.firebaseapp.com",
-  projectId: "gdsd-6c209",
-  storageBucket: "gdsd-6c209.appspot.com",
-  messagingSenderId: "953421522259",
-  appId: "1:953421522259:web:b4e9334f053585698bada6"
-};
-
-const firebaseApp = firebase.initializeApp(firebaseConfig);
-
-const storage = getStorage(firebaseApp)
+const fileService = require('../file/file')
 
 const media = {
   getAllMedia: async function (req, res) {
@@ -33,7 +19,16 @@ const media = {
       query = applySortOptionOnQuery(query, sortOption);
 
       let response = await connection.query(query);
-      res.status(200).send({ data: response });
+
+      let toReturn = [];
+
+      toReturn = await Promise.all(response.map(async (media) => {
+        media.DemoFilePath = (await fileService.getDemoFile(media.Id)).FilePath;
+
+        return media;
+      }));
+
+      res.status(200).send({ data: toReturn });
     } catch (e) {
       console.log("Error", e);
       res.status(500).send({ message: "Internal Server Error" });
@@ -43,6 +38,11 @@ const media = {
     try {
       let query = "SELECT * from media WHERE `Id` = ? AND isActive = 1 AND isApproved=1";
       let response = await connection.query(query,[req.params.id]);
+
+      response[0].DemoFilePath = (await fileService.getDemoFile(req.params.id)).FilePath
+
+      console.log(response[0].DemoFilePath)
+
       res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
@@ -77,9 +77,12 @@ const media = {
         ];
         let response = await connection.query(query, [values]);
         insertId = response.insertId
+        //Main files
         if (!Array.isArray(req.files.Files)) req.files.Files = [req.files.Files];
-        let downloadUrls = await uploadFile(req.files.Files,insertId);
-        console.log(downloadUrls)
+        await fileService.uploadFile(req.files.Files,insertId);
+        //Demo File
+        if (!Array.isArray(req.files.DemoFile)) req.files.DemoFile = [req.files.DemoFile];
+        await fileService.uploadFile(req.files.DemoFile, insertId, true);
         res.status(200).send({ data: response });
       } catch (e) {
         console.log("Error", e);
@@ -151,34 +154,6 @@ const media = {
 
 };
 
-const uploadFile = async (files,mediaId) => {
-  try {
-    if (!files) {
-      return console.error('No file uploaded.');
-    }
-    const uploadPromises = files.map(async (file)=>{
-      const fileName = `${randomUUID()}_${file.name}`;
-      const fileBuffer= await fsPromises.readFile(file.path);
 
-      const storageRef = ref(storage, `${fileName}`);
-      const snapshot = await uploadBytes(storageRef, fileBuffer);
-
-      const downloadURL= await getDownloadURL(snapshot.ref);
-      let query = 'INSERT INTO file (MediaId, FilePath, IsDemo) VALUES (?, ?, ?)';
-      const values = [
-      mediaId,
-      downloadURL,
-      false
-    ]
-      await connection.query(query, values);
-      return downloadURL;
-    });
-    const downloadURLs = await Promise.all(uploadPromises);
-    return downloadURLs;
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    throw (error)
-  }
-}
 
 module.exports = media;

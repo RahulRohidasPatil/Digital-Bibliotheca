@@ -8,7 +8,7 @@ const messageService = {
             if(!content) throw 'cannot create empty message';
             
             let query = "INSERT INTO message(`SenderId`, `Content`, `ChatId`, `CreatedDate`) VALUES(?, ?, ?, CURRENT_DATE())";
-            let values = [`${senderId}`, `${content}`, `${chatId}`, `${Date.now()}`]
+            let values = [`${senderId}`, `${content}`, `${chatId}`]
             let result = await connection.query(query, values)
 
             if (result.affectedRows > 0) return true;
