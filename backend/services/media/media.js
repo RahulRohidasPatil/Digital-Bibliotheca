@@ -22,12 +22,14 @@ const storage = getStorage(firebaseApp)
 const media = {
   getAllMedia: async function (req, res) {
     const sortOption = req.query.sortOption;
-    const filters = JSON.parse(req.query.filters);
-
+    
     try {
       let query = "SELECT * from media WHERE isActive = 1 AND isApproved=1";
-
-      query = applyFiltersOnQuery(query, filters);
+      
+      if (req.query.filters) {
+        const filters = JSON.parse(req.query.filters);
+        query = applyFiltersOnQuery(query, filters);
+      }
       query = applySortOptionOnQuery(query, sortOption);
 
       let response = await connection.query(query);
