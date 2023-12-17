@@ -22,10 +22,11 @@ import { useRouter } from 'src/routes/hooks';
 import { bgGradient } from 'src/theme/css';
 import { useForm } from 'react-hook-form';
 
-import Logo from 'src/components/logo';
+// import Logo from 'src/components/logo';
 // import Iconify from 'src/components/iconify';
 import { registerUser } from 'src/apis/auth';
 import { useUser } from 'src/hooks/use-user';
+import { Toolbar } from '@mui/material';
 // ----------------------------------------------------------------------
 
 export default function RegisterView() {
@@ -226,63 +227,84 @@ export default function RegisterView() {
   );
 
   return (
-    <Box
-      sx={{
-        ...bgGradient({
-          color: alpha(theme.palette.background.default, 0.9),
-          imgUrl: '/assets/background/overlay_4.jpg',
-        }),
-        height: 1,
-        display: 'flex',
-        flexDirection: 'column',
+    <>
+      <Toolbar
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          position: 'fixed',
+          top: { xs: 0, md: 0 },
+          color: 'white',
+          backgroundColor: 'green',
+          zIndex: 2,
+        }}
+      >
+        <span>
+          Fulda University of Applied Sciences Software Engineering Project, Fall 2023 For
+          Demonstration Only
+        </span>
+      </Toolbar>
 
-        overflow: 'hidden',
-        overflowY: 'scroll',
-      }}
-    >
-      <Logo
+      <Box
+        sx={{
+          ...bgGradient({
+            color: alpha(theme.palette.background.default, 0.9),
+            imgUrl: '/assets/background/overlay_4.jpg',
+          }),
+          height: 1,
+          display: 'flex',
+          flexDirection: 'column',
+
+          overflow: 'hidden',
+          overflowY: 'scroll',
+        }}
+      >
+        {/* <Logo
         sx={{
           position: 'fixed',
           top: { xs: 16, md: 24 },
           left: { xs: 16, md: 24 },
         }}
-      />
+      /> */}
 
-      <Stack alignItems="center" justifyContent="center">
-        <Card
-          sx={{
-            p: 5,
-            width: 1,
-            maxWidth: 420,
-          }}
-        >
-          <Typography variant="h4">Register | FHDB</Typography>
+        <Stack sx={{ pt: 10, zIndex: 1 }} alignItems="center" justifyContent="center">
+          <Card
+            sx={{
+              p: 5,
+              width: 1,
+              maxWidth: 420,
+            }}
+          >
+            <Typography variant="h4">Register | FHDB</Typography>
 
-          {renderForm}
-          <Divider sx={{ my: 3 }}>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              OR
+            {renderForm}
+            <Divider sx={{ my: 3 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                OR
+              </Typography>
+            </Divider>
+            <Typography variant="body2" sx={{ mt: 2, justifyContent: 'center', display: 'flex' }}>
+              Have an account?
+              <Button size="small" variant="contained" color="inherit" href="/login" sx={{ ml: 2 }}>
+                Login
+              </Button>
             </Typography>
-          </Divider>
-          <Typography variant="body2" sx={{ mt: 2, justifyContent: 'center', display: 'flex' }}>
-            Have an account?
-            <Button size="small" variant="contained" color="inherit" href="/login" sx={{ ml: 2 }}>
-              Login
-            </Button>
-          </Typography>
-        </Card>
-      </Stack>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={snackbar}
-        autoHideDuration={2000}
-        onClose={() => showSnackbar(false)}
-        message={snackbarMessage}
-      >
-        <Alert onClose={() => showSnackbar(false)} severity="error" sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </Box>
+          </Card>
+        </Stack>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={snackbar}
+          autoHideDuration={2000}
+          onClose={() => showSnackbar(false)}
+          message={snackbarMessage}
+        >
+          <Alert onClose={() => showSnackbar(false)} severity="error" sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </Box>
+    </>
   );
 }

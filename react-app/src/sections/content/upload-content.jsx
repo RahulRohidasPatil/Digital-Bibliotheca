@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { TextField, Button, Grid, Box } from '@mui/material';
+import { TextField, Button, Grid, Container } from '@mui/material';
 import { addMedia } from 'src/apis/media';
 import SelectInputWithChip from './Select-Input';
 import FileUploader from './file-uploader/FileUploader';
 
 const mediaTypeNames = ['Image', 'Video', 'Audio', 'Document', 'Link'];
 
-const deliveryMethods = ['Instant', 'Contact']
+const deliveryMethods = ['Instant', 'Contact'];
 
 const UploadContent = () => {
   const [formData, setFormData] = useState({
@@ -30,15 +30,11 @@ const UploadContent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Add your form submission logic here
-    addMedia(formData).then(value => e.target.reset());
+    addMedia(formData).then((value) => e.target.reset());
   };
 
   return (
-    <Box
-      sx={{
-        padding: { xs: '0px 16px', sm: '0px 14px', lg: '0px 8px' },
-      }}
-    >
+    <Container>
       <form onSubmit={handleSubmit} style={{}}>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6}>
@@ -84,14 +80,27 @@ const UploadContent = () => {
                 marginTop: '16px',
               }}
             >
-              <SelectInputWithChip formData={formData} setFormData={setFormData} label="Media Type" name="mediaType" items={mediaTypeNames}/>
+              <SelectInputWithChip
+                formData={formData}
+                setFormData={setFormData}
+                label="Media Type"
+                name="mediaType"
+                items={mediaTypeNames}
+              />
             </div>
             <div
               style={{
                 marginTop: '16px',
               }}
             >
-            <SelectInputWithChip sx={{marginTop: '10'}} formData={formData} setFormData={setFormData} label="DeliveryMethod" name="deliveryMethod" items={deliveryMethods}/>
+              <SelectInputWithChip
+                sx={{ marginTop: '10' }}
+                formData={formData}
+                setFormData={setFormData}
+                label="DeliveryMethod"
+                name="deliveryMethod"
+                items={deliveryMethods}
+              />
             </div>
           </Grid>
 
@@ -101,10 +110,21 @@ const UploadContent = () => {
                 marginBottom: '10px',
               }}
             >
-              <FileUploader label="Demo File (optional)" formData={formData} setFormData={setFormData} name="demoFile" multiple={false} />
+              <FileUploader
+                label="Demo File (optional)"
+                formData={formData}
+                setFormData={setFormData}
+                name="demoFile"
+                multiple={false}
+              />
             </div>
             <div>
-              <FileUploader label="File" name="uploadFiles" formData={formData} setFormData={setFormData}/>
+              <FileUploader
+                label="File"
+                name="uploadFiles"
+                formData={formData}
+                setFormData={setFormData}
+              />
             </div>
           </Grid>
         </Grid>
@@ -128,7 +148,7 @@ const UploadContent = () => {
           </Button>
         </Grid>
       </form>
-    </Box>
+    </Container>
   );
 };
 

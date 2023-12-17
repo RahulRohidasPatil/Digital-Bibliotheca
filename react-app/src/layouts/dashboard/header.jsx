@@ -36,7 +36,12 @@ export default function Header({ onOpenNav }) {
 
       {/* <Searchbar /> */}
 
-      <Box sx={{ flexGrow: 1 }} />
+      <Box sx={{ flexGrow: 1 }}>
+        <span style={{ backgroundColor: 'green', padding: 10 }}>
+          Fulda University of Applied Sciences Software Engineering Project, Fall 2023 For
+          Demonstration Only
+        </span>
+      </Box>
 
       <Stack direction="row" alignItems="center" spacing={1}>
         {/* <LanguagePopover /> */}

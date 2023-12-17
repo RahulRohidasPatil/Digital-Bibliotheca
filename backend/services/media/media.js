@@ -151,7 +151,21 @@ const media = {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
+  getByUserId: async function (req, res){
+    try {
+      let query = "SELECT * from media WHERE `OwnerId` = ? AND isActive = 1 AND isApproved=1";
+      let response = await connection.query(query,[req.params.ownerId]);
 
+      response[0].DemoFilePath = (await fileService.getDemoFile(req.params.id)).FilePath
+
+      console.log(response[0].DemoFilePath)
+
+      res.status(200).send({ data: response });
+    } catch (e) {
+      console.log("Error", e);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  }
 };
 
 
