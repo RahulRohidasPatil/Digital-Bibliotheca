@@ -1,6 +1,7 @@
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid'
+import PropTypes from 'prop-types';
 
 export default function MessageItem({content, sender}){
     return (
@@ -13,3 +14,8 @@ export default function MessageItem({content, sender}){
                     </Grid>
     )
 }
+
+MessageItem.propTypes = {
+    content: PropTypes.any,
+    sender: PropTypes.any
+};
