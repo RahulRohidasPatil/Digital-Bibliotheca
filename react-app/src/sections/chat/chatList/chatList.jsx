@@ -6,11 +6,9 @@ import { useUser } from '../../../hooks/use-user';
 import ChatItem from './chatItem';
 
 export default function ChatList() {
-    const {user} = useUser();
+  const { user } = useUser();
 
-    const [userChats, setUserChats] = useState([]);
-
-    
+  const [userChats, setUserChats] = useState([]);
 
     useEffect(() => {
         const loadUserChats = async () => {
@@ -21,13 +19,19 @@ export default function ChatList() {
         loadUserChats()
     }, [user.Id]);
 
-    return(
-        <Container>
-            <Typography variant="h4" sx={{ mb: 5 }}>
+
+  return (
+    <Container>
+      <Typography variant="h4" sx={{ mb: 5 }}>
         Chats
       </Typography>
-         {userChats.map((item) => (<ChatItem key={item.ChatId} target={item.UserId} name={`${item.FirstName} ${item.FamilyName}`}/>))} 
-        </Container>
-        
-    );
-} 
+      {userChats.map((item) => (
+        <ChatItem
+          key={item.ChatId}
+          target={item.UserId}
+          name={`${item.FirstName} ${item.FamilyName}`}
+        />
+      ))}
+    </Container>
+  );
+}
