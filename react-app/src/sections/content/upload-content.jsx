@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Box } from '@mui/material';
+import { addMedia } from 'src/apis/media';
 import SelectInputWithChip from './Select-Input';
 import FileUploader from './file-uploader/FileUploader';
 
@@ -25,6 +26,7 @@ const UploadContent = () => {
     e.preventDefault();
     // Add your form submission logic here
     console.log('Form data submitted:', formData);
+    addMedia(formData).then(value => console.log(29, value));
   };
 
   return (
@@ -50,6 +52,8 @@ const UploadContent = () => {
 
             <div>
               <TextField
+                name="description"
+                onChange={handleInputChange}
                 id="outlined-multiline-static"
                 label="Description"
                 multiline
