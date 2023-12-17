@@ -80,6 +80,7 @@ export default function ProductInfoPage() {
                         variant="outlined"
                         onClick={() => {
                             console.log('Initiate chat with creator');
+                            window.location.replace(`/chats/${product.OwnerId}`);
                         }}
                     >
                         Chat with Creator

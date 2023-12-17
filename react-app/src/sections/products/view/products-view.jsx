@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -11,16 +11,15 @@ import { searchMedia, getAllMedia } from 'src/apis/media';
 import MediaSearch from '../media-search';
 import ProductCard from '../product-card';
 import ProductSort from '../product-sort';
-import ProductFilters from '../product-filters';
+import ProductFilters, { SORT_OPTIONS } from '../product-filters';
 // ----------------------------------------------------------------------
 
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const [mediaItems, setMediaItems] = useState([]);
-
-  useEffect(() => {
-    fetchAllMedia();
-  }, []);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortOption, setSortOption] = useState(SORT_OPTIONS[0]);
+  const [filters, setFilters] = useState({ mediaTypes: [] });
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -30,24 +29,25 @@ export default function ProductsView() {
     setOpenFilter(false);
   };
 
-  const handleSearch = async (value) => {
-    if (value && value.length > 3) {
-      const searchTerm = value;
-      const response = await searchMedia({ searchTerm });
+  const fetchAllMedia = useCallback(async () => {
+    const response = await getAllMedia(sortOption.value, JSON.stringify(filters));
+    if (response.data?.data) setMediaItems(response.data.data);
+  }, [sortOption, filters]);
+
+  const handleSearch = useCallback(async () => {
+    if (searchTerm && searchTerm.length > 3) {
+      const response = await searchMedia({ searchTerm, sortOption: sortOption.value, filters });
       if (response.data?.data) {
         setMediaItems(response.data.data);
       }
-    } else if (!value) {
+    } else if (!searchTerm) {
       fetchAllMedia();
     }
-  };
-  const fetchAllMedia = async () => {
-    const response = await getAllMedia();
-    console.log(response);
-    if (response.data?.data) {
-      setMediaItems(response.data.data);
-    }
-  };
+  }, [fetchAllMedia, filters, searchTerm, sortOption.value]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch]);
 
   return (
     <Container>
@@ -61,13 +61,14 @@ export default function ProductsView() {
             openFilter={openFilter}
             onOpenFilter={handleOpenFilter}
             onCloseFilter={handleCloseFilter}
+            setFilters={setFilters}
           />
         </Grid>
         <Grid xs={12} md={6}>
-          <MediaSearch onSearch={handleSearch} />
+          <MediaSearch setSearchTerm={setSearchTerm} />
         </Grid>
         <Grid xs={12} md={3} textAlign="center">
-          <ProductSort />
+          <ProductSort sortOption={sortOption} setSortOption={setSortOption} />
         </Grid>
       </Grid>
 

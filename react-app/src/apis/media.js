@@ -1,10 +1,10 @@
 import { axiosInstance } from '../utils/axios';
 
-export const searchMedia = ({ searchTerm }) =>
+export const searchMedia = ({ searchTerm, sortOption, filters }) =>
   axiosInstance().post(`/media/search`, {
-    searchTerm,
+    searchTerm, sortOption, filters
   });
 
-export const getAllMedia = () => axiosInstance().get(`/media`);
+export const getAllMedia = (sortOption, filters) => axiosInstance().get(`/media?sortOption=${sortOption}&filters=${filters}`);
 
 export const getByID = (id) => axiosInstance().get(`/media/${id}`);

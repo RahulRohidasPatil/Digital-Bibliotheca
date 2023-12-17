@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { listClasses } from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-
+import PropTypes from 'prop-types';
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -17,15 +17,21 @@ const SORT_OPTIONS = [
   { value: 'priceAsc', label: 'Price: Low-High' },
 ];
 
-export default function ShopProductSort() {
+ShopProductSort.propTypes = {
+  sortOption: PropTypes.object,
+  setSortOption: PropTypes.func,
+};
+
+export default function ShopProductSort({ sortOption, setSortOption }) {
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (option) => {
     setOpen(null);
+    setSortOption(option);
   };
 
   return (
@@ -38,7 +44,7 @@ export default function ShopProductSort() {
       >
         Sort By:&nbsp;
         <Typography component="span" variant="subtitle2" sx={{ color: 'text.secondary' }}>
-          Newest
+          {sortOption.label}
         </Typography>
       </Button>
 
@@ -59,7 +65,7 @@ export default function ShopProductSort() {
         }}
       >
         {SORT_OPTIONS.map((option) => (
-          <MenuItem key={option.value} selected={option.value === 'newest'} onClick={handleClose}>
+          <MenuItem key={option.value} selected={option.value === sortOption.value} onClick={() => handleClose(option)}>
             {option.label}
           </MenuItem>
         ))}
