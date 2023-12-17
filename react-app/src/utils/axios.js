@@ -45,7 +45,6 @@ export const axiosInstance = () => {
     import.meta.env.VITE_ENVIRONMENT === 'production'
       ? import.meta.env.VITE_PRODUCTION_API_URL
       : import.meta.env.VITE_LOCAL_API_URL;
-  console.log(import.meta.env);
   const axiosClient = axios.create({
     baseURL,
     headers: {
