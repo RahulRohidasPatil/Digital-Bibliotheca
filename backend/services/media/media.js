@@ -53,7 +53,7 @@ const media = {
         console.log(err)
         res.status(500).send({ message: "Internal Server Error" });
       }
-      let insertId = NULL;
+      let insertId = null;
       try {    
         //console.log(req.files.FilePath.length,"length");
         
@@ -75,6 +75,7 @@ const media = {
         ];
         let response = await connection.query(query, [values]);
         insertId = response.insertId
+        if (!Array.isArray(req.files.Files)) req.files.Files = [req.files.Files];
         let downloadUrls = await uploadFile(req.files.Files,insertId);
         console.log(downloadUrls)
         res.status(200).send({ data: response });
@@ -151,7 +152,7 @@ const media = {
 const uploadFile = async (files,mediaId) => {
   try {
     if (!files) {
-      return res.status(400).send('No file uploaded.');
+      return console.error('No file uploaded.');
     }
     const uploadPromises = files.map(async (file)=>{
       const fileName = `${randomUUID()}_${file.name}`;
@@ -161,10 +162,11 @@ const uploadFile = async (files,mediaId) => {
       const snapshot = await uploadBytes(storageRef, fileBuffer);
 
       const downloadURL= await getDownloadURL(snapshot.ref);
-      let query = 'INSERT INTO file (MediaId, FilePath) VALUES (?, ?)';
+      let query = 'INSERT INTO file (MediaId, FilePath, IsDemo) VALUES (?, ?, ?)';
       const values = [
       mediaId,
-      downloadURL
+      downloadURL,
+      false
     ]
       await connection.query(query, values);
       return downloadURL;
