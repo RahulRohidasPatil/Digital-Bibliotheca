@@ -6,8 +6,10 @@ require("dotenv").config();
 
 var mediaRoutes = require("../services/media/media-routes");
 var authRoutes = require("../services/auth/auth-routes");
+var dashboardRoutes = require("../services/dashboard/dashboard-routes");
 
 app.use("/media", middleware, mediaRoutes);
+app.use("/dashboard", middleware, dashboardRoutes);
 app.use("/auth", authRoutes);
 
 function middleware(req, res, next) {
