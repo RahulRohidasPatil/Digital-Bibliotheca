@@ -8,7 +8,7 @@ const UploadContent = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    mediaType: [],
+    mediaType: 0,
     price: 0,
     demoFile: null,
     uploadFiles: [],
@@ -93,7 +93,7 @@ const UploadContent = () => {
               <FileUploader label="Demo File (optional)" name="demo" />
             </div>
             <div>
-              <FileUploader label="File" name="File" />
+              <FileUploader label="File" name="File" formData={formData} setFormData={setFormData}/>
             </div>
           </Grid>
         </Grid>
