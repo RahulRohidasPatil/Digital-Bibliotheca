@@ -5,7 +5,12 @@ export const searchMedia = ({ searchTerm, sortOption, filters }) =>
     searchTerm, sortOption, filters
   });
 
-export const getAllMedia = (sortOption, filters) => axiosInstance().get(`/media?sortOption=${sortOption}&filters=${filters}`);
+export const getAllMedia = (sortOption, filters) => {
+  let url = `/media`;
+  if (sortOption) url += `?sortOption=${sortOption}`;
+  if (filters) url += `&filters=${filters}`;
+  return axiosInstance().get(url);
+}
 
 export const getByID = (id) => axiosInstance().get(`/media/${id}`);
 
