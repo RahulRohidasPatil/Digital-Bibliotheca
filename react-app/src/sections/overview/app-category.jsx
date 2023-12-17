@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+// import { CardActionArea } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 // import { fShortenNumber } from 'src/utils/format-number';
 
@@ -19,6 +21,7 @@ export default function AppCategory({ category, title, icon, color = 'primary', 
       direction="column"
       justifyContent="center"
       alignItems="center"
+      {...other}
       sx={{
         px: 2,
         pb: 5,
@@ -26,15 +29,16 @@ export default function AppCategory({ category, title, icon, color = 'primary', 
         borderRadius: 2,
         ...sx,
       }}
-      {...other}
     >
-      {icon && <Box>{icon}</Box>}
+      <Link to="/search" state={{ mediaType: category }}>
+        {icon && <Box>{icon}</Box>}
 
-      <Stack spacing={0.5}>
-        <Typography variant="subtitle2" sx={{ color: 'text.disabled' }}>
-          {title}
-        </Typography>
-      </Stack>
+        <Stack spacing={0.5}>
+          <Typography variant="subtitle2" sx={{ color: 'text.disabled' }}>
+            {title}
+          </Typography>
+        </Stack>
+      </Link>
     </Card>
   );
 }
