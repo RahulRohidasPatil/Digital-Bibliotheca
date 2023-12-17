@@ -1,9 +1,17 @@
 var connection = require("../../utils/connection");
+const { applyFiltersOnQuery, applySortOptionOnQuery } = require("../../utils/utils");
 
 const media = {
   getAllMedia: async function (req, res) {
+    const sortOption = req.query.sortOption;
+    const filters = JSON.parse(req.query.filters);
+
     try {
       let query = "SELECT * from media WHERE isActive = 1 AND isApproved=1";
+
+      query = applyFiltersOnQuery(query, filters);
+      query = applySortOptionOnQuery(query, sortOption);
+
       let response = await connection.query(query);
       res.status(200).send({ data: response });
     } catch (e) {
@@ -84,11 +92,17 @@ const media = {
   
   search: async function (req, res) {
     var searchTerm = req.body.searchTerm;
+    const sortOption = req.body.sortOption;
+    const filters = req.body.filters;
     console.log(searchTerm);
     try {
       console.log(searchTerm);
       let query =
         "SELECT * from media WHERE( title LIKE ? OR description LIKE ?) AND  isActive = 1 AND isApproved=1";
+
+      query = applyFiltersOnQuery(query, filters);
+      query = applySortOptionOnQuery(query, sortOption);
+
       let values = [`%${searchTerm}%`, `%${searchTerm}%`];
       let response = await connection.query(query, values);
       res.status(200).send({ data: response });

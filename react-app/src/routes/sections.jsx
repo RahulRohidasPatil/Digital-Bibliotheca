@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 
 import DashboardLayout from 'src/layouts/dashboard';
+import MessagesPage from 'src/pages/Messages';
+import ChatListPage from 'src/pages/chat-list';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
 export const UploadContentPage = lazy(() => import('src/pages/upload-content'));
@@ -33,7 +35,9 @@ export default function Router() {
         { path: 'upload-content', element: <UploadContentPage /> },
         { path: 'product/:id', element: <ProductInfoPage /> },
         { path: 'blog', element: <BlogPage /> },
-        { path: 'my-uploads', element: <MyUploadsPage /> }
+        { path: 'my-uploads', element: <MyUploadsPage /> },
+        {path: 'chats', element: <ChatListPage />},
+        {path: 'chats/:userId', element: <MessagesPage />}
       ],
     },
     {
