@@ -14,7 +14,7 @@ export const getAllMedia = (sortOption, filters) => {
 
 export const getByID = (id) => axiosInstance().get(`/media/${id}`);
 
-export const addMedia = ({ title, description, mediaType, price, uploadFiles }) => {
+export const addMedia = ({ title, description, mediaType, price, uploadFiles, demoFile, deliveryMethod }) => {
   const formData = new FormData();
 
   formData.append('Title', title);
@@ -24,12 +24,16 @@ export const addMedia = ({ title, description, mediaType, price, uploadFiles }) 
   formData.append('Price', price);
   formData.append('IsActive', 1); // Assuming a default value
   formData.append('CreatedDate', '2023-12-12'); // Assuming a default value
-  formData.append('DemoFilePath', '/');
-  formData.append('DeliveryMethod', 1);
+  formData.append('DeliveryMethod', deliveryMethod);
 
   uploadFiles.forEach(file => {
     formData.append('Files', file);
   });
+
+  demoFile.forEach(file => {
+    formData.append('DemoFile', file);
+  })
+
 
   return axiosInstance().post('/media/add', formData);
 };

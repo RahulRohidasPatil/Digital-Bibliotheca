@@ -33,7 +33,7 @@ function FileUploader({ label, name, multiple = true, formData, setFormData }) {
       updatedFiles.push(file);
     }
     setUploadedFiles(updatedFiles);
-    setFormData({ ...formData, uploadFiles: [...formData.uploadFiles, ...updatedFiles] });
+    setFormData({ ...formData, [name]: [...formData[name], ...updatedFiles] });
   };
 
   const handleRemoveFile = (index) => {

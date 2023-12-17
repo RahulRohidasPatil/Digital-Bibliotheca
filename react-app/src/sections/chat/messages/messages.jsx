@@ -51,13 +51,13 @@ export default function Messages() {
         })
     }
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [pastMessages])
+    // useEffect(() => {
+    //     scrollToBottom();
+    // }, [pastMessages])
 
-    const scrollToBottom = () => {
-        endOfMessagesRef.current?.scrollIntoView({behavior: 'smooth'})
-    }
+    // const scrollToBottom = () => {
+    //     endOfMessagesRef.current?.scrollIntoView({behavior: 'smooth'})
+    // }
 
     const fetchPastMessages = async () => {
         let result = await getBySenderRecipient(user.Id, targetId);
@@ -71,7 +71,7 @@ export default function Messages() {
             setPastMessages((state) => [...state, {sender: data.username, content: data.message}]);
         });
 
-    }, [socket])
+    }, [user.Id])
 
     const sendMessage = async () => {
         if(messageContent == '') return;
@@ -82,14 +82,14 @@ export default function Messages() {
     }
 
     return(
-        <>            
-        <Typography variant="h4" sx={{ mb: 5, ml: 20 }}>
+        <>
+<Typography variant="h4" sx={{ mb: 5, ml: 20 }}>
                 {targetName}
             </Typography>
             
                 <Grid container spacing={4} sx={{
                     height: '40rem',
-                    width: '80rem',
+                    width: '50rem',
                     mx: 20,
                     maxHeight: '40rem',
                 }}>
@@ -120,8 +120,8 @@ export default function Messages() {
         </Container>
                     </Grid>
                 </Grid>
+                <Container />
                 </>
-
     );
 }
 
