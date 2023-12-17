@@ -11,14 +11,16 @@ export default function MyUploadsPage() {
     const { user } = useUser();
 
     useEffect(() => {
-        fetchUserCreatedContent();
-    }, []);
+        const fetchUserCreatedContent = async () => {
+            console.log(user.Id);
+            const response = await getByUserId(user.Id);
+            setMediaItems(response.data.data);
+        };
 
-    const fetchUserCreatedContent = async () => {
-        console.log(user.Id);
-        const response = await getByUserId(user.Id);
-        setMediaItems(response.data.data);
-    };
+        fetchUserCreatedContent();
+    }, [user.Id]);
+
+    
 
     return <>
         <Helmet>
