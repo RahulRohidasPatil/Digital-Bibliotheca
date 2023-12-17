@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -20,7 +21,6 @@ const MenuProps = {
   },
 };
 
-const names = ['photo', 'doc', 'video'];
 
 function getStyles(name, personName, theme) {
   return {
@@ -31,12 +31,14 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function SelectInputWithChip() {
+export default function SelectInputWithChip({ formData, setFormData, label, name, items }) {
   const theme = useTheme();
   const [personName, setPersonName] = useState([]);
 
   const handleChange = (event) => {
-    setPersonName(event.target.value);
+    setPersonName(items[event.target.value - 1]);
+
+    setFormData({...formData, [name]: event.target.value})
   };
 
   const handleDelete = (e, value) => {
@@ -47,31 +49,28 @@ export default function SelectInputWithChip() {
   return (
     <div>
       <FormControl fullWidth>
-        <InputLabel id="demo-multiple-chip-label">Media Type</InputLabel>
+        <InputLabel id="demo-multiple-chip-label">{label}</InputLabel>
         <Select
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
-          multiple
           value={personName}
           onChange={handleChange}
-          input={<OutlinedInput id="select-multiple-chip" label="Media Type" />}
+          input={<OutlinedInput id="select-multiple-chip" label={label} />}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
                 <Chip
-                  key={value}
-                  label={value}
+                  key={selected}
+                  label={selected}
                   clickable
                   onMouseDown={(e) => e.stopPropagation()}
-                  onDelete={(e) => handleDelete(e, value)}
+                  onDelete={(e) => handleDelete(e, selected)}
                 />
-              ))}
             </Box>
           )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
-            <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
+          {items.map((name) => (
+            <MenuItem key={name} value={items.indexOf(name) + 1} style={getStyles(name, personName, theme)}>
               {name}
             </MenuItem>
           ))}
@@ -80,3 +79,4 @@ export default function SelectInputWithChip() {
     </div>
   );
 }
+/* eslint-disable */

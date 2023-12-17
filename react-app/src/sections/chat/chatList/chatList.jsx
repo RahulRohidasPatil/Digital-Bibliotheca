@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { getUserChats } from 'src/apis/chat';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -10,14 +10,15 @@ export default function ChatList() {
 
   const [userChats, setUserChats] = useState([]);
 
-  const loadUserChats = useCallback(async () => {
-    const response = await getUserChats(user.Id);
-    setUserChats(response.data.data);
-  }, [user.Id]);
+    useEffect(() => {
+        const loadUserChats = async () => {
+            const response = await getUserChats(user.Id)
+            setUserChats(response.data.data);
+        };
 
-  useEffect(() => {
-    loadUserChats();
-  }, [loadUserChats]);
+        loadUserChats()
+    }, [user.Id]);
+
 
   return (
     <Container>

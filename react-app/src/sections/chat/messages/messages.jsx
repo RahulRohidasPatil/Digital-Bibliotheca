@@ -34,6 +34,7 @@ const StyledGrid = styled(Grid)(() => ({
 }));
 
 export default function Messages() {
+
   const [pastMessages, setPastMessages] = useState([]);
 
   const [messageContent, setMessageContent] = useState([]);
@@ -171,6 +172,7 @@ export default function Messages() {
       </Grid>
     </Container>
   );
+
 }
 
 /* eslint-disable */

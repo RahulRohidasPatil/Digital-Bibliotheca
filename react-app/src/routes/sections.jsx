@@ -4,6 +4,7 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from 'src/layouts/dashboard';
 import MessagesPage from 'src/pages/Messages';
 import ChatListPage from 'src/pages/chat-list';
+import MyMediaPage from 'src/pages/my-media';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
 export const UploadContentPage = lazy(() => import('src/pages/upload-content'));
@@ -37,7 +38,8 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'my-uploads', element: <MyUploadsPage /> },
         {path: 'chats', element: <ChatListPage />},
-        {path: 'chats/:userId', element: <MessagesPage />}
+        {path: 'chats/:userId', element: <MessagesPage />},
+        {path: 'my-media', element: <MyMediaPage />}
       ],
     },
     {
