@@ -40,7 +40,7 @@ export default function MyMediaPage() {
         router.replace(`/product/${mediaId}`)
     }
 
-    const resolveDeliveryMethod = (deliveryMethod) => deliveryMethod === '2' ? 'Contact' : 'Instant';
+    const resolveDeliveryMethod = (deliveryMethod) => deliveryMethod === 2 ? 'Contact' : 'Instant';
 
     return <>
         <Helmet>
