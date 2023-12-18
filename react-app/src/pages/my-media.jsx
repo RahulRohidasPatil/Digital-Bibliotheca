@@ -73,7 +73,7 @@ export default function MyMediaPage() {
                                 <TableCell align="center">{resolveDeliveryMethod(row.DeliveryMethod)}</TableCell>
                                 <TableCell align="center">
                                     
-                                    {(row.DeliveryMethod === '2') ? (<Icon onClick={downloadFiles(row.MediaId)} icon="iconoir:download" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />) : null}
+                                    {(row.DeliveryMethod === '1') ? (<Icon onClick={downloadFiles(row.MediaId)} icon="iconoir:download" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />) : null}
                                     <Icon onClick={startChat(row.OwnerId)} icon="mdi:chat-outline" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
                                     <Icon onClick={viewMedia(row.MediaId)} icon="clarity:details-line" fontSize={20} style={{ cursor: 'pointer' }} />
                                 </TableCell>
