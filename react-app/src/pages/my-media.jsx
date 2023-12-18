@@ -31,7 +31,7 @@ export default function MyMediaPage() {
     const downloadFiles = (mediaId) => () => {
         const media = mediaItems.filter((item) => item.MediaId === mediaId)[0]
 
-        media.forEach((item, i) => {
+        media.files.forEach((item, i) => {
             window.open(item.FilePath, '_blank', 'noreferrer')
         })
     }
@@ -73,42 +73,12 @@ export default function MyMediaPage() {
                                 <TableCell align="center">{resolveDeliveryMethod(row.DeliveryMethod)}</TableCell>
                                 <TableCell align="center">
                                     
-                                    {(row.DeliveryMethod === '1') ? (<Icon onClick={downloadFiles(row.MediaId)} icon="iconoir:download" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />) : null}
+                                    {(row.DeliveryMethod === 1) ? (<Icon onClick={downloadFiles(row.MediaId)} icon="iconoir:download" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />) : null}
                                     <Icon onClick={startChat(row.OwnerId)} icon="mdi:chat-outline" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
                                     <Icon onClick={viewMedia(row.MediaId)} icon="clarity:details-line" fontSize={20} style={{ cursor: 'pointer' }} />
                                 </TableCell>
                             </TableRow>
                         ))}
-                        {/* <TableRow
-                                key='1'
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    Test1
-                                </TableCell>
-                                <TableCell align="center">{Date.now()}</TableCell>
-                                <TableCell align="center">{resolveDeliveryMethod('1')}</TableCell>
-                                <TableCell align="center">
-                                    <Icon icon="iconoir:download" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
-                                    <Icon onClick={startChat('2')} icon="mdi:chat-outline" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
-                                    <Icon icon="clarity:details-line" fontSize={20} style={{ cursor: 'pointer' }} />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow
-                                key='2'
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    test2
-                                </TableCell>
-                                <TableCell align="center">{Date.now()}</TableCell>
-                                <TableCell align="center">{resolveDeliveryMethod('2')}</TableCell>
-                                <TableCell align="center">
-                                    {null}
-                                    <Icon onClick={startChat('2')} icon="mdi:chat-outline" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
-                                    <Icon icon="clarity:details-line" fontSize={20} style={{ cursor: 'pointer' }} />
-                                </TableCell>
-                            </TableRow> */}
                     </TableBody>
                 </Table>
             </TableContainer>
