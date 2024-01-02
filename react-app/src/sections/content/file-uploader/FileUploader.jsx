@@ -9,7 +9,7 @@ FileUploader.propTypes = {
   name: PropTypes.string,
   multiple: PropTypes.bool,
   formData: PropTypes.object,
-  setFormData: PropTypes.func
+  setFormData: PropTypes.func,
 };
 
 function FileUploader({ label, name, multiple = true, formData, setFormData }) {
@@ -33,13 +33,16 @@ function FileUploader({ label, name, multiple = true, formData, setFormData }) {
       updatedFiles.push(file);
     }
     setUploadedFiles(updatedFiles);
-    setFormData({ ...formData, [name]: [...formData[name], ...updatedFiles] });
+    const formDataValue = [...updatedFiles];
+    setFormData({ ...formData, [name]: formDataValue });
   };
 
   const handleRemoveFile = (index) => {
     const updatedFiles = [...uploadedFiles];
     updatedFiles.splice(index, 1);
     setUploadedFiles(updatedFiles);
+    const formDataValue = [...updatedFiles];
+    setFormData({ ...formData, [name]: formDataValue });
   };
 
   const openFileDialog = () => {
