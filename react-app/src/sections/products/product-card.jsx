@@ -33,7 +33,7 @@ export default function ShopProductCard({ product }) {
     <Box
       component="img"
       alt={product.Title}
-      src={product.DemoFilePath}
+      src={product && product.DemoFilePath ? product.DemoFilePath : '/assets/images/no-image.jpg'}
       sx={{
         top: 0,
         width: 1,

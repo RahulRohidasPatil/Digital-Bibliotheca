@@ -1,17 +1,20 @@
 var connection = require("../../utils/connection");
-const formidable = require('express-formidable');
+const formidable = require("express-formidable");
 
-const { applyFiltersOnQuery, applySortOptionOnQuery } = require("../../utils/utils");
+const {
+  applyFiltersOnQuery,
+  applySortOptionOnQuery,
+} = require("../../utils/utils");
 
-const fileService = require('../file/file')
+const fileService = require("../file/file");
 
 const media = {
   getAllMedia: async function (req, res) {
     const sortOption = req.query.sortOption;
-    
+
     try {
       let query = "SELECT * from media WHERE isActive = 1 AND isApproved=1";
-      
+
       if (req.query.filters) {
         const filters = JSON.parse(req.query.filters);
         query = applyFiltersOnQuery(query, filters);
@@ -20,15 +23,20 @@ const media = {
 
       let response = await connection.query(query);
 
-      let toReturn = [];
+      await Promise.all(
+        response.map(async (media) => {
+          let demoFilePathObj = await fileService.getDemoFile(media.Id);
+          if (demoFilePathObj && Object.keys(demoFilePathObj).length > 0) {
+            media.DemoFilePath = demoFilePathObj.FilePath;
+          } else {
+            media.DemoFilePath = null;
+          }
 
-      toReturn = await Promise.all(response.map(async (media) => {
-        media.DemoFilePath = (await fileService.getDemoFile(media.Id)).FilePath;
+          return media;
+        })
+      );
 
-        return media;
-      }));
-
-      res.status(200).send({ data: toReturn });
+      res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
       res.status(500).send({ message: "Internal Server Error" });
@@ -36,12 +44,16 @@ const media = {
   },
   getByID: async function (req, res) {
     try {
-      let query = "SELECT * from media WHERE `Id` = ? AND isActive = 1 AND isApproved=1";
-      let response = await connection.query(query,[req.params.id]);
+      let query =
+        "SELECT * from media WHERE `Id` = ? AND isActive = 1 AND isApproved=1";
+      let response = await connection.query(query, [req.params.id]);
 
-      response[0].DemoFilePath = (await fileService.getDemoFile(req.params.id)).FilePath
-
-      console.log(response[0].DemoFilePath)
+      let demoFilePathObj = await fileService.getDemoFile(req.params.id);
+      if (demoFilePathObj && Object.keys(demoFilePathObj).length > 0) {
+        response[0].DemoFilePath = demoFilePathObj.FilePath;
+      } else {
+        response[0].DemoFilePath = null;
+      }
 
       res.status(200).send({ data: response });
     } catch (e) {
@@ -50,16 +62,16 @@ const media = {
     }
   },
   addMedia: async function (req, res) {
-    formidable({multiples:true})(req,res,async (err)=>{
-      if(err){
-        console.log(err)
+    formidable({ multiples: true })(req, res, async (err) => {
+      if (err) {
+        console.log(err);
         res.status(500).send({ message: "Internal Server Error" });
       }
       let insertId = null;
-      try {    
+      try {
         //console.log(req.files.FilePath.length,"length");
-        
-        //var fileUrl = await 
+
+        //var fileUrl = await
         let query =
           "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
         const values = [
@@ -71,29 +83,30 @@ const media = {
           req.fields.Price,
           parseInt(req.fields.IsActive || 0),
           req.fields.CreatedDate,
-          
+
           req.fields.DemoFilePath,
           req.fields.DeliveryMethod,
         ];
         let response = await connection.query(query, [values]);
-        insertId = response.insertId
+        insertId = response.insertId;
         //Main files
-        if (!Array.isArray(req.files.Files)) req.files.Files = [req.files.Files];
-        await fileService.uploadFile(req.files.Files,insertId);
+        if (!Array.isArray(req.files.Files))
+          req.files.Files = [req.files.Files];
+        await fileService.uploadFile(req.files.Files, insertId);
         //Demo File
-        if (!Array.isArray(req.files.DemoFile)) req.files.DemoFile = [req.files.DemoFile];
+        if (!Array.isArray(req.files.DemoFile))
+          req.files.DemoFile = [req.files.DemoFile];
         await fileService.uploadFile(req.files.DemoFile, insertId, true);
         res.status(200).send({ data: response });
       } catch (e) {
         console.log("Error", e);
         //Incase the media gets added but the upload files function throws an error the below query removes the empty media entry
-        if(insertId){
-          "DELETE FROM media WHERE Id = insertId";
+        if (insertId) {
+          ("DELETE FROM media WHERE Id = insertId");
         }
         res.status(500).send({ message: "Internal Server Error" });
       }
-    })
-    
+    });
   },
   updateMedia: async function (req, res) {
     try {
@@ -123,7 +136,7 @@ const media = {
   deleteMedia: async function (req, res) {
     try {
       let query = "update media set `IsActive` = 0 WHERE `Id` = ?";
-      let response = await connection.query(query,[req.params.id]);
+      let response = await connection.query(query, [req.params.id]);
       res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
@@ -145,25 +158,38 @@ const media = {
 
       let values = [`%${searchTerm}%`, `%${searchTerm}%`];
       let response = await connection.query(query, values);
+
+      await Promise.all(
+        response.map(async (media) => {
+          let demoFilePathObj = await fileService.getDemoFile(media.Id);
+          if (demoFilePathObj && Object.keys(demoFilePathObj).length > 0) {
+            media.DemoFilePath = demoFilePathObj.FilePath;
+          } else {
+            media.DemoFilePath = null;
+          }
+
+          return media;
+        })
+      );
+
       res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
-  getByUserId: async function (req, res){
+  getByUserId: async function (req, res) {
     try {
-      let query = "SELECT * from media WHERE `OwnerId` = ? AND isActive = 1 AND isApproved=1";
-      let response = await connection.query(query,[req.params.ownerId]);
+      let query =
+        "SELECT * from media WHERE `OwnerId` = ? AND isActive = 1 AND isApproved=1";
+      let response = await connection.query(query, [req.params.ownerId]);
 
       res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
       res.status(500).send({ message: "Internal Server Error" });
     }
-  }
+  },
 };
-
-
 
 module.exports = media;
