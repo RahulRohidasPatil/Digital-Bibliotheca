@@ -1,10 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-
+import Alert from '@mui/material/Alert';
 import { TextField, Button, Grid, Container } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Snackbar from '@mui/material/Snackbar';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import { addMedia } from 'src/apis/media';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import watermark from 'watermarkjs';
+
+import Iconify from 'src/components/iconify';
 
 import SelectInputWithChip from './Select-Input';
 import FileUploader from './file-uploader/FileUploader';
@@ -27,6 +36,12 @@ const UploadContent = () => {
   const [formData, setFormData] = useState(defaultFormData);
   const [toUpload, setToUpload] = useState(false);
   const didMount = useRef(false);
+  const [snackbar, showSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(false);
+  const [snackBarSeverity, setSnackBarSeverity] = useState('success');
+  const [successDialog, setSuccessDialog] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
@@ -52,11 +67,28 @@ const UploadContent = () => {
     return target;
   };
 
+  const handleShowSnackbar = (text = '', severity = 'error', show = false) => {
+    setSnackbarMessage(text);
+    setSnackBarSeverity(severity);
+    showSnackbar(show);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
 
-    if (formData && formData.demoFile && formData.demoFile.length) {
+    if (formData.mediaType === 0) {
+      handleShowSnackbar('Please Select Media Type', 'error', true);
+    } else if (formData.deliveryMethod === 0) {
+      handleShowSnackbar('Please Select Delivery Method', 'error', true);
+    } else if (formData && formData.demoFile && formData.demoFile.length === 0) {
+      handleShowSnackbar('Please Select a Demo File', 'error', true);
+    } else if (formData && formData.uploadFiles && formData.uploadFiles.length === 0) {
+      handleShowSnackbar('Please Select Files', 'error', true);
+    }
+
+    if (formData.mediaType === 1) {
+      setLoading(true);
+
       const img = formData.demoFile[0];
       await watermark([img])
         .blob(rotate)
@@ -64,15 +96,31 @@ const UploadContent = () => {
           await setFormData({ ...formData, demoFile: [waterMarkedImage] });
           await setToUpload(true);
         });
+    } else {
+      uploadMedia();
     }
   };
 
   const uploadMedia = () => {
-    addMedia(formData).then((value) => {
-      console.log(value);
-      resetForm();
-      setToUpload(false);
-    });
+    setLoading(true);
+
+    addMedia(formData)
+      .then((response) => {
+        console.log(response.data);
+        if (response.status === 200) {
+          setSuccessDialog(true);
+          resetForm();
+          setToUpload(false);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log('Error Uploading Media -> ', error);
+        setSnackbarMessage(error.response.data.message);
+        setSnackBarSeverity('error');
+        showSnackbar(true);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -88,7 +136,8 @@ const UploadContent = () => {
   }, [toUpload]);
 
   const resetForm = () => {
-    // setFormData(defaultFormData);
+    setFormData(defaultFormData);
+    setResetKey(resetKey + 1);
   };
 
   return (
@@ -98,6 +147,7 @@ const UploadContent = () => {
           <Grid item xs={12} sm={6}>
             <div>
               <TextField
+                key={resetKey}
                 label="Title"
                 type="text"
                 name="title"
@@ -105,11 +155,13 @@ const UploadContent = () => {
                 onChange={handleInputChange}
                 fullWidth
                 margin="none"
+                required
               />
             </div>
 
             <div>
               <TextField
+                key={resetKey}
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
@@ -120,11 +172,13 @@ const UploadContent = () => {
                 fullWidth
                 placeholder="Write description"
                 margin="normal"
+                required
               />
             </div>
 
             <div>
               <TextField
+                key={resetKey}
                 label="Price"
                 type="number"
                 name="price"
@@ -133,6 +187,7 @@ const UploadContent = () => {
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
+                required
               />
             </div>
             <div
@@ -141,6 +196,7 @@ const UploadContent = () => {
               }}
             >
               <SelectInputWithChip
+                key={resetKey}
                 formData={formData}
                 setFormData={setFormData}
                 label="Media Type"
@@ -154,6 +210,7 @@ const UploadContent = () => {
               }}
             >
               <SelectInputWithChip
+                key={resetKey}
                 sx={{ marginTop: '10' }}
                 formData={formData}
                 setFormData={setFormData}
@@ -171,7 +228,8 @@ const UploadContent = () => {
               }}
             >
               <FileUploader
-                label="Demo File (optional)"
+                key={resetKey}
+                label="Demo File *"
                 formData={formData}
                 setFormData={setFormData}
                 name="demoFile"
@@ -180,7 +238,8 @@ const UploadContent = () => {
             </div>
             <div>
               <FileUploader
-                label="File"
+                key={resetKey}
+                label="File *"
                 name="uploadFiles"
                 formData={formData}
                 setFormData={setFormData}
@@ -198,16 +257,66 @@ const UploadContent = () => {
             marginTop: '16px',
           }}
         >
-          <Button
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            loading={loading}
+            style={{ marginTop: 16, padding: '10px 32px' }}
+          >
+            Submit
+          </LoadingButton>
+          {/* <Button
             type="submit"
             variant="contained"
             color="primary"
             style={{ marginTop: 16, padding: '10px 32px' }}
           >
             Submit
-          </Button>
+          </Button> */}
         </Grid>
       </form>
+
+      <Dialog
+        open={successDialog}
+        aria-labelledby="success-dialog-title"
+        aria-describedby="success-dialog-description"
+        maxWidth="sm"
+        disableEscapeKeyDown
+      >
+        <DialogTitle id="success-dialog-title">
+          Upload Successful &nbsp;
+          <Iconify icon="noto-v1:party-popper" />
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="success-dialog-description">
+            Your Content has been uploaded and sent for Approval. Once Approved it will be visible
+            to all the users. Do you want to upload something else?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button color="success" onClick={() => setSuccessDialog(false)}>
+            Yes
+          </Button>
+          <Button autoFocus variant="outlined" color="primary" href="/my-uploads">
+            That&apos;s it
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={snackbar}
+        autoHideDuration={5000}
+        onClose={() => showSnackbar(false)}
+        message={snackbarMessage}
+      >
+        <Alert
+          onClose={() => showSnackbar(false)}
+          severity={snackBarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
