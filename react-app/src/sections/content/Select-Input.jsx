@@ -21,7 +21,6 @@ const MenuProps = {
   },
 };
 
-
 function getStyles(name, personName, theme) {
   return {
     fontWeight:
@@ -38,12 +37,14 @@ export default function SelectInputWithChip({ formData, setFormData, label, name
   const handleChange = (event) => {
     setPersonName(items[event.target.value - 1]);
 
-    setFormData({...formData, [name]: event.target.value})
+    setFormData({ ...formData, [name]: event.target.value });
   };
 
   const handleDelete = (e, value) => {
     e.preventDefault();
-    setPersonName((current) => _without(current, value) || []);
+    let values = (current) => _without(current, value) || [];
+    setPersonName(values);
+    setFormData({ ...formData, [name]: values });
   };
 
   return (
@@ -58,19 +59,23 @@ export default function SelectInputWithChip({ formData, setFormData, label, name
           input={<OutlinedInput id="select-multiple-chip" label={label} />}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                <Chip
-                  key={selected}
-                  label={selected}
-                  clickable
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onDelete={(e) => handleDelete(e, selected)}
-                />
+              <Chip
+                key={selected}
+                label={selected}
+                clickable
+                onMouseDown={(e) => e.stopPropagation()}
+                onDelete={(e) => handleDelete(e, selected)}
+              />
             </Box>
           )}
           MenuProps={MenuProps}
         >
           {items.map((name) => (
-            <MenuItem key={name} value={items.indexOf(name) + 1} style={getStyles(name, personName, theme)}>
+            <MenuItem
+              key={name}
+              value={items.indexOf(name) + 1}
+              style={getStyles(name, personName, theme)}
+            >
               {name}
             </MenuItem>
           ))}

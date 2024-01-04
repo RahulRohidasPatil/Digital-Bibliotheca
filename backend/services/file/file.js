@@ -28,7 +28,7 @@ const fileService = {
         return console.error("No file uploaded.");
       }
       const uploadPromises = files.map(async (file) => {
-        const fileName = `${randomUUID()}_${file.name}`;
+        const fileName = `${randomUUID()}_${file?.name}`;
         const fileBuffer = await fsPromises.readFile(file.path);
 
         const storageRef = ref(storage, `${fileName}`);

@@ -3699,6 +3699,11 @@ watchpack@^2.4.0:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
 
+watermarkjs@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/watermarkjs/-/watermarkjs-2.1.1.tgz"
+  integrity sha512-HDabpga8Fz5d61Z7gBkKO2cDsfViAU/mO5qIoWmDX92wJZLb7Dv4L+CwoHAqS4XkqWcYVGy/AF035BD1EN3v/g==
+
 webpack-sources@^3.2.3:
   version "3.2.3"
   resolved "https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.2.3.tgz"

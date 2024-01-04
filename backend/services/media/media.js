@@ -97,7 +97,16 @@ const media = {
         if (!Array.isArray(req.files.DemoFile))
           req.files.DemoFile = [req.files.DemoFile];
         await fileService.uploadFile(req.files.DemoFile, insertId, true);
-        res.status(200).send({ data: response });
+
+        if (insertId) {
+          res
+            .status(200)
+            .send({ message: "Upload Successful", mediaId: insertId });
+        } else {
+          res
+            .status(500)
+            .send({ message: "Error Uploading Media please try again!!" });
+        }
       } catch (e) {
         console.log("Error", e);
         //Incase the media gets added but the upload files function throws an error the below query removes the empty media entry

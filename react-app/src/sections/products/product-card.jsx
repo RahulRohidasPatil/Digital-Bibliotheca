@@ -79,7 +79,7 @@ export default function ShopProductCard({ product }) {
         >
           {product.Title}
         </Link>
-        <Typography sx={{ margin: '0 !important' }} variant="caption">
+        <Typography noWrap sx={{ margin: '0 !important' }} variant="caption">
           {product.Description}
         </Typography>
         <Stack
