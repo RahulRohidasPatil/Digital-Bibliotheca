@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
 import { TextField, Button, Grid, Container } from '@mui/material';
+
 import { addMedia } from 'src/apis/media';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import watermark from 'watermarkjs';
+
 import SelectInputWithChip from './Select-Input';
 import FileUploader from './file-uploader/FileUploader';
 
@@ -8,16 +13,20 @@ const mediaTypeNames = ['Image', 'Video', 'Audio', 'Document', 'Link'];
 
 const deliveryMethods = ['Instant', 'Contact'];
 
+const defaultFormData = {
+  title: '',
+  description: '',
+  mediaType: 0,
+  price: 0,
+  deliveryMethod: 0,
+  demoFile: [],
+  uploadFiles: [],
+};
+
 const UploadContent = () => {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    mediaType: 0,
-    price: 0,
-    deliveryMethod: 0,
-    demoFile: [],
-    uploadFiles: [],
-  });
+  const [formData, setFormData] = useState(defaultFormData);
+  const [toUpload, setToUpload] = useState(false);
+  const didMount = useRef(false);
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
@@ -27,10 +36,59 @@ const UploadContent = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const rotate = (target) => {
+    const context = target.getContext('2d');
+    const text = 'Fulda Hochschule Digital Bibliotheca';
+    // const metrics = context.measureText(text);
+    const x = target.width / 4;
+    const y = target.height / 1.1;
+
+    context.translate(x, y);
+    context.globalAlpha = 0.8;
+    context.fillStyle = '#fff';
+    context.font = '52px Arial';
+    context.rotate((-45 * Math.PI) / 180);
+    context.fillText(text, 0, 0);
+    return target;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
-    addMedia(formData).then((value) => e.target.reset());
+
+    if (formData && formData.demoFile && formData.demoFile.length) {
+      const img = formData.demoFile[0];
+      await watermark([img])
+        .blob(rotate)
+        .then(async (waterMarkedImage) => {
+          await setFormData({ ...formData, demoFile: [waterMarkedImage] });
+          await setToUpload(true);
+        });
+    }
+  };
+
+  const uploadMedia = () => {
+    addMedia(formData).then((value) => {
+      console.log(value);
+      resetForm();
+      setToUpload(false);
+    });
+  };
+
+  useEffect(() => {
+    // Return early, if this is the first render:
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
+    if (toUpload) {
+      uploadMedia();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toUpload]);
+
+  const resetForm = () => {
+    // setFormData(defaultFormData);
   };
 
   return (
@@ -53,6 +111,7 @@ const UploadContent = () => {
             <div>
               <TextField
                 name="description"
+                value={formData.description}
                 onChange={handleInputChange}
                 id="outlined-multiline-static"
                 label="Description"
@@ -69,6 +128,7 @@ const UploadContent = () => {
                 label="Price"
                 type="number"
                 name="price"
+                value={formData.price}
                 placeholder="Enter Price"
                 onChange={handleInputChange}
                 fullWidth
