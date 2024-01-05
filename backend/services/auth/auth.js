@@ -11,7 +11,7 @@ const auth = {
     try {
       const hashedPassword = bcrypt.hashSync(req.body.password, salt);
       let query =
-        "INSERT into user(`firstName`,`familyName`,`emailAddress`,`password`,`phoneNumber`,`DateOfBirth`,`role`,`CreatedDate`) VALUES (?, ?, ?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'), ?, CURRENT_DATE())";
+        "INSERT into user(`firstName`,`familyName`,`emailAddress`,`password`,`phoneNumber`,`DateOfBirth`,`role`,`CreatedDate`, `Status`) VALUES (?, ?, ?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'), ?, CURRENT_DATE(), ?)";
       const values = [
         (firstName = req.body.firstName),
         (familyName = req.body.lastName),
@@ -19,7 +19,8 @@ const auth = {
         (password = hashedPassword),
         (phoneNumber = req.body.phone),
         (DateOfBirth = req.body.DateOfBirth),
-        (role = req.body.role),
+        (role = 1),
+        (Status = 1)
       ];
       let response = await connection.query(query, values);
       console.log(response);
@@ -64,6 +65,12 @@ const auth = {
 
       // Compare the provided password with the hashed password from the database
       let user = results[0];
+
+      //Check if the user is not banned
+      if(user.Status === 2){
+        return res.status(403).json({message: "Sorry, You are Banned from the platform"});
+      }
+
       const hashedPassword = user.Password;
       bcrypt.compare(password, hashedPassword, (bcryptErr, match) => {
         if (bcryptErr) {
