@@ -29,6 +29,16 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const upLg = useResponsive('up', 'lg');
 
+  const canShowMenuItem = (item) => {
+    if(item.isAdminPath){
+      if(user.Role !== 2){
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
   useEffect(() => {
     if (openNav) {
       onCloseNav();
@@ -73,9 +83,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-      {navConfig.map((item) => (
-        <NavItem key={item.title} item={item} />
-      ))}
+      {navConfig.map((item) => (canShowMenuItem(item) ? (<NavItem key={item.title} item={item} />) : null))}
     </Stack>
   );
 

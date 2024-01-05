@@ -44,6 +44,12 @@ const navConfig = [
     path: '/chats',
     icon: <Iconify icon="mdi:chat-outline" />,
   },
+  {
+    title: 'User Management',
+    path: '/user-management',
+    icon: <Iconify icon="ri:admin-line" />,
+    isAdminPath: true
+  }
 ];
 
 export default navConfig;
