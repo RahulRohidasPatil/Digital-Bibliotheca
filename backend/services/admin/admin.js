@@ -101,7 +101,7 @@ unbanUser: async function (req, res) {
   }
 },
 };
-module.exports = admin;
+module.exports = adminService;
 
 
 
