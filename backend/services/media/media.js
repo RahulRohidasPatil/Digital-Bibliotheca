@@ -190,7 +190,7 @@ const media = {
   getByUserId: async function (req, res) {
     try {
       let query =
-        "SELECT * from media WHERE `OwnerId` = ? AND isActive = 1 AND isApproved=1";
+        "SELECT * from media WHERE `OwnerId` = ?";
       let response = await connection.query(query, [req.params.ownerId]);
 
       res.status(200).send({ data: response });
