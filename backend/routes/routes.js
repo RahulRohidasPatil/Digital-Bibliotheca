@@ -20,7 +20,33 @@ app.use("/chat", middleware, chatRoutes);
 app.use("/message",middleware, messageRoutes);
 app.use("/user", middleware, userRoutes);
 app.use("/purchase", middleware, purchaseRoutes);
-app.use("/admin", middleware, adminRoutes);
+app.use("/admin", adminAuth, adminRoutes);
+
+function adminAuth(req, res, next) {
+  const { authorization } = req.headers;
+  if (!authorization) {
+    return res.status(403).send({ message: "Unauthorized: No Token Found" });
+  }
+  const token = authorization.replace("Bearer ", "");
+  jwt.verify(token, JWT_SECRET, async (err, payload) => {
+    if (err) {
+      console.log(err);
+      return res.status(403).send({ message: "Could not verify token" });
+    }
+
+    req.user = payload;
+    let query = "Select Id from user WHERE EmailAddress = ?";
+    let userResponse = await connection.query(query, [payload.EmailAddress]);
+    console.log(req.user.Role)
+    if (userResponse && userResponse.length && req.user.Role === 2) {
+      next();
+    } else {
+      return res
+        .status(403)
+        .send({ message: "Unauthorized access to Administrator resources." });
+    }
+  });
+}
 
 function middleware(req, res, next) {
   const { authorization } = req.headers;
@@ -37,6 +63,7 @@ function middleware(req, res, next) {
     req.user = payload;
     let query = "Select Id from user WHERE EmailAddress = ?";
     let userResponse = await connection.query(query, [payload.EmailAddress]);
+    console.log(req.user.Role)
     if (userResponse && userResponse.length) {
       next();
     } else {
