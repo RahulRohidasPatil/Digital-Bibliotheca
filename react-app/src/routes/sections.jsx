@@ -5,6 +5,7 @@ import DashboardLayout from 'src/layouts/dashboard';
 import MessagesPage from 'src/pages/Messages';
 import ChatListPage from 'src/pages/chat-list';
 import MyMediaPage from 'src/pages/my-media';
+import AdminApprovalDashboard from 'src/pages/admin-approval-dashboard';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
 export const UploadContentPage = lazy(() => import('src/pages/upload-content'));
@@ -39,7 +40,8 @@ export default function Router() {
         { path: 'my-uploads', element: <MyUploadsPage /> },
         {path: 'chats', element: <ChatListPage />},
         {path: 'chats/:userId', element: <MessagesPage />},
-        {path: 'my-media', element: <MyMediaPage />}
+        {path: 'my-media', element: <MyMediaPage />},
+        {path: 'admin-approval-dashboard', element: <AdminApprovalDashboard />}
       ],
     },
     {

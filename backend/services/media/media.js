@@ -45,7 +45,7 @@ const media = {
   getByID: async function (req, res) {
     try {
       let query =
-        "SELECT * from media WHERE `Id` = ? AND isActive = 1 AND isApproved=1";
+        "SELECT * from media WHERE `Id` = ? AND isActive = 1  ";
       let response = await connection.query(query, [req.params.id]);
 
       let demoFilePathObj = await fileService.getDemoFile(req.params.id);
@@ -79,7 +79,7 @@ const media = {
           req.fields.Title,
           req.fields.Description,
           req.fields.MediaType,
-          parseInt(req.fields.IsApproved || 0),
+          req.fields.IsApproved == 0,
           req.fields.Price,
           parseInt(req.fields.IsActive || 0),
           req.fields.CreatedDate,

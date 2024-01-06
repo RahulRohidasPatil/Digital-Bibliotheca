@@ -44,6 +44,11 @@ const navConfig = [
     path: '/chats',
     icon: <Iconify icon="mdi:chat-outline" />,
   },
+  {
+    title: 'Admin Approval Dashboard',
+    path: '/admin-approval-dashboard',
+    icon: <Iconify icon="mdi:chat-outline" />,
+  },
 ];
 
 export default navConfig;
