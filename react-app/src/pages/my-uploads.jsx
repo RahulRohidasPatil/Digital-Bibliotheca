@@ -54,7 +54,7 @@ export default function MyUploadsPage() {
                                 <TableCell align="center">{row.CreatedDate.split('T')[0]}</TableCell>
                                 <TableCell align="center">{row.Price}</TableCell>
                                 <TableCell align="center">{row.DeliveryMethod}</TableCell>
-                                <TableCell align="center">{row.IsApproved.data[0] === 1 ? 'Approved' : 'Pending'}</TableCell>
+                                <TableCell align="center">{row.IsApproved === 1 ? 'Approved' : 'Pending'}</TableCell>
                                 <TableCell align="center">
                                     <Icon icon="mdi-light:pencil" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
                                     <Icon icon="mdi-light:delete" fontSize={20} style={{ cursor: 'pointer' }} />

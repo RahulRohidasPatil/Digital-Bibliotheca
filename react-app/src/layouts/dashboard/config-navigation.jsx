@@ -45,6 +45,12 @@ const navConfig = [
     icon: <Iconify icon="mdi:chat-outline" />,
   },
   {
+    title: 'Admin Approval Dashboard',
+    path: '/admin-approval-dashboard',
+    icon: <Iconify icon="fluent-mdl2:document-approval" />,
+    isAdminPath: true
+  },
+  {
     title: 'User Management',
     path: '/user-management',
     icon: <Iconify icon="ri:admin-line" />,

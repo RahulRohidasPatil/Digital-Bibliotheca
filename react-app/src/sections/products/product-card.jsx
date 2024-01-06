@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
@@ -12,7 +12,7 @@ import Label from 'src/components/label';
 
 // ----------------------------------------------------------------------
 
-export default function ShopProductCard({ product }) {
+export default function ShopProductCard({ product,adminAction }) {
   const renderStatus = (
     <Label
       variant="filled"
@@ -92,10 +92,12 @@ export default function ShopProductCard({ product }) {
           {renderPrice}
         </Stack>
       </Stack>
+      {adminAction || null}
     </Card>
   );
 }
 
 ShopProductCard.propTypes = {
   product: PropTypes.object,
+  adminAction: PropTypes.elementType
 };

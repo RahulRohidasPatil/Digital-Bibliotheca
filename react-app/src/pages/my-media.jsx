@@ -19,6 +19,7 @@ export default function MyMediaPage() {
             setMediaItems(response.data.data);
         };
 
+        
         fetchPurchasedMedia();
     }, [user.Id]);
 

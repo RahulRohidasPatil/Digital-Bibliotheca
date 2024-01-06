@@ -20,7 +20,7 @@ app.use("/chat", middleware, chatRoutes);
 app.use("/message",middleware, messageRoutes);
 app.use("/user", middleware, userRoutes);
 app.use("/purchase", middleware, purchaseRoutes);
-app.use("/admin/", adminAuth, adminRoutes);
+app.use("/admin", adminAuth, adminRoutes);
 
 function adminAuth(req, res, next) {
   const { authorization } = req.headers;
