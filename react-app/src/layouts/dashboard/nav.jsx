@@ -31,7 +31,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const canShowMenuItem = (item) => {
     if(item.isAdminPath){
-      if(user.Role !== 2){
+      if(user?.Role !== 2){
         return false;
       }
     }
