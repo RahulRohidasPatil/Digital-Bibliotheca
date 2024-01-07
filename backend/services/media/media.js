@@ -45,15 +45,13 @@ const media = {
   getByID: async function (req, res) {
     try {
       let query =
-        "SELECT * from media WHERE `Id` = ? AND isActive = 1  ";
+        "SELECT * from media WHERE `Id` = ? ";
       let response = await connection.query(query, [req.params.id]);
 
       let demoFilePathObj = await fileService.getDemoFile(req.params.id);
       if (demoFilePathObj && Object.keys(demoFilePathObj).length > 0) {
         response[0].DemoFilePath = demoFilePathObj.FilePath;
-      } else {
-        response[0].DemoFilePath = null;
-      }
+      } 
 
       res.status(200).send({ data: response });
     } catch (e) {
@@ -69,9 +67,6 @@ const media = {
       }
       let insertId = null;
       try {
-        //console.log(req.files.FilePath.length,"length");
-
-        //var fileUrl = await
         let query =
           "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
         const values = [
@@ -120,18 +115,11 @@ const media = {
   updateMedia: async function (req, res) {
     try {
       let query =
-        "update media set `Title` = ?, `Description` = ?, `MediaType` = ?, `IsApproved` = ?, `Price` = ?, `IsActive` = ?, `CreatedDate` = ?, `FilePath` = ?, `DemoFilePath` = ?, `DeliveryMethod` = ? WHERE `Id` = ?";
+        "update media set `Title` = ?, `Description` = ?,  `Price` = ? WHERE `Id` = ?";
       const values = [
         req.body.Title,
         req.body.Description,
-        req.body.MediaType,
-        req.body.IsApproved,
         req.body.Price,
-        req.body.IsActive,
-        req.body.CreatedDate,
-        req.body.FilePath,
-        req.body.DemoFilePath,
-        req.body.DeliveryMethod,
         req.params.id,
       ];
       console.log(req.body);
@@ -149,6 +137,38 @@ const media = {
       res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  },
+  reactivateMedia: async function (req, res) {
+    try {
+      let query = "update media set `IsActive` = 1 WHERE `Id` = ?";
+      let response = await connection.query(query, [req.params.id]);
+      res.status(200).send({ data: response });
+    } catch (e) {
+      console.log("Error", e);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  },
+  isOwner: async function (req, res){
+    try{
+      let query = "SELECT * FROM media WHERE Id = ? AND OwnerId = ?";
+      let values = [`${req.query.id}`, `${req.query.ownerId}`];
+      let response = await connection.query(query, values);
+
+      res.status(200).send({data: response.length > 0});
+    } catch(e){
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  },
+  purchased: async function(req, res){
+    try{
+      let query = "SELECT * FROM purchase WHERE MediaId = ? AND CustomerId = ?";
+      let values = [`${req.query.id}`, `${req.query.customerId}`];
+      
+      let response = await connection.query(query, values);
+      res.status(200).send({data: response.length > 0});
+    } catch(e){
       res.status(500).send({ message: "Internal Server Error" });
     }
   },

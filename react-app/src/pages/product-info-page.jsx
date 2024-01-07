@@ -2,9 +2,9 @@ import { Box, Button, Card, Chip, Container, Grid, Rating, Typography } from '@m
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
-import { getByID } from 'src/apis/media';
 import { useUser } from 'src/hooks/use-user';
 import { purchaseMedia } from 'src/apis/purchase';
+import { isOwner, hasPurchased, getByID } from 'src/apis/media';
 
 export default function ProductInfoPage() {
   const { id } = useParams();
@@ -15,7 +15,16 @@ export default function ProductInfoPage() {
 
   useEffect(() => {
     getByID(id).then((response) => setproduct(response.data.data[0]));
-  }, [id]);
+
+    const shouldShowPurchaseButton = async () => {
+      const owner = await isOwner(id, user.Id);
+      const purchased = await hasPurchased(id, user.Id);
+      setShowPurchasebutton(!(owner.data.data || purchased.data.data));
+    }
+
+    shouldShowPurchaseButton();
+
+  }, [id, user.Id]);
 
   const setContentTypeLabel = (type) => {
     switch (type) {
@@ -122,13 +131,15 @@ export default function ProductInfoPage() {
             >
               Chat with Creator
             </Button>
-            <Button
-              sx={{ marginTop: 1, marginLeft: 2, display: showPurchaseButton ? '' : 'none' }}
+            {showPurchaseButton ? <Button
+              sx={{ marginTop: 1, marginLeft: 2}}
               variant="outlined"
               onClick={buyMedia}
             >
               Purchase
-            </Button>
+            </Button> :
+            null}
+            
           </Grid>
         </Grid>
       </Container>

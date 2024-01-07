@@ -2,13 +2,16 @@ import { Icon } from '@iconify/react';
 import { Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { getByUserId } from 'src/apis/media';
+import { getByUserId, deleteMedia, reactivateMedia } from 'src/apis/media';
 import { useUser } from 'src/hooks/use-user';
+import { useRouter } from 'src/routes/hooks';
 
 export default function MyUploadsPage() {
     const [mediaItems, setMediaItems] = useState([]);
 
     const { user } = useUser();
+
+    const router = useRouter();
 
     useEffect(() => {
         const fetchUserCreatedContent = async () => {
@@ -20,9 +23,22 @@ export default function MyUploadsPage() {
         fetchUserCreatedContent();
     }, [user.Id]);
 
-    
+    const handleDelete = (id) => () =>{ 
+        deleteMedia(id);
+        router.reload();
+    }
 
-    return <>
+    const handleRestore = (id) => () => {
+        reactivateMedia(id);
+        router.reload();
+    }
+
+    const redirectToEdit = (id) => () => {
+        router.replace(`/product/edit/${id}`);
+    }
+
+    return(
+     <>
         <Helmet>
             <title>My Uploads | Minimal UI</title>
         </Helmet>
@@ -56,8 +72,9 @@ export default function MyUploadsPage() {
                                 <TableCell align="center">{row.DeliveryMethod}</TableCell>
                                 <TableCell align="center">{row.IsApproved === 1 ? 'Approved' : 'Pending'}</TableCell>
                                 <TableCell align="center">
-                                    <Icon icon="mdi-light:pencil" fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
-                                    <Icon icon="mdi-light:delete" fontSize={20} style={{ cursor: 'pointer' }} />
+                                    <Icon icon="mdi-light:pencil" onClick={redirectToEdit(row.Id)} fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
+                                    {row.IsActive.data[0] ? <Icon icon="mdi-light:delete" onClick={handleDelete(row.Id)} fontSize={20} style={{ cursor: 'pointer' }} /> : <Icon icon="mdi:restore" onClick={handleRestore(row.Id)} fontSize={20} style={{ cursor: 'pointer' }} />}
+                                    
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -66,4 +83,5 @@ export default function MyUploadsPage() {
             </TableContainer>
         </Container>
     </>
+    );
 }
