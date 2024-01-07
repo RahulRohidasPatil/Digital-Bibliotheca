@@ -15,7 +15,6 @@ export default function MyUploadsPage() {
 
     useEffect(() => {
         const fetchUserCreatedContent = async () => {
-            console.log(user.Id);
             const response = await getByUserId(user.Id);
             setMediaItems(response.data.data);
         };

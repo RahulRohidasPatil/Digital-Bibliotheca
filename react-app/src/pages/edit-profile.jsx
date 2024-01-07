@@ -1,20 +1,26 @@
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Grid, Snackbar, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { editProfile } from 'src/apis/media';
 import { useUser } from 'src/hooks/use-user';
-import { useRouter } from 'src/routes/hooks';
 
 export default function EditProfile() {
     const { user } = useUser();
-    const router = useRouter();
-    const [emailAddress, setEmailAddress] = useState(user?.EmailAddress);
+    const [firstName, setFirstName] = useState(user?.FirstName);
+    const [familyName, setFamilyName] = useState(user?.FamilyName);
     const [phoneNumber, setPhoneNumber] = useState(user?.PhoneNumber);
     const [loading] = useState(false);
 
-    function handleSubmit(event){
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState(false);
+    const [snackBarSeverity, setSnackBarSeverity] = useState('success');
+
+    async function handleSubmit(event){
         event.preventDefault();
-        editProfile(user.Id, emailAddress, phoneNumber);
-        router.replace("/my-uploads");
+        await editProfile(user.Id, firstName, familyName, phoneNumber);
+        localStorage.setItem("user", JSON.stringify({ ...user, FirstName: firstName, FamilyName: familyName, PhoneNumber: phoneNumber }))
+        setSnackbarMessage("Profile Updated Successfully");
+        setSnackBarSeverity("success");
+        setShowSnackbar(true);
     };
 
     return (
@@ -43,13 +49,24 @@ export default function EditProfile() {
                             <Grid item xs={12} sm={6}>
                                 <div>
                                     <TextField
-                                        label="Email Address"
+                                        label="First Name"
                                         type="text"
                                         name="title"
-                                        value={emailAddress}
-                                        onChange={e => setEmailAddress(e.target.value)}
+                                        value={firstName}
+                                        onChange={e => setFirstName(e.target.value)}
                                         fullWidth
-                                        margin="none"
+                                        margin="normal"
+                                    />
+                                </div>
+                                <div>
+                                    <TextField
+                                        label="Family Name"
+                                        type="text"
+                                        name="title"
+                                        value={familyName}
+                                        onChange={e => setFamilyName(e.target.value)}
+                                        fullWidth
+                                        margin="normal"
                                     />
                                 </div>
                                 <div>
@@ -86,6 +103,17 @@ export default function EditProfile() {
                             </Button>
                         </Grid>
                     </form>
+                        <Snackbar
+                            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                            open={showSnackbar}
+                            autoHideDuration={2000}
+                            onClose={() => setShowSnackbar(false)}
+                            message={snackbarMessage}
+                        >
+                            <Alert onClose={() => showSnackbar(false)} severity={snackBarSeverity} sx={{ width: '100%' }}>
+                                {snackbarMessage}
+                            </Alert>
+                        </Snackbar>
                 </Box>
             )}
         </>

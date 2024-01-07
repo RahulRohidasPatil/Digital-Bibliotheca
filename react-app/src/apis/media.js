@@ -16,9 +16,8 @@ export const updateMedia = (id, media) => {
   axiosInstance().put(`/media/update/${id}`, media);
 }
 
-export function editProfile(userId, emailAddress, phoneNumber) {
-  console.log(20, userId, emailAddress, phoneNumber)
-  axiosInstance().put(`/user/update`);
+export function editProfile(userId, firstName, familyName, phoneNumber) {
+  return axiosInstance().patch(`/user/edit-profile`, { userId, firstName, familyName, phoneNumber });
 }
 
 export const deleteMedia = (id) => axiosInstance().delete(`/media/delete/${id}`);
