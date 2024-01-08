@@ -42,7 +42,7 @@ function reconnect(connection) {
 }
 
 connection.on("error", function (err) {
-  console.log(err)
+  console.log(err);
   //- The server close the connection.
   console.log(
     "/!\\ Cannot establish a connection with the database. /!\\ (" +
