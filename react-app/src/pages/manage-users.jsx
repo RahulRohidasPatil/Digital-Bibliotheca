@@ -55,7 +55,6 @@ export default function ManageUsersPage() {
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell align="center">Role</TableCell>
-                            <TableCell align="center">Date Of Birth</TableCell>
                             <TableCell align="center">Status</TableCell>
                             <TableCell align="center">Actions</TableCell>
                         </TableRow>
@@ -70,7 +69,6 @@ export default function ManageUsersPage() {
                                     {`${row.FirstName} ${row.FamilyName}`}
                                 </TableCell>
                                 <TableCell align="center">{resolveUserRole(row.Role)}</TableCell>
-                                <TableCell align="center">{row.DateOfBirth?.split('T')[0]}</TableCell>
                                 <TableCell align="center">{resolveUserStatus(row.Status)}</TableCell>
                                 <TableCell align="center">
                                     
