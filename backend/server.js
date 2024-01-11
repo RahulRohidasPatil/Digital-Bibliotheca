@@ -1,15 +1,19 @@
 const express = require("express");
 const cors = require("cors");
+var connection = require("./utils/connection");
 var routes = require("./routes/routes");
+var chatHub = require("./hubs/chatHub");
 
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(express.urlencoded({extended: 'false'}))
 app.use(express.json())
 app.use(cors());
 app.options("*", cors());
+
+chatHub.initiateHub(app);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

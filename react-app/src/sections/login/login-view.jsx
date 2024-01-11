@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { setCookie } from 'cookies-next';
 import Box from '@mui/material/Box';
 // import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
@@ -22,9 +23,12 @@ import { useRouter } from 'src/routes/hooks';
 import { bgGradient } from 'src/theme/css';
 import { useForm } from 'react-hook-form';
 
-import Logo from 'src/components/logo';
+// import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 import { loginUser } from 'src/apis/auth';
+
+import { useUser } from 'src/hooks/use-user';
+import { Toolbar } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -37,7 +41,7 @@ export default function LoginView() {
 
   const [snackbar, showSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(false);
-
+  const { setUser, user } = useUser();
   const {
     register,
     handleSubmit,
@@ -46,7 +50,7 @@ export default function LoginView() {
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn && Boolean(isLoggedIn)) {
+    if (isLoggedIn && Boolean(isLoggedIn) && user) {
       router.replace('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,7 +67,11 @@ export default function LoginView() {
     });
 
     if (resp && resp.status === 200) {
+      const userValue = resp.data.data;
+      setCookie('token', `Bearer ${resp.data.token}`);
       localStorage.setItem('isLoggedIn', true);
+      localStorage.setItem('user', JSON.stringify(userValue));
+      setUser(userValue);
       router.replace('/');
     }
   };
@@ -146,13 +154,30 @@ export default function LoginView() {
         height: 1,
       }}
     >
-      <Logo
+      {/* <Logo
         sx={{
           position: 'fixed',
           top: { xs: 16, md: 24 },
           left: { xs: 16, md: 24 },
         }}
-      />
+      /> */}
+      <Toolbar
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          position: 'fixed',
+          top: { xs: 0, md: 0 },
+          color: 'white',
+          backgroundColor: 'green',
+        }}
+      >
+        <span>
+          Fulda University of Applied Sciences Software Engineering Project, Fall 2023 For
+          Demonstration Only
+        </span>
+      </Toolbar>
 
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card

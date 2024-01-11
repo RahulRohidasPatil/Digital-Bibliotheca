@@ -18,11 +18,44 @@ const navConfig = [
   //   path: '/user',
   //   icon: icon('ic_user'),
   // },
+
+  {
+    title: 'Upload Content',
+    path: '/upload-content',
+    icon: <Iconify icon="eva:person-outline" />,
+  },
   {
     title: 'Search',
     path: '/search',
     icon: <Iconify icon="eva:search-fill" />,
   },
+  {
+    title: 'My Uploads',
+    path: '/my-uploads',
+    icon: <Iconify icon="eva:arrow-upward-fill" />,
+  },
+  {
+    title: 'My Media',
+    path: '/my-media',
+    icon: <Iconify icon="eva:arrow-downward-fill" />,
+  },
+  {
+    title: 'Chats',
+    path: '/chats',
+    icon: <Iconify icon="mdi:chat-outline" />,
+  },
+  {
+    title: 'Admin Approval Dashboard',
+    path: '/admin-approval-dashboard',
+    icon: <Iconify icon="fluent-mdl2:document-approval" />,
+    isAdminPath: true
+  },
+  {
+    title: 'User Management',
+    path: '/user-management',
+    icon: <Iconify icon="ri:admin-line" />,
+    isAdminPath: true
+  }
 ];
 
 export default navConfig;

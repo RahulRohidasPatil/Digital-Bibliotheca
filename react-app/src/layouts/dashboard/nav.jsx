@@ -14,14 +14,14 @@ import { RouterLink } from 'src/routes/components';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import { account } from 'src/_mock/account';
+// import { account } from 'src/_mock/account';
 
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
+import { useUser } from 'src/hooks/use-user';
 
 import { NAV } from './config-layout';
 import navConfig from './config-navigation';
-
 // ----------------------------------------------------------------------
 
 export default function Nav({ openNav, onCloseNav }) {
@@ -29,15 +29,26 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const upLg = useResponsive('up', 'lg');
 
+  const canShowMenuItem = (item) => {
+    if(item.isAdminPath){
+      if(user?.Role !== 2){
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
   useEffect(() => {
     if (openNav) {
       onCloseNav();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
-
+  const { user } = useUser();
   const renderAccount = (
     <Box
+      id="account"
       sx={{
         my: 3,
         mx: 2.5,
@@ -49,13 +60,22 @@ export default function Nav({ openNav, onCloseNav }) {
         bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
       }}
     >
-      <Avatar src={account.photoURL} alt="photoURL" />
-
+      <Avatar
+        alt={user?.FirstName}
+        sx={{
+          width: 36,
+          height: 36,
+          border: (theme) => `solid 2px ${theme.palette.background.default}`,
+          background: 'darkgrey',
+        }}
+      >
+        {user?.FirstName.charAt(0).toUpperCase()}
+      </Avatar>
       <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">{account.displayName}</Typography>
+        <Typography variant="subtitle2">{`${user?.FirstName}  ${user?.FamilyName}`}</Typography>
 
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {account.role}
+        <Typography variant="body2" sx={{ fontSize: '10px', color: 'text.secondary' }}>
+          {user?.EmailAddress}
         </Typography>
       </Box>
     </Box>
@@ -63,12 +83,9 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-      {navConfig.map((item) => (
-        <NavItem key={item.title} item={item} />
-      ))}
+      {navConfig.map((item) => (canShowMenuItem(item) ? (<NavItem key={item.title} item={item} />) : null))}
     </Stack>
   );
-
 
   const renderContent = (
     <Scrollbar
@@ -88,7 +105,6 @@ export default function Nav({ openNav, onCloseNav }) {
       {renderMenu}
 
       <Box sx={{ flexGrow: 1 }} />
-
     </Scrollbar>
   );
 

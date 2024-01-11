@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
@@ -12,7 +12,7 @@ import Label from 'src/components/label';
 
 // ----------------------------------------------------------------------
 
-export default function ShopProductCard({ product }) {
+export default function ShopProductCard({ product,adminAction }) {
   const renderStatus = (
     <Label
       variant="filled"
@@ -32,8 +32,8 @@ export default function ShopProductCard({ product }) {
   const renderImg = (
     <Box
       component="img"
-      alt={product.name}
-      src={product.FilePath}
+      alt={product.Title}
+      src={product && product.DemoFilePath ? product.DemoFilePath : '/assets/images/no-image.jpg'}
       sx={{
         top: 0,
         width: 1,
@@ -70,10 +70,16 @@ export default function ShopProductCard({ product }) {
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link color="inherit" underline="hover" variant="subtitle2" noWrap>
+        <Link
+          href={`/product/${product.Id}`}
+          color="inherit"
+          underline="hover"
+          variant="subtitle2"
+          noWrap
+        >
           {product.Title}
         </Link>
-        <Typography sx={{ margin: '0 !important' }} variant="caption">
+        <Typography noWrap sx={{ margin: '0 !important' }} variant="caption">
           {product.Description}
         </Typography>
         <Stack
@@ -86,10 +92,12 @@ export default function ShopProductCard({ product }) {
           {renderPrice}
         </Stack>
       </Stack>
+      {adminAction || null}
     </Card>
   );
 }
 
 ShopProductCard.propTypes = {
   product: PropTypes.object,
+  adminAction: PropTypes.elementType
 };

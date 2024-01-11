@@ -1,8 +1,10 @@
 // import { faker } from '@faker-js/faker';
 
 import Container from '@mui/material/Container';
-// import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
+
+import { useUser } from 'src/hooks/use-user';
 
 // import Iconify from 'src/components/iconify';
 
@@ -11,58 +13,106 @@ import Typography from '@mui/material/Typography';
 // import AppOrderTimeline from '../app-order-timeline';
 // import AppCurrentVisits from '../app-current-visits';
 // import AppWebsiteVisits from '../app-website-visits';
-// import AppWidgetSummary from '../app-widget-summary';
 // import AppTrafficBySite from '../app-traffic-by-site';
 // import AppCurrentSubject from '../app-current-subject';
 // import AppConversionRates from '../app-conversion-rates';
+// import AppWidgetSummary from '../app-widget-summary';
 
+import AppGridProducts from '../app-grid-products';
+import AppCategory from '../app-category';
 // ----------------------------------------------------------------------
 
 export default function AppView() {
+  const { user } = useUser();
+
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Hi, Welcome 👋
+        Hi, Welcome {user.FirstName}👋
       </Typography>
 
-      {/* <Grid container spacing={3}>
-        <Grid xs={12} sm={6} md={3}>
-          <AppWidgetSummary
-            title="Weekly Sales"
-            total={714000}
+      <Grid container spacing={3}>
+        <Grid xs={12} sm={12} md={12}>
+          <Typography variant="h5">Categories</Typography>
+        </Grid>
+
+        <Grid xs={4} sm={2} md={2}>
+          <AppCategory
+            title="Music"
             color="success"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
+            category={3}
+            icon={<img alt="icon" src="/assets/icons/glass/music.png" />}
+          />
+        </Grid>
+        <Grid xs={4} sm={2} md={2}>
+          <AppCategory
+            title="Pictures"
+            color="success"
+            category={1}
+            icon={<img alt="icon" src="/assets/icons/glass/picture.png" />}
+          />
+        </Grid>
+        <Grid xs={4} sm={2} md={2}>
+          <AppCategory
+            title="Videos"
+            color="success"
+            category={2}
+            icon={<img alt="icon" src="/assets/icons/glass/video-player.png" />}
+          />
+        </Grid>
+        <Grid xs={2} sm={0} md={0} sx={{ padding: 0 }}>
+          {}
+        </Grid>
+        <Grid xs={4} sm={2} md={2}>
+          <AppCategory
+            title="Documents"
+            color="success"
+            category={4}
+            icon={<img alt="icon" src="/assets/icons/glass/folders.png" />}
           />
         </Grid>
 
-        <Grid xs={12} sm={6} md={3}>
-          <AppWidgetSummary
-            title="New Users"
-            total={1352831}
-            color="info"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
+        <Grid xs={4} sm={2} md={2}>
+          <AppCategory
+            title="Links"
+            color="success"
+            category={5}
+            icon={<img alt="icon" src="/assets/icons/glass/link.png" />}
           />
         </Grid>
-
-        <Grid xs={12} sm={6} md={3}>
-          <AppWidgetSummary
-            title="Item Orders"
-            total={1723315}
-            color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
-          />
+        <Grid xs={2} sm={0} md={0} sx={{ padding: 0 }}>
+          {}
         </Grid>
 
-        <Grid xs={12} sm={6} md={3}>
-          <AppWidgetSummary
-            title="Bug Reports"
-            total={234}
-            color="error"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
+        <Grid xs={12} md={12} lg={12}>
+          <AppGridProducts
+            title="Latest Music"
+            mediaType={3}
+            subheader="Browse lastest uploaded music"
           />
         </Grid>
+        <Grid xs={12} md={12} lg={12}>
+          <AppGridProducts title="Trending Photos" mediaType={1} subheader="" />
+        </Grid>
+        <Grid xs={12} md={12} lg={12}>
+          <AppGridProducts
+            title="Trending Videos"
+            mediaType={2}
+            subheader="Browse lastest uploaded music"
+          />
+        </Grid>
+        <Grid xs={12} md={12} lg={12}>
+          <AppGridProducts
+            title="Informative Docs"
+            mediaType={4}
+            subheader="Browse lastest uploaded music"
+          />
+        </Grid>
+        <Grid xs={12} md={12} lg={12}>
+          <AppGridProducts title="Links" mediaType={5} subheader="Browse lastest uploaded music" />
+        </Grid>
 
-        <Grid xs={12} md={6} lg={8}>
+        {/* <Grid xs={12} md={6} lg={8}>
           <AppWebsiteVisits
             title="Website Visits"
             subheader="(+43%) than last year"
@@ -223,8 +273,8 @@ export default function AppView() {
               { id: '5', name: 'Sprint Showcase' },
             ]}
           />
-        </Grid>
-      </Grid> */}
+        </Grid> */}
+      </Grid>
     </Container>
   );
 }
