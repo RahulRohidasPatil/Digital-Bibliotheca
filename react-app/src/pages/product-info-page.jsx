@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useUser } from 'src/hooks/use-user';
 import { purchaseMedia } from 'src/apis/purchase';
 import { isOwner, hasPurchased, getByID } from 'src/apis/media';
+import { useRouter } from 'src/routes/hooks';
 
 export default function ProductInfoPage() {
   const { id } = useParams();
@@ -12,6 +13,9 @@ export default function ProductInfoPage() {
   const { user } = useUser();
 
   const [showPurchaseButton, setShowPurchasebutton] = useState(true);
+  const [showDiscussionButton, setShowDiscussionButton] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     getByID(id).then((response) => setproduct(response.data.data[0]));
@@ -20,11 +24,12 @@ export default function ProductInfoPage() {
       const owner = await isOwner(id, user.Id);
       const purchased = await hasPurchased(id, user.Id);
       setShowPurchasebutton(!(owner.data.data || purchased.data.data));
+      setShowDiscussionButton(!showPurchaseButton);
     }
 
     shouldShowPurchaseButton();
 
-  }, [id, user.Id]);
+  }, [id, user.Id, showPurchaseButton]);
 
   const setContentTypeLabel = (type) => {
     switch (type) {
@@ -49,7 +54,12 @@ export default function ProductInfoPage() {
   const buyMedia = async () => {
     purchaseMedia({ customerId: user.Id, mediaId: id });
     setShowPurchasebutton(false);
+    setShowDiscussionButton(true);
   };
+
+  const joinChat =() => {
+    router.replace(`/discussion/${product.Id}`);
+  }
 
   return (
     <>
@@ -137,6 +147,14 @@ export default function ProductInfoPage() {
               onClick={buyMedia}
             >
               Purchase
+            </Button> :
+            null}
+            {showDiscussionButton ? <Button
+              sx={{ marginTop: 1, marginLeft: 2}}
+              variant="outlined"
+              onClick={joinChat}
+            >
+              Discussion
             </Button> :
             null}
             
