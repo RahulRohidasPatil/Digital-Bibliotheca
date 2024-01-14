@@ -1,11 +1,12 @@
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 import { alpha } from '@mui/material/styles';
 import PropTypes from 'prop-types';
+import { Icon } from '@iconify/react';
 
-export default function ChatItem({name, target}){
+/* eslint-disable react/prop-types */
+export default function ChatItem({name, target, isDiscussion }){
     return(
         <Box
       sx={{
@@ -19,17 +20,9 @@ export default function ChatItem({name, target}){
         bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
       }}
     >
-                <Avatar
-                    alt={name}
-                    sx={{
-                    width: 36,
-                    height: 36,
-                    border: (theme) => `solid 2px ${theme.palette.background.default}`,
-                    background: 'darkgrey',
-                    }}
-                 />
+                <Icon  icon={isDiscussion ? "healthicons:group-discussion-meetingx3-outline" : "mdi:chat-outline"} fontSize={30} style={{ marginRight: 10 }} />
                 <Typography sx={{mx: 2}} variant='caption'>
-                    <Link href={`/chats/${target}`} color="inherit" underline="hover" variant="subtitle2" noWrap>
+                    <Link href={isDiscussion ? `/discussion/${target}` : `/chats/${target}`} color="inherit" underline="hover" variant="subtitle2" noWrap>
                         {name}
                     </Link>
                 </Typography>

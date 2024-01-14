@@ -2,14 +2,15 @@ import { Helmet } from 'react-helmet-async';
 
 import { Messages } from 'src/sections/chat/messages';
 
-export default function MessagesPage() {
+/* eslint-disable react/prop-types */
+export default function MessagesPage({isDiscussion = false}) {
   return (
     <>
       <Helmet>
         <title> Chats | Minimal UI </title>
       </Helmet>
 
-      <Messages />
+      <Messages isDiscussion = {isDiscussion} />
     </>
   );
 }
