@@ -20,17 +20,28 @@ io.on('connection', async (socket) => {
 
 
   socket.on('client_sync_request', async (data) => {
-    const {userId, targetId} = data;
+    const {userId, targetId, isDiscussion} = data;
     let chatId = '';
+    if(isDiscussion){
+        if(await chatService.discussionExists(targetId, isDiscussion)){
+          chatId = await chatService.getDiscussionByMediaId(targetId, isDiscussion);
+        }
+        else{
+          await chatService.create(userId, targetId, isDiscussion);
 
-    if (await chatService.exists(userId, targetId))
-      {
-        chatId = await chatService.getBySenderRecipient(userId, targetId);
-      }
+          chatId = await chatService.getBySenderRecipient(userId, targetId, isDiscussion);
+        }
+    }
     else{
-      await chatService.create(userId, targetId);
+      if (await chatService.exists(userId, targetId, isDiscussion))
+        {
+          chatId = await chatService.getBySenderRecipient(userId, targetId, isDiscussion);
+        }
+      else{
+        await chatService.create(userId, targetId, isDiscussion);
 
-      chatId = await chatService.getBySenderRecipient(userId, targetId);
+        chatId = await chatService.getBySenderRecipient(userId, targetId, isDiscussion);
+      }
     }
     socket.join(chatId)
     socket.emit('client_sync_response', {chatId: chatId})

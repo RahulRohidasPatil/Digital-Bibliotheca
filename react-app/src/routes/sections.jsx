@@ -47,7 +47,8 @@ export default function Router() {
         {path: 'my-media', element: <MyMediaPage />},
         {path: 'admin-approval-dashboard', element: <AdminApprovalDashboard />},
         {path: 'user-management', element: <ManageUsersPage />},
-        {path: 'product/edit/:id', element: <EditUploadContent />}
+        {path: 'product/edit/:id', element: <EditUploadContent />},
+        {path: 'discussion/:mediaId', element: <MessagesPage isDiscussion/>}
       ],
     },
     {

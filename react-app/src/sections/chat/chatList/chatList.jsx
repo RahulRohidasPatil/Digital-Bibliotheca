@@ -9,11 +9,13 @@ export default function ChatList() {
   const { user } = useUser();
 
   const [userChats, setUserChats] = useState([]);
+  const [userGroupChats, setUserGroupChats] = useState([]);
 
     useEffect(() => {
         const loadUserChats = async () => {
             const response = await getUserChats(user.Id)
-            setUserChats(response.data.data);
+            setUserChats(response.data.data.filter((item) => !item.IsGroupChat.data[0]));
+            setUserGroupChats(response.data.data.filter((item) => item.IsGroupChat.data[0]));
         };
 
         loadUserChats()
@@ -30,6 +32,15 @@ export default function ChatList() {
           key={item.ChatId}
           target={item.UserId}
           name={`${item.FirstName} ${item.FamilyName}`}
+          isDiscussion = {false}
+        />
+      ))}
+      {userGroupChats.map((item) => (
+        <ChatItem
+        key={item.ChatId}
+        target={item.MediaId}
+        name={`${item.Title}`}
+        isDiscussion = {item.IsGroupChat.data[0]}
         />
       ))}
     </Container>

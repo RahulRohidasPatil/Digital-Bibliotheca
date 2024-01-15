@@ -34,10 +34,10 @@ const messageService = {
     },
     getBySenderRecipient: async function ( req, res){
         try{
-            let chatId = await chatService.getBySenderRecipient(req.query.senderId, req.query.recipientId)
+            let chatId = await chatService.getBySenderRecipient(req.query.chatId, req.query.isDiscussion)
 
-            let query = "SELECT * FROM message WHERE ChatId = ?"
-            let values = [`${chatId}`]
+            let query = "SELECT msg.SenderId, msg.Content, user.FirstName AS Name, user.FamilyName AS FamilyName FROM `message` AS msg INNER JOIN user ON msg.SenderId = user.Id WHERE msg.ChatId = ?"
+            let values = [`${req.query.chatId}`]
             let result = await connection.query(query, values);
 
             res.status(200).send({data: result});

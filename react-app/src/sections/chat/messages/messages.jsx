@@ -13,6 +13,7 @@ import { useUser } from 'src/hooks/use-user';
 import { useSocket } from 'src/hooks/use-socket';
 import { useParams } from 'react-router-dom';
 import { getById } from 'src/apis/user';
+import { getByID } from 'src/apis/media';
 import { getBySenderRecipient } from 'src/apis/message';
 import MessageItem from './messageItem';
 
@@ -33,7 +34,8 @@ const StyledGrid = styled(Grid)(() => ({
   },
 }));
 
-export default function Messages() {
+/* eslint-disable react/prop-types */
+export default function Messages({isDiscussion = false}) {
   const [pastMessages, setPastMessages] = useState([]);
 
   const [messageContent, setMessageContent] = useState([]);
@@ -48,23 +50,34 @@ export default function Messages() {
 
   const params = useParams();
 
-  const targetId = params.userId;
+  const targetId = isDiscussion ? params.mediaId : params.userId;
 
   const endOfMessagesRef = useRef();
 
-  const getTargetName = async () => {
-    const result = await getById(targetId);
+  const [shouldFetchPastMessages, setShouldFetchPastMessages] = useState(true);
 
-    setTargetName(`${result.data.data.FirstName} ${result.data.data.FamilyName}`);
+  const getTargetName = async () => {
+    if(isDiscussion){
+      const media = await getByID(targetId);
+
+      setTargetName(`${media.data.data[0].Title}`);
+    }
+    else{
+      const result = await getById(targetId);
+
+      setTargetName(`${result.data.data.FirstName} ${result.data.data.FamilyName}`);
+    }
   };
 
   const initiateChatSync = async () => {
     await getTargetName();
+    socket.emit('client_sync_request', { userId: user.Id, targetId, isDiscussion: isDiscussion ? 1 : 0 });
 
-    socket.emit('client_sync_request', { userId: user.Id, targetId });
-
-    socket.on('client_sync_response', (data) => {
+    socket.on('client_sync_response',async (data) => {
       setChatId(data.chatId);
+      if(shouldFetchPastMessages){
+        await fetchPastMessages(data.chatId);
+      }
     });
   };
 
@@ -76,30 +89,31 @@ export default function Messages() {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const fetchPastMessages = async () => {
-    const result = await getBySenderRecipient(user.Id, targetId);
+  const fetchPastMessages = async (chat) => {
+    const result = await getBySenderRecipient(chat, isDiscussion ? 1 : 0 );
     setPastMessages((state) => [
-      ...result.data.data.map((item) => ({ sender: item.SenderId, content: item.Content })),
+      ...result.data.data.map((item) => ({ sender: item.SenderId, content: item.Content, senderName: `${item.Name} ${item.FamilyName}` })),
     ]);
+
+    setShouldFetchPastMessages(false);
   };
 
   useEffect(() => {
     initiateChatSync();
-    fetchPastMessages();
     socket.on('receive_message', (data) => {
-      setPastMessages((state) => [...state, { sender: data.username, content: data.message }]);
+      setPastMessages((state) => [...state, { sender: data.username, content: data.message, senderName: data.name }]);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [user.Id]);
 
   const sendMessage = async () => {
     if (messageContent == '') return;
-    console.log('message');
     socket.emit('send_message', {
       message: messageContent,
       username: user.Id,
       room: chatId,
       target: targetId,
+      name: `${user.FirstName} ${user.FamilyName}`
     });
 
     setMessageContent('');
@@ -145,6 +159,7 @@ export default function Messages() {
                 key={JSON.stringify(item)}
                 content={item.content}
                 sender={item.sender === user.Id}
+                name = {item.senderName}
               />
             ))}
           </Grid>
