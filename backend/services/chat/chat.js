@@ -78,14 +78,10 @@ const chatService = {
             let groupChatQuery = "SELECT DISTINCT chat.Id as `ChatId`, chat.IsGroupChat AS `IsGroupChat`, media.Id as `MediaId`, media.Title FROM chat INNER JOIN media ON chat.RecipientId = media.Id INNER JOIN message ON chat.Id = message.ChatId WHERE chat.SenderId = ? OR message.SenderId = ?";
             let groupChatQueryValues = [`${req.params.userId}`,`${req.params.userId}`];
             let groupChatResponse = await connection.query(groupChatQuery, groupChatQueryValues);
-            if (response.length > 0) {
-                if(groupChatResponse.length > 0){
+            if (response.length > 0 || groupChatResponse.length > 0) {
                     res.status(200).send({data: [...response.filter((item) => item.UserId != req.params.userId), ...groupChatResponse]});
-                }
-                else{
-                    res.status(200).send({data: response.filter((item) => item.UserId != req.params.userId)});
-                }
             }
+            
             else res.status(400).send({message: "Chat not found"});
         }
         catch(e){
