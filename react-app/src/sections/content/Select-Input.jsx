@@ -32,10 +32,10 @@ function getStyles(name, personName, theme) {
 
 export default function SelectInputWithChip({ formData, setFormData, label, name, items }) {
   const theme = useTheme();
-  const [personName, setPersonName] = useState([]);
+  const [personName, setPersonName] = useState('');
 
   const handleChange = (event) => {
-    setPersonName(items[event.target.value - 1]);
+    setPersonName(event.target.value.toString())
 
     setFormData({ ...formData, [name]: event.target.value });
   };
@@ -61,7 +61,7 @@ export default function SelectInputWithChip({ formData, setFormData, label, name
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               <Chip
                 key={selected}
-                label={selected}
+                label={items[selected - 1]}
                 clickable
                 onMouseDown={(e) => e.stopPropagation()}
                 onDelete={(e) => handleDelete(e, selected)}
