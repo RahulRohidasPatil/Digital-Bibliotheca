@@ -51,7 +51,9 @@ const media = {
       let demoFilePathObj = await fileService.getDemoFile(req.params.id);
       if (demoFilePathObj && Object.keys(demoFilePathObj).length > 0) {
         response[0].DemoFilePath = demoFilePathObj.FilePath;
-      } 
+      } else {
+        response[0].DemoFilePath = null
+      }
 
       res.status(200).send({ data: response });
     } catch (e) {
