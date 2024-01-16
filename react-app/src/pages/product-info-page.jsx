@@ -1,4 +1,4 @@
-import { Box, Button, Card, Chip, Container, Grid, Rating, Typography } from '@mui/material';
+import { Box, Button, Card, Chip, Container, Grid, Rating, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { useUser } from 'src/hooks/use-user';
 import { purchaseMedia } from 'src/apis/purchase';
 import { isOwner, hasPurchased, getByID } from 'src/apis/media';
 import { useRouter } from 'src/routes/hooks';
+import { LoadingButton } from '@mui/lab';
 
 export default function ProductInfoPage() {
   const { id } = useParams();
@@ -14,6 +15,8 @@ export default function ProductInfoPage() {
 
   const [showPurchaseButton, setShowPurchasebutton] = useState(true);
   const [showDiscussionButton, setShowDiscussionButton] = useState(false);
+  const [comment, setComment] = useState("")
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -59,6 +62,13 @@ export default function ProductInfoPage() {
 
   const joinChat =() => {
     router.replace(`/discussion/${product.Id}`);
+  }
+
+  function addComment(e) {
+    e.preventDefault()
+    setLoading(true)
+    // Logic to be added here to add comment
+    setLoading(false)
   }
 
   return (
@@ -157,7 +167,25 @@ export default function ProductInfoPage() {
               Discussion
             </Button> :
             null}
-            
+            {showDiscussionButton && <form onSubmit={addComment}>
+              <TextField
+                label="Write Your Comment"
+                type="text"
+                name="title"
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                loading={loading}
+                style={{ padding: '10px 32px' }}
+              >
+                Submit
+              </LoadingButton>
+            </form>}
           </Grid>
         </Grid>
       </Container>
