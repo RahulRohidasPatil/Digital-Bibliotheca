@@ -3,9 +3,17 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
 
-export default function MessageItem({ content, sender }) {
+export default function MessageItem({ content, sender, name }) {
   return (
     <Grid item xs={12} sm={12}>
+      <Typography sx={{
+        float: `${sender ? 'right' : 'left'}`,
+        clear: `${sender ? 'right' : 'left'}`,
+        color: 'grey',
+        fontSize: '0.5em'
+      }}>
+        {name}
+      </Typography>
       <Card
         sx={{
           float: `${sender ? 'right' : 'left'}`,
@@ -31,4 +39,5 @@ export default function MessageItem({ content, sender }) {
 MessageItem.propTypes = {
   content: PropTypes.any,
   sender: PropTypes.any,
+  name: PropTypes.any
 };
