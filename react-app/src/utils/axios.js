@@ -45,12 +45,20 @@ export const axiosInstance = () => {
     import.meta.env.VITE_ENVIRONMENT === 'production'
       ? import.meta.env.VITE_PRODUCTION_API_URL
       : import.meta.env.VITE_LOCAL_API_URL;
+
+  let user = localStorage.getItem('user');
+
+  if (user && JSON.parse(user)) {
+    user = JSON.parse(user);
+    user = user.Id;
+  }
   const axiosClient = axios.create({
     baseURL,
     headers: {
       Accept: 'application/json',
       Authorization: hasCookie('token') ? getCookie('token') : null,
       'ngrok-skip-browser-warning': 'any',
+      userId: user,
     },
   });
 
