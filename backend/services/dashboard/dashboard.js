@@ -5,9 +5,12 @@ const dashboard = {
   getLatestMediaByType: async function (req, res) {
     try {
       let mediaType = req.params.mediaType;
+      let userId = req.headers.userid;
+
       let query =
-        "SELECT * from media  WHERE  isActive = 1 AND isApproved=1 AND MediaType = ? ORDER BY CreatedDate DESC LIMIT 8 ";
-      let response = await connection.query(query, [mediaType]);
+        "SELECT * from media m WHERE  isActive = 1 AND isApproved=1 AND isReported =0 AND MediaType = ? AND m.Id NOT IN (SELECT MediaID from reportedmedia WHERE ReportedBy = ?) ORDER BY CreatedDate DESC LIMIT 8 ";
+      console.log(req.headers);
+      let response = await connection.query(query, [mediaType, userId]);
 
       await Promise.all(
         response.map(async (media) => {

@@ -17,7 +17,7 @@ app.use("/media", middleware, mediaRoutes);
 app.use("/dashboard", middleware, dashboardRoutes);
 app.use("/auth", authRoutes);
 app.use("/chat", middleware, chatRoutes);
-app.use("/message",middleware, messageRoutes);
+app.use("/message", middleware, messageRoutes);
 app.use("/user", middleware, userRoutes);
 app.use("/purchase", middleware, purchaseRoutes);
 app.use("/admin", adminAuth, adminRoutes);
@@ -37,7 +37,6 @@ function adminAuth(req, res, next) {
     req.user = payload;
     let query = "Select Id from user WHERE EmailAddress = ?";
     let userResponse = await connection.query(query, [payload.EmailAddress]);
-    console.log(req.user.Role)
     if (userResponse && userResponse.length && req.user.Role === 2) {
       next();
     } else {
@@ -63,7 +62,6 @@ function middleware(req, res, next) {
     req.user = payload;
     let query = "Select Id from user WHERE EmailAddress = ?";
     let userResponse = await connection.query(query, [payload.EmailAddress]);
-    console.log(req.user.Role)
     if (userResponse && userResponse.length) {
       next();
     } else {

@@ -9,6 +9,7 @@ import AdminApprovalDashboard from 'src/pages/admin-approval-dashboard';
 import ManageUsersPage from 'src/pages/manage-users';
 import EditUploadContent from 'src/pages/edit-media';
 import EditProfile from 'src/pages/edit-profile';
+import ReportedMediaPage from 'src/pages/reported-media';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
 export const UploadContentPage = lazy(() => import('src/pages/upload-content'));
@@ -41,14 +42,15 @@ export default function Router() {
         { path: 'product/:id', element: <ProductInfoPage /> },
         { path: 'blog', element: <BlogPage /> },
         { path: 'my-uploads', element: <MyUploadsPage /> },
-        {path: 'chats', element: <ChatListPage />},
+        { path: 'chats', element: <ChatListPage /> },
         { path: 'edit-profile', element: <EditProfile /> },
-        {path: 'chats/:userId', element: <MessagesPage />},
-        {path: 'my-media', element: <MyMediaPage />},
-        {path: 'admin-approval-dashboard', element: <AdminApprovalDashboard />},
-        {path: 'user-management', element: <ManageUsersPage />},
-        {path: 'product/edit/:id', element: <EditUploadContent />},
-        {path: 'discussion/:mediaId', element: <MessagesPage isDiscussion/>}
+        { path: 'chats/:userId', element: <MessagesPage /> },
+        { path: 'my-media', element: <MyMediaPage /> },
+        { path: 'admin-approval-dashboard', element: <AdminApprovalDashboard /> },
+        { path: 'user-management', element: <ManageUsersPage /> },
+        { path: 'reported-media', element: <ReportedMediaPage /> },
+        { path: 'product/edit/:id', element: <EditUploadContent /> },
+        { path: 'discussion/:mediaId', element: <MessagesPage isDiscussion /> },
       ],
     },
     {
