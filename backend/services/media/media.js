@@ -11,17 +11,18 @@ const fileService = require("../file/file");
 const media = {
   getAllMedia: async function (req, res) {
     const sortOption = req.query.sortOption;
-
+    const userId = req.headers.userid;
     try {
-      let query = "SELECT * from media WHERE isActive = 1 AND isApproved=1";
+      let query =
+        "SELECT * from media m WHERE isActive = 1 AND isApproved=1 AND isReported = 0 AND m.Id NOT IN (SELECT MediaID from reportedmedia WHERE ReportedBy = ?) ";
 
       if (req.query.filters) {
         const filters = JSON.parse(req.query.filters);
         query = applyFiltersOnQuery(query, filters);
       }
       query = applySortOptionOnQuery(query, sortOption);
-
-      let response = await connection.query(query);
+      console.log(query);
+      let response = await connection.query(query, [userId]);
 
       await Promise.all(
         response.map(async (media) => {
@@ -44,15 +45,14 @@ const media = {
   },
   getByID: async function (req, res) {
     try {
-      let query =
-        "SELECT * from media WHERE `Id` = ? ";
+      let query = "SELECT * from media WHERE `Id` = ? ";
       let response = await connection.query(query, [req.params.id]);
 
       let demoFilePathObj = await fileService.getDemoFile(req.params.id);
       if (demoFilePathObj && Object.keys(demoFilePathObj).length > 0) {
         response[0].DemoFilePath = demoFilePathObj.FilePath;
       } else {
-        response[0].DemoFilePath = null
+        response[0].DemoFilePath = null;
       }
 
       res.status(200).send({ data: response });
@@ -152,25 +152,25 @@ const media = {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
-  isOwner: async function (req, res){
-    try{
+  isOwner: async function (req, res) {
+    try {
       let query = "SELECT * FROM media WHERE Id = ? AND OwnerId = ?";
       let values = [`${req.query.id}`, `${req.query.ownerId}`];
       let response = await connection.query(query, values);
 
-      res.status(200).send({data: response.length > 0});
-    } catch(e){
+      res.status(200).send({ data: response.length > 0 });
+    } catch (e) {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
-  purchased: async function(req, res){
-    try{
+  purchased: async function (req, res) {
+    try {
       let query = "SELECT * FROM purchase WHERE MediaId = ? AND CustomerId = ?";
       let values = [`${req.query.id}`, `${req.query.customerId}`];
-      
+
       let response = await connection.query(query, values);
-      res.status(200).send({data: response.length > 0});
-    } catch(e){
+      res.status(200).send({ data: response.length > 0 });
+    } catch (e) {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
@@ -178,16 +178,18 @@ const media = {
     var searchTerm = req.body.searchTerm;
     const sortOption = req.body.sortOption;
     const filters = req.body.filters;
+    let userId = req.headers.userid;
     console.log(searchTerm);
     try {
       console.log(searchTerm);
       let query =
-        "SELECT * from media WHERE( title LIKE ? OR description LIKE ?) AND  isActive = 1 AND isApproved=1";
+        "SELECT * from media m  WHERE( title LIKE ? OR description LIKE ?) AND  isActive = 1 AND isApproved=1 AND isReported = 0 AND m.Id NOT IN (SELECT MediaID from reportedmedia WHERE ReportedBy = ?) ";
 
       query = applyFiltersOnQuery(query, filters);
       query = applySortOptionOnQuery(query, sortOption);
 
-      let values = [`%${searchTerm}%`, `%${searchTerm}%`];
+      console.log(query);
+      let values = [`%${searchTerm}%`, `%${searchTerm}%`, userId];
       let response = await connection.query(query, values);
 
       await Promise.all(
@@ -211,13 +213,31 @@ const media = {
   },
   getByUserId: async function (req, res) {
     try {
-      let query =
-        "SELECT * from media WHERE `OwnerId` = ?";
+      let query = "SELECT * from media WHERE `OwnerId` = ?";
       let response = await connection.query(query, [req.params.ownerId]);
 
       res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  },
+  reportMedia: async (req, res) => {
+    try {
+      // Extract data from the request
+      const { MediaId, ReportedBy, ReasonOfReporting } = req.body;
+      console.log(req.body, req.body, MediaId, ReportedBy, ReasonOfReporting);
+      // Insert into reportedmedia table
+      const query =
+        "INSERT INTO reportedmedia (MediaID, ReportedBy, ReasonOfReporting) VALUES (?, ?, ?)";
+      const values = [MediaId, ReportedBy, ReasonOfReporting];
+      const response = await connection.query(query, values);
+
+      res
+        .status(200)
+        .send({ message: "Report added successfully.", data: response });
+    } catch (error) {
+      console.log("Error", error);
       res.status(500).send({ message: "Internal Server Error" });
     }
   },

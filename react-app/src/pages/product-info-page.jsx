@@ -4,8 +4,20 @@ import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import { useUser } from 'src/hooks/use-user';
 import { purchaseMedia } from 'src/apis/purchase';
-import { isOwner, hasPurchased, getByID } from 'src/apis/media';
+
+import { isOwner, hasPurchased, getByID, reportMedia } from 'src/apis/media';
 import { useRouter } from 'src/routes/hooks';
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Iconify from 'src/components/iconify';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { LoadingButton } from '@mui/lab';
 
 export default function ProductInfoPage() {
   const { id } = useParams();
@@ -14,7 +26,10 @@ export default function ProductInfoPage() {
 
   const [showPurchaseButton, setShowPurchasebutton] = useState(true);
   const [showDiscussionButton, setShowDiscussionButton] = useState(false);
+  const [showReportMediaDialog, setShowReportMediaDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const [reportReasoon, setReportReason] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -25,10 +40,9 @@ export default function ProductInfoPage() {
       const purchased = await hasPurchased(id, user.Id);
       setShowPurchasebutton(!(owner.data.data || purchased.data.data));
       setShowDiscussionButton(!showPurchaseButton);
-    }
+    };
 
     shouldShowPurchaseButton();
-
   }, [id, user.Id, showPurchaseButton]);
 
   const setContentTypeLabel = (type) => {
@@ -57,9 +71,29 @@ export default function ProductInfoPage() {
     setShowDiscussionButton(true);
   };
 
-  const joinChat =() => {
+  const joinChat = () => {
     router.replace(`/discussion/${product.Id}`);
-  }
+  };
+
+  const confirmReportMedia = async () => {
+    setLoading(true);
+    try {
+      const response = await reportMedia(product.Id, user.Id, reportReasoon);
+      if (response && response.status === 200) {
+        setLoading(false);
+        setShowReportMediaDialog(false);
+        router.replace(`/`);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    // ({ customerId: user.Id, mediaId: id });
+    // setShowPurchasebutton(false);
+  };
+
+  const handleReportMedia = () => {
+    setShowReportMediaDialog(true);
+  };
 
   return (
     <>
@@ -141,25 +175,92 @@ export default function ProductInfoPage() {
             >
               Chat with Creator
             </Button>
-            {showPurchaseButton ? <Button
-              sx={{ marginTop: 1, marginLeft: 2}}
+            {showPurchaseButton ? (
+              <Button sx={{ marginTop: 1, marginLeft: 2 }} variant="outlined" onClick={buyMedia}>
+                Purchase
+              </Button>
+            ) : null}
+            {showDiscussionButton ? (
+              <Button sx={{ marginTop: 1, marginLeft: 2 }} variant="outlined" onClick={joinChat}>
+                Discussion
+              </Button>
+            ) : null}
+
+            <Button
+              sx={{ marginTop: 1, marginLeft: 2 }}
+              color="error"
               variant="outlined"
-              onClick={buyMedia}
+              onClick={handleReportMedia}
             >
-              Purchase
-            </Button> :
-            null}
-            {showDiscussionButton ? <Button
-              sx={{ marginTop: 1, marginLeft: 2}}
-              variant="outlined"
-              onClick={joinChat}
-            >
-              Discussion
-            </Button> :
-            null}
-            
+              Report Media
+            </Button>
           </Grid>
         </Grid>
+        <Dialog
+          open={showReportMediaDialog}
+          aria-labelledby="success-dialog-title"
+          aria-describedby="success-dialog-description"
+          disableEscapeKeyDown
+          maxWidth="lg"
+        >
+          <DialogTitle>
+            Report Media &nbsp;
+            <Iconify icon="ri:alert-fill" />
+            <p style={{ fontSize: 16, fontWeight: 'lighter' }}>
+              {' '}
+              Once you report the media we will hide it for you.
+            </p>
+          </DialogTitle>
+
+          <DialogContent>
+            <FormControl style={{ marginTop: 10 }} fullWidth>
+              <InputLabel id="report-reason">Reason for Reporting the Media</InputLabel>
+              <Select
+                labelId="report-reason"
+                id="report-reason-select"
+                value={reportReasoon}
+                label="Reason for Reporting the Media"
+                onChange={(e) => setReportReason(e.target.value)}
+              >
+                <MenuItem value="Inappropriate Content">Inappropriate Content</MenuItem>
+                <MenuItem value="Harassment or Bullying">Harassment or Bullying</MenuItem>
+                <MenuItem value="Fake or Misinformation">Fake or Misinformation</MenuItem>
+                <MenuItem value="Intellectual Property Violation">
+                  Intellectual Property Violation
+                </MenuItem>
+                <MenuItem value="Privacy Violation">Privacy Violation</MenuItem>
+                <MenuItem value="Spam or Scam">Spam or Scam</MenuItem>
+                <MenuItem value="Impersonation">Impersonation</MenuItem>
+                <MenuItem value="Violent or Dangerous Behavior">
+                  Violent or Dangerous Behavior
+                </MenuItem>
+                <MenuItem value="Drug or Substance Abuse">Drug or Substance Abuse</MenuItem>
+                <MenuItem value="Graphic Images or Disturbing Content">
+                  Graphic Images or Disturbing Content
+                </MenuItem>
+                <MenuItem value="Technical Issues">Technical Issues</MenuItem>
+              </Select>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <LoadingButton
+              loading={loading}
+              color="error"
+              variant="outlined"
+              disabled={reportReasoon === ''}
+              onClick={confirmReportMedia}
+            >
+              Report Media
+            </LoadingButton>
+            <Button
+              color="primary"
+              disabled={loading}
+              onClick={() => setShowReportMediaDialog(false)}
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );
