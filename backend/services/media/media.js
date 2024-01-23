@@ -55,6 +55,9 @@ const media = {
         response[0].DemoFilePath = null
       }
 
+      const commentsResponse = await connection.query("select * from comment where MediaId=?", [req.params.id])
+      response[0].comments = commentsResponse
+
       res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
@@ -221,6 +224,19 @@ const media = {
       res.status(500).send({ message: "Internal Server Error" });
     }
   },
+  addComment: async function (req, res) {
+    const { customerId, mediaId, comment } = req.body
+    try {
+      if (!customerId || !mediaId || !comment) throw new Error("customerId, mediaId, comment cannot be empty")
+
+      const query="insert into comment(CustomerId,MediaId,CommentText,CreatedDate)values(?,?,?,?)"
+      await connection.query(query, [customerId, mediaId, comment, new Date()]);
+      res.status(200).send({ message: "Comment Added Successfully" })
+    } catch (error) {
+      console.log("Error Adding Comment", error.message);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  }
 };
 
 module.exports = media;

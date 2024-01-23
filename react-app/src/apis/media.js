@@ -55,3 +55,5 @@ export const addMedia = ({ title, description, mediaType, price, uploadFiles, de
 
   return axiosInstance().post('/media/add', formData);
 };
+
+export const addComment = ({ customerId, mediaId, comment }) => axiosInstance().post("/media/addComment", { customerId, mediaId, comment })

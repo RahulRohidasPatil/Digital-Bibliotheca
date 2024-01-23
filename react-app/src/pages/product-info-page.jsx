@@ -1,10 +1,10 @@
-import { Box, Button, Card, Chip, Container, Grid, Rating, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, Chip, Container, Divider, Grid, Paper, Rating, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import { useUser } from 'src/hooks/use-user';
 import { purchaseMedia } from 'src/apis/purchase';
-import { isOwner, hasPurchased, getByID } from 'src/apis/media';
+import { isOwner, hasPurchased, getByID, addComment } from 'src/apis/media';
 import { useRouter } from 'src/routes/hooks';
 import { LoadingButton } from '@mui/lab';
 
@@ -64,10 +64,11 @@ export default function ProductInfoPage() {
     router.replace(`/discussion/${product.Id}`);
   }
 
-  function addComment(e) {
+  function onAddComment(e) {
     e.preventDefault()
     setLoading(true)
-    // Logic to be added here to add comment
+    addComment({ customerId: user.Id, mediaId: id, comment })
+    getByID(id).then((response) => setproduct(response.data.data[0]));
     setLoading(false)
   }
 
@@ -123,24 +124,26 @@ export default function ProductInfoPage() {
               Reviews:
             </Typography>
             <Rating value={5} readOnly />
-            <Box
-              sx={{
-                width: '400px', // Adjust width as needed
-                height: '150px', // Adjust height as needed
-                borderRadius: '10px', // Adjust border-radius for rounded corners
-                backgroundColor: '#f0f0f0', // Placeholder color
-                marginTop: '10px', // Adjust margin as needed
-              }}
-            />
-            <Box
-              sx={{
-                width: '400px', // Adjust width as needed
-                height: '150px', // Adjust height as needed
-                borderRadius: '10px', // Adjust border-radius for rounded corners
-                backgroundColor: '#f0f0f0', // Placeholder color
-                marginTop: '10px', // Adjust margin as needed
-              }}
-            />
+            <Box my={3} p={3} component={Paper} elevation={3}>
+              <Typography variant="h5" gutterBottom>
+                Comments
+              </Typography>
+              {product?.comments.map((commentObj) => (
+                <Box key={commentObj.Id} mb={3}>
+                  <Box display="flex" alignItems="center">
+                    <Avatar src={comment.avatar} alt={comment.user} />
+                    <Box ml={2}>
+                      <Typography variant="subtitle1">{commentObj.CustomerId}</Typography>
+                      <Typography variant="body1">{commentObj.CommentText}</Typography>
+                    </Box>
+                  </Box>
+                  <Box mt={2}>
+                    <Typography>{comment.comment}</Typography>
+                  </Box>
+                  <Divider mt={2} />
+                </Box>
+              ))}
+            </Box>
             <Button
               sx={{ marginTop: 1 }}
               variant="outlined"
@@ -167,11 +170,10 @@ export default function ProductInfoPage() {
               Discussion
             </Button> :
             null}
-            {showDiscussionButton && <form onSubmit={addComment}>
+            {showDiscussionButton && <form onSubmit={onAddComment}>
               <TextField
                 label="Write Your Comment"
                 type="text"
-                name="title"
                 value={comment}
                 onChange={e => setComment(e.target.value)}
                 fullWidth
