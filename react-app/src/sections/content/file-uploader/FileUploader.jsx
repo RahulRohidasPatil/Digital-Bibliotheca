@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Paper, Typography, Chip } from '@mui/material';
 
 import PropTypes from 'prop-types';
@@ -15,6 +15,33 @@ FileUploader.propTypes = {
 function FileUploader({ label, name, multiple = true, formData, setFormData }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const fileInputRef = useRef(null);
+  const [acceptValue, setAcceptValue] = useState('*')
+
+  useEffect(()=>{
+    switch (formData.mediaType) {
+      case 1:
+        setAcceptValue('image/*');
+        break;
+      case 2:
+        setAcceptValue('video/*');
+        break;
+      case 3:
+        setAcceptValue('audio/*');
+        break;
+      case 4:
+        // You might want to specify document file types (e.g., application/pdf, application/msword)
+        setAcceptValue('application/pdf, application/msword');
+        break;
+      case 5:
+        // You might not need to specify an accept attribute for a link
+        setAcceptValue('');
+        break;
+      default:
+        // Default case, if mediaType does not match any of the above cases
+        setAcceptValue('*');
+        break;
+    }
+  }, [formData.mediaType, setAcceptValue])
 
   const handleFileChange = (event) => {
     const { files } = event.target; // Destructuring assignment
@@ -86,7 +113,7 @@ function FileUploader({ label, name, multiple = true, formData, setFormData }) {
         </Typography>
         <input
           type="file"
-          accept="*"
+          accept={acceptValue}
           name={name}
           ref={fileInputRef}
           style={{ display: 'none' }}
