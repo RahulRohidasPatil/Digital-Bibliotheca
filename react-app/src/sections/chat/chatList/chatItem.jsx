@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 
 /* eslint-disable react/prop-types */
-export default function ChatItem({name, target, isDiscussion }){
-    return(
-        <Box
+export default function ChatItem({ name, target, isDiscussion }) {
+  return (
+    <Box
       sx={{
         my: 3,
         mx: 2.5,
@@ -20,18 +20,27 @@ export default function ChatItem({name, target, isDiscussion }){
         bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
       }}
     >
-                <Icon  icon={isDiscussion ? "healthicons:group-discussion-meetingx3-outline" : "mdi:chat-outline"} fontSize={30} style={{ marginRight: 10 }} />
-                <Typography sx={{mx: 2}} variant='caption'>
-                    <Link href={isDiscussion ? `/discussion/${target}` : `/chats/${target}`} color="inherit" underline="hover" variant="subtitle2" noWrap>
-                        {name}
-                    </Link>
-                </Typography>
-        </Box>
-        
-    )
+      <Icon
+        icon={isDiscussion ? 'healthicons:group-discussion-meetingx3-outline' : 'mdi:chat-outline'}
+        fontSize={30}
+        style={{ marginRight: 10 }}
+      />
+      <Typography sx={{ mx: 2 }} variant="caption">
+        <Link
+          href={isDiscussion ? `/discussion/${target}` : `/chats/${target}`}
+          color="inherit"
+          underline="hover"
+          variant="subtitle2"
+          noWrap
+        >
+          {name}
+        </Link>
+      </Typography>
+    </Box>
+  );
 }
 
 ChatItem.propTypes = {
-    name: PropTypes.any,
-    target: PropTypes.any
+  name: PropTypes.any,
+  target: PropTypes.any,
 };
