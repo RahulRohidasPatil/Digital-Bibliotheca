@@ -62,6 +62,10 @@ export default function ChatList() {
             isDiscussion={item.IsGroupChat.data[0]}
           />
         ))}
+        {
+          //Response to Peer Review By Parsa - Thanks for the suggestion, this works better.
+        }
+        
         {/* 
           Peer Review By Monoraul - No data found for userChats and userGroupChats
         */}
