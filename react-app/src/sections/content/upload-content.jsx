@@ -46,16 +46,13 @@ const UploadContent = () => {
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
 
-    // Validate if the input is a valid number (including negatives)
-    if (type === 'number' && !/^-?\d*\.?\d*$/.test(value)) {
-      // Do not update state if the input is not a valid number
-      return;
+    // Validate if the input is a valid decimal number number 
+    if (type === 'number' && /^\d+$/.test(value) && parseInt(value, 10) > 0) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: type === 'file' ? event.target.files : value,
+      }));
     }
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === 'file' ? e.target.files : value,
-    }));
   };
 
   const rotate = (target) => {
