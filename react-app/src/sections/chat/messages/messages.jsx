@@ -83,7 +83,6 @@ export default function Messages({isDiscussion = false}) {
 
   useEffect(() => {
     scrollToBottom();
-
   }, [pastMessages]);
 
   const scrollToBottom = () => {
