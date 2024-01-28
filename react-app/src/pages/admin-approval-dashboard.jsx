@@ -7,9 +7,15 @@ import { getUnapprovedMedia, verifyMedia } from 'src/apis/admin';
 import ProductCard from '../sections/products/product-card';
 
 export default function AdminMediaApprovalDashboard() {
+  /* 
+  use camelCase for state variable
+  Reference: https://react.dev/learn/state-a-components-memory#anatomy-of-usestate
+  */
   const [PendingApprovalMedia, setPendingApprovalMedia] = useState([]);
 
-
+  /* 
+  Implement Error Handling in case there is an error in the API call
+  */
   const fetchPendingMedia = async () => {
     const data = await getUnapprovedMedia();
     setPendingApprovalMedia(data?.data || []);
