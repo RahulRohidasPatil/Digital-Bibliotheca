@@ -107,7 +107,11 @@ export default function Messages({isDiscussion = false}) {
   }, [user.Id]);
 
   const sendMessage = async () => {
-    if (messageContent == '') return;
+    /* 
+      Peer Review By Monoraul - Strict type checking
+      instead of == we can use ===
+    */
+    if (messageContent === '') return;
     socket.emit('send_message', {
       message: messageContent,
       username: user.Id,

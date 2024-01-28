@@ -24,25 +24,42 @@ export default function ChatList() {
 
   return (
     <Container>
-      <Typography variant="h4" sx={{ mb: 5 }}>
-        Chats
-      </Typography>
-      {userChats.map((item) => (
+    <Typography variant="h4" sx={{ mb: 5 }}>
+      Chats
+    </Typography>
+    {/* 
+      Peer Review By Monoraul - Conditional rendering for userChats and userGroupChats
+      If the userChats and userGroupChats array length is greater than 0 it will render the
+      userChats and userGroupChats other wise It will render Below code
+    */}
+    {userChats.length > 0 &&
+      userChats.map((item) => (
         <ChatItem
           key={item.ChatId}
           target={item.UserId}
           name={`${item.FirstName} ${item.FamilyName}`}
-          isDiscussion = {false}
+          isDiscussion={false}
         />
       ))}
-      {userGroupChats.map((item) => (
+    {userGroupChats.length > 0 &&
+      userGroupChats.map((item) => (
         <ChatItem
-        key={item.ChatId}
-        target={item.MediaId}
-        name={`${item.Title}`}
-        isDiscussion = {item.IsGroupChat.data[0]}
+          key={item.ChatId}
+          target={item.MediaId}
+          name={`${item.Title}`}
+          isDiscussion={item.IsGroupChat.data[0]}
         />
       ))}
-    </Container>
+      {
+        //Response to Peer Review By Parsa - Thanks for the suggestion, this works better.
+      }
+      
+      {/* 
+        Peer Review By Monoraul - No data found for userChats and userGroupChats
+      */}
+    {userChats.length === 0 && userGroupChats.length === 0 && (
+      <Typography variant="body1" fontSize={20}>No chats available.</Typography>
+    )}
+  </Container>
   );
 }
