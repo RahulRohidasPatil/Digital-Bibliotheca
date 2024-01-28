@@ -45,6 +45,13 @@ const UploadContent = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
+
+    // Validate if the input is a valid number (including negatives)
+    if (type === 'number' && !/^-?\d*\.?\d*$/.test(value)) {
+      // Do not update state if the input is not a valid number
+      return;
+    }
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === 'file' ? e.target.files : value,
@@ -192,7 +199,7 @@ const UploadContent = () => {
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
-                min={"0"}
+                inputProps={{ min: "0" }} 
                 required
               />
               {/** Peer Review by Monoraul - Negative input field for price is handled */}
