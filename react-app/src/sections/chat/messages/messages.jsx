@@ -83,7 +83,6 @@ export default function Messages({isDiscussion = false}) {
 
   useEffect(() => {
     scrollToBottom();
-
   }, [pastMessages]);
 
   const scrollToBottom = () => {
@@ -108,11 +107,7 @@ export default function Messages({isDiscussion = false}) {
   }, [user.Id]);
 
   const sendMessage = async () => {
-    /* 
-      Peer Review By Monoraul - Strict type checking
-      instead of == we can use ===
-    */
-    if (messageContent === '') return;
+    if (messageContent == '') return;
     socket.emit('send_message', {
       message: messageContent,
       username: user.Id,
