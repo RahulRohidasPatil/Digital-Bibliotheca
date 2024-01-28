@@ -16,14 +16,22 @@ export default function EditProfile() {
     const [snackbarMessage, setSnackbarMessage] = useState(false);
     const [snackBarSeverity, setSnackBarSeverity] = useState('success');
 
-// The Snackbar component has a severity prop, which can be directly used for the severity. You might not need a separate state for it.
+/*
+Peer Review by Hauva -  
+The Snackbar component has a severity prop, which can be directly used for the severity. You might not need a separate state for it.
+*/
 /* 
+Response to Peer Review by Rahul - 
 State is needed for Snackbar severity because it's variable and depends on success of API call
 */
     async function handleSubmit(event){
         event.preventDefault();
-        // Add proper error handling in your editProfile function and handle errors accordingly in the handleSubmit function.
+        /*
+        Peer Review by Hauva -
+        Add proper error handling in your editProfile function and handle errors accordingly in the handleSubmit function.
+        */
         /* 
+        Response to Peer Review by Rahul - 
         Implemented the advised changes
         */
         try {
