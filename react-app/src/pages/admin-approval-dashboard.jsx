@@ -11,14 +11,21 @@ export default function AdminMediaApprovalDashboard() {
   use camelCase for state variable
   Reference: https://react.dev/learn/state-a-components-memory#anatomy-of-usestate
   */
+ /* Thank you for the suggestion.Will keep this in mind*/
   const [PendingApprovalMedia, setPendingApprovalMedia] = useState([]);
 
   /* 
   Implement Error Handling in case there is an error in the API call
   */
+//  Implemented the advised changes
   const fetchPendingMedia = async () => {
-    const data = await getUnapprovedMedia();
-    setPendingApprovalMedia(data?.data || []);
+    try {
+      const data = await getUnapprovedMedia();
+      setPendingApprovalMedia(data?.data || []);
+  
+    } catch (error) {
+      console.log(error, "error in fetching  unapproved data")
+    }
   };
 
   useEffect(() => {
