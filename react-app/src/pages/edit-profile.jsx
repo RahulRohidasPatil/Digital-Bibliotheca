@@ -6,6 +6,7 @@ import { useUser } from 'src/hooks/use-user';
 export default function EditProfile() {
     const { user } = useUser();
     // It's a good practice to initialize your state with default values. 
+    /* Thank You. */
     const [firstName, setFirstName] = useState(user?.FirstName);
     const [familyName, setFamilyName] = useState(user?.FamilyName);
     const [phoneNumber, setPhoneNumber] = useState(user?.PhoneNumber);
@@ -16,14 +17,26 @@ export default function EditProfile() {
     const [snackBarSeverity, setSnackBarSeverity] = useState('success');
 
 // The Snackbar component has a severity prop, which can be directly used for the severity. You might not need a separate state for it.
+/* 
+State is needed for Snackbar severity because it's variable and depends on success of API call
+*/
     async function handleSubmit(event){
         event.preventDefault();
         // Add proper error handling in your editProfile function and handle errors accordingly in the handleSubmit function.
-        await editProfile(user.Id, firstName, familyName, phoneNumber);
-        localStorage.setItem("user", JSON.stringify({ ...user, FirstName: firstName, FamilyName: familyName, PhoneNumber: phoneNumber }))
-        setSnackbarMessage("Profile Updated Successfully");
-        setSnackBarSeverity("success");
-        setShowSnackbar(true);
+        /* 
+        Implemented the advised changes
+        */
+        try {
+            await editProfile(user.Id, firstName, familyName, phoneNumber);
+            localStorage.setItem("user", JSON.stringify({ ...user, FirstName: firstName, FamilyName: familyName, PhoneNumber: phoneNumber }))
+            setSnackbarMessage("Profile Updated Successfully");
+            setSnackBarSeverity("success");
+        } catch (error) {
+            setSnackbarMessage("Something Went Wrong while updating profile");
+            setSnackBarSeverity("error");
+        } finally {
+            setShowSnackbar(true);
+        }
     };
 
     return (
