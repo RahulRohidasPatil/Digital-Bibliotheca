@@ -45,10 +45,15 @@ const UploadContent = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === 'file' ? e.target.files : value,
-    }));
+
+    // Validate if the input is a valid decimal number number 
+    if (type === 'number' && /^\d+$/.test(value) && parseInt(value, 10) > 0) {
+      setFormData((prevData) => ({
+        ...prevData,
+        // eslint-disable-next-line no-restricted-globals
+        [name]: type === 'file' ? event.target.files : value,
+      }));
+    }
   };
 
   const rotate = (target) => {
@@ -177,6 +182,11 @@ const UploadContent = () => {
             </div>
 
             <div>
+              {/*
+              (Amar Sharma)
+              Peer Review for Monoraul -  Handle negative input for price field 
+              */}
+
               <TextField
                 key={resetKey}
                 label="Price"
@@ -187,8 +197,10 @@ const UploadContent = () => {
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
+                inputProps={{ inputProps: {min: 0} }} 
                 required
               />
+              {/** Peer Review Response by Monoraul - Negative input field for price is handled */}
             </div>
             <div
               style={{

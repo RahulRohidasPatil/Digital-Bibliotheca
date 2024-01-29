@@ -18,7 +18,26 @@ var production_config = {
 
 var environment = process.env.ENVIRONMENT;
 
-var config = environment == "production" ? production_config : local_config;
+/*
+  Peer Review for Amar's code by Parsa
+    This is all good for now, but in case we go for multiple environments, like staging,
+    its better to use switch-case to set environment configs.
+
+    Peer Review Reply (Amar) - Okay I have added this check in switch case below now.Thanks for pointing it out. 
+*/
+
+var config = null;
+switch (environment) {
+  case "production":
+    config = production_config;
+    break;
+  case "local":
+    config = local_config;
+    break;
+  default:
+    config = local_config;
+    break;
+}
 
 var connection = mysql.createConnection(config);
 
