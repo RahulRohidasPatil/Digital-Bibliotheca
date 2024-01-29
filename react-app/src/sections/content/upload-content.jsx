@@ -50,6 +50,7 @@ const UploadContent = () => {
     if (type === 'number' && /^\d+$/.test(value) && parseInt(value, 10) > 0) {
       setFormData((prevData) => ({
         ...prevData,
+        // eslint-disable-next-line no-restricted-globals
         [name]: type === 'file' ? event.target.files : value,
       }));
     }

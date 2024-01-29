@@ -51,7 +51,7 @@ export default function ChatList() {
         />
       ))}
       {
-        //Response to Peer Review By Parsa - Thanks for the suggestion, this works better.
+        // Response to Peer Review By Parsa - Thanks for the suggestion, this works better.
       }
       
       {/* 
