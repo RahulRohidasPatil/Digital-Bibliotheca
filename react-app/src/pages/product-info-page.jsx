@@ -29,6 +29,7 @@ export default function ProductInfoPage() {
   const [showReportMediaDialog, setShowReportMediaDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("")
+  const [starRating, setStarRating] = useState(0)
 
   const [reportReasoon, setReportReason] = useState('');
   const router = useRouter();
@@ -206,13 +207,21 @@ export default function ProductInfoPage() {
               Report Media
             </Button>
             {showDiscussionButton && <form onSubmit={onAddComment}>
+              <Rating
+                name="star-rating"
+                value={starRating}
+                onChange={(_event, newValue) => {
+                  setStarRating(newValue);
+                }}
+                sx={{ mt: 4 }}
+              />
               <TextField
                 label="Write Your Comment"
                 type="text"
                 value={comment}
                 onChange={e => setComment(e.target.value)}
                 fullWidth
-                margin="normal"
+                margin="dense"
               />
               <LoadingButton
                 type="submit"
