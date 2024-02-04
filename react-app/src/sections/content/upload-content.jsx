@@ -182,14 +182,14 @@ const UploadContent = () => {
               <TextField
                 key={resetKey}
                 label="Price"
-                type="number"
+                type="text"
                 name="price"
                 value={formData.price}
                 placeholder="Enter Price"
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
-                inputProps={{ min: 0 }}
+                inputProps={{ min: 0, inputMode: 'decimal', pattern: '^\\d+(\\.\\d{0,2})?$', }}
                 required
               />
               {/** Peer Review Response by Monoraul - Negative input field for price is handled */}
