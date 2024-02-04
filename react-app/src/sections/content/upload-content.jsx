@@ -189,7 +189,7 @@ const UploadContent = () => {
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
-                inputProps={{ inputProps: { min: 0 } }}
+                inputProps={{ min: 0 }}
                 required
               />
               {/** Peer Review Response by Monoraul - Negative input field for price is handled */}
