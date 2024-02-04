@@ -72,6 +72,7 @@ const UploadContent = () => {
     setSnackbarMessage(text);
     setSnackBarSeverity(severity);
     showSnackbar(show);
+    setLoading(false);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,24 +88,19 @@ const UploadContent = () => {
       handleShowSnackbar('Please Select Files', 'error', true);
     }
 
-    if (formData.mediaType === 1) {
-      setLoading(true);
-
+    else {
       const img = formData.demoFile[0];
       await watermark([img])
         .blob(rotate)
         .then(async (waterMarkedImage) => {
           await setFormData({ ...formData, demoFile: [waterMarkedImage] });
-          await setToUpload(true);
         });
-    } else {
       uploadMedia();
     }
   };
 
   const uploadMedia = () => {
     setLoading(true);
-
     addMedia(formData)
       .then((response) => {
         console.log(response.data);
@@ -242,6 +238,7 @@ const UploadContent = () => {
                 setFormData={setFormData}
                 name="demoFile"
                 multiple={false}
+                isDemo
               />
             </div>
             <div>
