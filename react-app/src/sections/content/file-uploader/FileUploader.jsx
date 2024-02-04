@@ -20,6 +20,7 @@ function FileUploader({ label, name, multiple = true, formData, setFormData, isD
 
   useEffect(()=>{
     if(!isDemo){
+      setUploadedFiles([])
       switch (formData.mediaType) {
         case 1:
           setAcceptValue('image/*');
@@ -43,6 +44,9 @@ function FileUploader({ label, name, multiple = true, formData, setFormData, isD
           setAcceptValue('*');
           break;
       }
+    }
+    else{
+      setAcceptValue('image/*');
     }
   }, [formData.mediaType, setAcceptValue, isDemo])
 
