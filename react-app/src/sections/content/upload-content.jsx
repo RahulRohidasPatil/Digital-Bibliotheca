@@ -45,15 +45,11 @@ const UploadContent = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-
-    // Validate if the input is a valid decimal number number 
-    if (type === 'number' && /^\d+$/.test(value) && parseInt(value, 10) > 0) {
-      setFormData((prevData) => ({
-        ...prevData,
-        // eslint-disable-next-line no-restricted-globals
-        [name]: type === 'file' ? event.target.files : value,
-      }));
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      // eslint-disable-next-line no-restricted-globals
+      [name]: type === 'file' ? event.target.files : value,
+    }));
   };
 
   const rotate = (target) => {
@@ -197,7 +193,7 @@ const UploadContent = () => {
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
-                inputProps={{ inputProps: {min: 0} }} 
+                inputProps={{ inputProps: { min: 0 } }}
                 required
               />
               {/** Peer Review Response by Monoraul - Negative input field for price is handled */}
