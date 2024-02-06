@@ -45,15 +45,11 @@ const UploadContent = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-
-    // Validate if the input is a valid decimal number number 
-    if (type === 'number' && /^\d+$/.test(value) && parseInt(value, 10) > 0) {
-      setFormData((prevData) => ({
-        ...prevData,
-        // eslint-disable-next-line no-restricted-globals
-        [name]: type === 'file' ? event.target.files : value,
-      }));
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      // eslint-disable-next-line no-restricted-globals
+      [name]: type === 'file' ? event.target.files : value,
+    }));
   };
 
   const rotate = (target) => {
@@ -76,6 +72,7 @@ const UploadContent = () => {
     setSnackbarMessage(text);
     setSnackBarSeverity(severity);
     showSnackbar(show);
+    setLoading(false);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,24 +88,19 @@ const UploadContent = () => {
       handleShowSnackbar('Please Select Files', 'error', true);
     }
 
-    if (formData.mediaType === 1) {
-      setLoading(true);
-
+    else {
       const img = formData.demoFile[0];
       await watermark([img])
         .blob(rotate)
         .then(async (waterMarkedImage) => {
           await setFormData({ ...formData, demoFile: [waterMarkedImage] });
-          await setToUpload(true);
         });
-    } else {
       uploadMedia();
     }
   };
 
   const uploadMedia = () => {
     setLoading(true);
-
     addMedia(formData)
       .then((response) => {
         console.log(response.data);
@@ -190,14 +182,14 @@ const UploadContent = () => {
               <TextField
                 key={resetKey}
                 label="Price"
-                type="number"
+                type="text"
                 name="price"
                 value={formData.price}
                 placeholder="Enter Price"
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
-                inputProps={{ inputProps: {min: 0} }} 
+                inputProps={{ min: 0, inputMode: 'decimal', pattern: '^\\d+(\\.\\d{0,2})?$', }}
                 required
               />
               {/** Peer Review Response by Monoraul - Negative input field for price is handled */}
@@ -246,6 +238,7 @@ const UploadContent = () => {
                 setFormData={setFormData}
                 name="demoFile"
                 multiple={false}
+                isDemo
               />
             </div>
             <div>
