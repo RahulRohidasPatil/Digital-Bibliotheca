@@ -29,7 +29,7 @@ export default function ProductInfoPage() {
   const [showReportMediaDialog, setShowReportMediaDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("")
-  const [starRating, setStarRating] = useState(0)
+  const [stars, setStars] = useState(0)
 
   const [reportReasoon, setReportReason] = useState('');
   const router = useRouter();
@@ -100,7 +100,7 @@ export default function ProductInfoPage() {
   function onAddComment(e) {
     e.preventDefault()
     setLoading(true)
-    addComment({ customerId: user.Id, mediaId: id, comment })
+    addComment({ customerId: user.Id, mediaId: id, stars, comment })
     getByID(id).then((response) => setproduct(response.data.data[0]));
     setLoading(false)
   }
@@ -208,12 +208,10 @@ export default function ProductInfoPage() {
             </Button>
             {showDiscussionButton && <form onSubmit={onAddComment}>
               <Rating
-                name="star-rating"
-                value={starRating}
-                onChange={(_event, newValue) => {
-                  setStarRating(newValue);
-                }}
-                sx={{ mt: 4 }}
+                value={stars}
+                onChange={e => setStars(e.target.value)}
+                size='small'
+                sx={{ mt: 2 }}
               />
               <TextField
                 label="Write Your Comment"
@@ -221,13 +219,14 @@ export default function ProductInfoPage() {
                 value={comment}
                 onChange={e => setComment(e.target.value)}
                 fullWidth
-                margin="dense"
+                sx={{ my: 1 }}
               />
               <LoadingButton
                 type="submit"
                 variant="contained"
                 loading={loading}
                 style={{ padding: '10px 32px' }}
+                disabled={!comment}
               >
                 Submit
               </LoadingButton>
