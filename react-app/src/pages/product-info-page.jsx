@@ -156,7 +156,7 @@ export default function ProductInfoPage() {
             <Typography sx={{ marginTop: 2, fontSize: 20 }} variant="caption" component="div">
               Reviews:
             </Typography>
-            <Rating value={5} readOnly />
+            <Rating value={product?.averageStars || 0} readOnly />
             <Box my={3} p={3} component={Paper} elevation={3}>
               <Typography variant="h5" gutterBottom>
                 Comments
@@ -166,6 +166,7 @@ export default function ProductInfoPage() {
                   <Box display="flex" alignItems="center">
                     <Avatar src={comment.avatar} alt={comment.user} />
                     <Box ml={2}>
+                      <Rating readOnly value={commentObj.stars} />
                       <Typography variant="subtitle1">{commentObj.CustomerId}</Typography>
                       <Typography variant="body1">{commentObj.CommentText}</Typography>
                     </Box>
