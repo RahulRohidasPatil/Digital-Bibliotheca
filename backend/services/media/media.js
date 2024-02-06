@@ -1,5 +1,6 @@
 var connection = require("../../utils/connection");
 const formidable = require("express-formidable");
+const axios = require("axios");
 
 const {
   applyFiltersOnQuery,
@@ -55,8 +56,11 @@ const media = {
         response[0].DemoFilePath = null;
       }
 
-      const commentsResponse = await connection.query("select * from comment where MediaId=?", [req.params.id])
-      response[0].comments = commentsResponse
+      const commentsResponse = await connection.query(
+        "select * from comment where MediaId=?",
+        [req.params.id]
+      );
+      response[0].comments = commentsResponse;
 
       res.status(200).send({ data: response });
     } catch (e) {
@@ -245,18 +249,83 @@ const media = {
     }
   },
   addComment: async function (req, res) {
-    const { customerId, mediaId, comment } = req.body
+    const { customerId, mediaId, comment } = req.body;
     try {
-      if (!customerId || !mediaId || !comment) throw new Error("customerId, mediaId, comment cannot be empty")
+      if (!customerId || !mediaId || !comment)
+        throw new Error("customerId, mediaId, comment cannot be empty");
 
-      const query="insert into comment(CustomerId,MediaId,CommentText,CreatedDate)values(?,?,?,?)"
+      const query =
+        "insert into comment(CustomerId,MediaId,CommentText,CreatedDate)values(?,?,?,?)";
       await connection.query(query, [customerId, mediaId, comment, new Date()]);
-      res.status(200).send({ message: "Comment Added Successfully" })
+      res.status(200).send({ message: "Comment Added Successfully" });
     } catch (error) {
       console.log("Error Adding Comment", error.message);
       res.status(500).send({ message: "Internal Server Error" });
     }
-  }
+  },
+
+  generateTags: async function (req, res) {
+    formidable({ multiples: true })(req, res, async (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+      try {
+        //Main files
+        // if (!Array.isArray(req.files.Files))
+        //   req.files.Files = [req.files.Files];
+
+        // Call Google Vision API
+
+        // Make the POST request
+        axios
+          .post(
+            `https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCFoFQwVFStfmH6ICL-awLi8OpIKDKqIpg`,
+            {
+              image: {
+                content: req.files.Files,
+              },
+              features: [
+                {
+                  type: "LABEL_DETECTION", // You can customize the feature type based on your needs
+                  maxResults: 5, // Adjust based on how many labels you want
+                },
+              ],
+            }
+          )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Google Vision API Response:", data);
+            // Handle the response data as needed
+          })
+          .catch((error) => {
+            console.error(
+              "Error during Google Vision API request:",
+              error.message
+            );
+            // Handle errors appropriately
+          });
+
+        // if (insertId) {
+        //   res
+        //     .status(200)
+        //     .send({ message: "Upload Successful", mediaId: insertId });
+        // } else {
+        //   res
+        //     .status(500)
+        //     .send({ message: "Error Uploading Media please try again!!" });
+        // }
+      } catch (e) {
+        console.log("Error", e);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+    });
+  },
 };
 
 module.exports = media;

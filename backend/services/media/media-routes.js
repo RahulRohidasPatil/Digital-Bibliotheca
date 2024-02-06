@@ -13,5 +13,6 @@ app.patch("/reactivate/:id", mediaObject.reactivateMedia);
 app.get("/getuploadedmedia/:ownerId", mediaObject.getByUserId);
 app.post("/reportmedia", mediaObject.reportMedia);
 app.post("/addComment", mediaObject.addComment)
+app.post("/generateTags", mediaObject.generateTags)
 
 module.exports = app;
