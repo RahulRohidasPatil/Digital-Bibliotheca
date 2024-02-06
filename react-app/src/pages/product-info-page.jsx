@@ -29,6 +29,7 @@ export default function ProductInfoPage() {
   const [showReportMediaDialog, setShowReportMediaDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("")
+  const [stars, setStars] = useState(0)
 
   const [reportReasoon, setReportReason] = useState('');
   const router = useRouter();
@@ -99,7 +100,7 @@ export default function ProductInfoPage() {
   function onAddComment(e) {
     e.preventDefault()
     setLoading(true)
-    addComment({ customerId: user.Id, mediaId: id, comment })
+    addComment({ customerId: user.Id, mediaId: id, stars, comment })
     getByID(id).then((response) => setproduct(response.data.data[0]));
     setLoading(false)
   }
@@ -155,7 +156,7 @@ export default function ProductInfoPage() {
             <Typography sx={{ marginTop: 2, fontSize: 20 }} variant="caption" component="div">
               Reviews:
             </Typography>
-            <Rating value={5} readOnly />
+            <Rating value={product?.averageStars || 0} readOnly />
             <Box my={3} p={3} component={Paper} elevation={3}>
               <Typography variant="h5" gutterBottom>
                 Comments
@@ -165,6 +166,7 @@ export default function ProductInfoPage() {
                   <Box display="flex" alignItems="center">
                     <Avatar src={comment.avatar} alt={comment.user} />
                     <Box ml={2}>
+                      <Rating readOnly value={commentObj.stars} />
                       <Typography variant="subtitle1">{commentObj.CustomerId}</Typography>
                       <Typography variant="body1">{commentObj.CommentText}</Typography>
                     </Box>
@@ -206,19 +208,26 @@ export default function ProductInfoPage() {
               Report Media
             </Button>
             {showDiscussionButton && <form onSubmit={onAddComment}>
+              <Rating
+                value={stars}
+                onChange={e => setStars(e.target.value)}
+                size='small'
+                sx={{ mt: 2 }}
+              />
               <TextField
                 label="Write Your Comment"
                 type="text"
                 value={comment}
                 onChange={e => setComment(e.target.value)}
                 fullWidth
-                margin="normal"
+                sx={{ my: 1 }}
               />
               <LoadingButton
                 type="submit"
                 variant="contained"
                 loading={loading}
                 style={{ padding: '10px 32px' }}
+                disabled={!comment}
               >
                 Submit
               </LoadingButton>
