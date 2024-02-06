@@ -51,15 +51,16 @@ export const addMedia = ({
   deliveryMethod,
 }) => {
   const formData = new FormData();
-
+  
   formData.append('Title', title);
   formData.append('Description', description);
   formData.append('MediaType', mediaType); // Assuming mediaType is dynamic
-  formData.append('IsApproved', 1); // Assuming a default value
+  formData.append('IsApproved', 0); // Assuming a default value
   formData.append('Price', price);
   formData.append('IsActive', 1); // Assuming a default value
   formData.append('CreatedDate', '2023-12-12'); // Assuming a default value
   formData.append('DeliveryMethod', deliveryMethod);
+  formData.append('IsReported', 0);
 
   uploadFiles.forEach((file) => {
     formData.append('Files', file);
@@ -81,4 +82,5 @@ export const reportMedia = (mediaId, userId, reason) => {
   return axiosInstance().post('/media/reportmedia', body);
 };
 
-export const addComment = ({ customerId, mediaId, comment }) => axiosInstance().post("/media/addComment", { customerId, mediaId, comment })
+export const addComment = ({ customerId, mediaId, stars, comment }) =>
+  axiosInstance().post("/media/addComment", { customerId, mediaId, stars, comment })
