@@ -58,6 +58,9 @@ const media = {
       const commentsResponse = await connection.query("select * from comment where MediaId=?", [req.params.id])
       response[0].comments = commentsResponse
 
+      const averageStarsResponse = await connection.query("SELECT AVG(stars) as averageStars FROM comment WHERE MediaId = ?",[req.params.id])
+      response[0].averageStars = Math.round(averageStarsResponse[0].averageStars)
+
       res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
