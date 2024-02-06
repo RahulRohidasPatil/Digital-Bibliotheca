@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 
 import DashboardLayout from 'src/layouts/dashboard';
-import MessagesPage from 'src/pages/messages';
+import MessagesPage from 'src/pages/Messages';
 import ChatListPage from 'src/pages/chat-list';
 import MyMediaPage from 'src/pages/my-media';
 import AdminApprovalDashboard from 'src/pages/admin-approval-dashboard';

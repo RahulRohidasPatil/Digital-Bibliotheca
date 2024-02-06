@@ -76,20 +76,22 @@ const media = {
       }
       let insertId = null;
       try {
+        let now = new Date();
         let query =
-          "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
+          "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`,`DemoFilePath`,`DeliveryMethod`, `IsReported`) VALUES (?) ";
         const values = [
           req.user.Id,
           req.fields.Title,
           req.fields.Description,
           req.fields.MediaType,
-          req.fields.IsApproved == 0,
+          req.fields.IsApproved,
           req.fields.Price,
           parseInt(req.fields.IsActive || 0),
-          req.fields.CreatedDate,
-
+          now.toISOString().split('T')[0],
+          
           req.fields.DemoFilePath,
           req.fields.DeliveryMethod,
+          req.fields.IsReported
         ];
         let response = await connection.query(query, [values]);
         insertId = response.insertId;

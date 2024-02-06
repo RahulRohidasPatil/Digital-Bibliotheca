@@ -8,16 +8,16 @@ import ProductCard from '../sections/products/product-card';
 
 export default function AdminMediaApprovalDashboard() {
   /* 
-  use camelCase for state variable
+  Peer Review by Rahul - use camelCase for state variable
   Reference: https://react.dev/learn/state-a-components-memory#anatomy-of-usestate
   */
- /*Updated the code. Thank you for the suggestion.Will keep this in mind*/
-  const [pendingApprovalMedia, setPendingApprovalMedia] = useState([]);
+ /* Response to Peer Review by Hauva - Thank you for the suggestion.Will keep this in mind*/
+  const [PendingApprovalMedia, setPendingApprovalMedia] = useState([]);
 
   /* 
-  Implement Error Handling in case there is an error in the API call
+  Peer Review by Rahul - Implement Error Handling in case there is an error in the API call
   */
- //  Implemented the advised changes
+//  Response to Peer Review by Hauva - Implemented the advised changes
   const fetchPendingMedia = async () => {
     try {
       const data = await getUnapprovedMedia();
