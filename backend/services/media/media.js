@@ -1,6 +1,9 @@
 var connection = require("../../utils/connection");
 const formidable = require("express-formidable");
 const axios = require("axios");
+const fs = require("fs");
+const vision = require('@google-cloud/vision');
+const client = new vision.ImageAnnotatorClient({keyFilename:'services/media/braided-circuit-412812-0eee33305eeb.json'});
 
 const {
   applyFiltersOnQuery,
@@ -87,11 +90,11 @@ const media = {
           req.fields.IsApproved,
           req.fields.Price,
           parseInt(req.fields.IsActive || 0),
-          now.toISOString().split('T')[0],
-          
+          now.toISOString().split("T")[0],
+
           req.fields.DemoFilePath,
           req.fields.DeliveryMethod,
-          req.fields.IsReported
+          req.fields.IsReported,
         ];
         let response = await connection.query(query, [values]);
         insertId = response.insertId;
@@ -273,55 +276,34 @@ const media = {
         res.status(500).send({ message: "Internal Server Error" });
       }
       try {
-        //Main files
-        // if (!Array.isArray(req.files.Files))
-        //   req.files.Files = [req.files.Files];
+        
+        // Calling Google Vision API
 
-        // Call Google Vision API
+        const imageFile = req.files.Files;
+
+        // Read the image file as binary data
+        const imageBuffer = fs.readFileSync(imageFile.path);
+        // Convert binary data to base64
+        const base64Image = imageBuffer.toString("base64");
 
         // Make the POST request
-        axios
-          .post(
-            `https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCFoFQwVFStfmH6ICL-awLi8OpIKDKqIpg`,
-            {
-              image: {
-                content: req.files.Files,
-              },
-              features: [
-                {
-                  type: "LABEL_DETECTION", // You can customize the feature type based on your needs
-                  maxResults: 5, // Adjust based on how many labels you want
-                },
-              ],
-            }
-          )
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Google Vision API Response:", data);
-            // Handle the response data as needed
-          })
-          .catch((error) => {
-            console.error(
-              "Error during Google Vision API request:",
-              error.message
-            );
-            // Handle errors appropriately
-          });
+        const [result] = await client.labelDetection(
+          {
+            image: { content: base64Image },
+          }
+        );
+        
+          let tags = []
 
-        // if (insertId) {
-        //   res
-        //     .status(200)
-        //     .send({ message: "Upload Successful", mediaId: insertId });
-        // } else {
-        //   res
-        //     .status(500)
-        //     .send({ message: "Error Uploading Media please try again!!" });
-        // }
+        if(result?.labelAnnotations?.length){
+          for(const label of result?.labelAnnotations){
+            tags.push(label.description)
+          }
+        }
+        res
+            .status(200)
+            .send({ message: "Tags Generated Successful", tags: tags });
+       
       } catch (e) {
         console.log("Error", e);
         res.status(500).send({ message: "Internal Server Error" });

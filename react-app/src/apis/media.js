@@ -13,7 +13,12 @@ export const getAllMedia = (sortOption, filters) => {
   if (filters) url += `&filters=${filters}`;
   return axiosInstance().get(url);
 };
-
+export const generateTags = (imageFile) =>{
+  console.log("geree",imageFile)
+  const formData = new FormData();
+  formData.append('Files', imageFile);
+  return axiosInstance().post(`/media/generateTags`,formData)
+} ;
 export const updateMedia = (id, media) => {
   axiosInstance().put(`/media/update/${id}`, media);
 };
@@ -72,6 +77,7 @@ export const addMedia = ({
 
   return axiosInstance().post('/media/add', formData);
 };
+
 
 export const reportMedia = (mediaId, userId, reason) => {
   const body = {
