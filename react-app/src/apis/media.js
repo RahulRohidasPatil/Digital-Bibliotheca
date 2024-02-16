@@ -88,4 +88,5 @@ export const reportMedia = (mediaId, userId, reason) => {
   return axiosInstance().post('/media/reportmedia', body);
 };
 
-export const addComment = ({ customerId, mediaId, comment }) => axiosInstance().post("/media/addComment", { customerId, mediaId, comment })
+export const addComment = ({ customerId, mediaId, stars, comment }) =>
+  axiosInstance().post("/media/addComment", { customerId, mediaId, stars, comment })
