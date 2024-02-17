@@ -1,5 +1,9 @@
 var connection = require("../../utils/connection");
 const formidable = require("express-formidable");
+const axios = require("axios");
+const fs = require("fs");
+const vision = require('@google-cloud/vision');
+const client = new vision.ImageAnnotatorClient({keyFilename:'services/media/braided-circuit-412812-0eee33305eeb.json'});
 
 const {
   applyFiltersOnQuery,
@@ -55,8 +59,11 @@ const media = {
         response[0].DemoFilePath = null;
       }
 
-      const commentsResponse = await connection.query("select * from comment where MediaId=?", [req.params.id])
-      response[0].comments = commentsResponse
+      const commentsResponse = await connection.query(
+        "select * from comment where MediaId=?",
+        [req.params.id]
+      );
+      response[0].comments = commentsResponse;
 
       const averageStarsResponse = await connection.query("SELECT AVG(stars) as averageStars FROM comment WHERE MediaId = ?", [req.params.id])
       response[0].averageStars = Math.round(averageStarsResponse[0].averageStars)
@@ -86,11 +93,11 @@ const media = {
           req.fields.IsApproved,
           req.fields.Price,
           parseInt(req.fields.IsActive || 0),
-          now.toISOString().split('T')[0],
-          
+          now.toISOString().split("T")[0],
+
           req.fields.DemoFilePath,
           req.fields.DeliveryMethod,
-          req.fields.IsReported
+          req.fields.IsReported,
         ];
         let response = await connection.query(query, [values]);
         insertId = response.insertId;
@@ -261,7 +268,49 @@ const media = {
       console.log("Error Adding Comment", error.message);
       res.status(500).send({ message: "Internal Server Error" });
     }
-  }
+  },
+
+  generateTags: async function (req, res) {
+    formidable({ multiples: true })(req, res, async (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+      try {
+        
+        // Calling Google Vision API
+
+        const imageFile = req.files.Files;
+
+        // Read the image file as binary data
+        const imageBuffer = fs.readFileSync(imageFile.path);
+        // Convert binary data to base64
+        const base64Image = imageBuffer.toString("base64");
+
+        // Make the POST request
+        const [result] = await client.labelDetection(
+          {
+            image: { content: base64Image },
+          }
+        );
+        
+          let tags = []
+
+        if(result?.labelAnnotations?.length){
+          for(const label of result?.labelAnnotations){
+            tags.push(label.description)
+          }
+        }
+        res
+            .status(200)
+            .send({ message: "Tags Generated Successful", tags: tags });
+       
+      } catch (e) {
+        console.log("Error", e);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+    });
+  },
 };
 
 module.exports = media;

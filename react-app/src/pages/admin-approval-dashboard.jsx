@@ -22,11 +22,12 @@ export default function AdminMediaApprovalDashboard() {
     try {
       const data = await getUnapprovedMedia();
       setPendingApprovalMedia(data?.data || []);
-  
+ 
     } catch (error) {
       console.log(error, "error in fetching  unapproved data")
     }
   };
+
 
   useEffect(() => {
     fetchPendingMedia();
@@ -48,8 +49,8 @@ export default function AdminMediaApprovalDashboard() {
         Media Approval Dashboard
       </Typography>
       <Grid container spacing={3}>
-        {PendingApprovalMedia.length ? (
-          PendingApprovalMedia.map((media) => (
+        {pendingApprovalMedia.length ? (
+          pendingApprovalMedia.map((media) => (
             <Grid item key={media.Id} xs={12} sm={6} md={4}>
               <ProductCard
                 product={media}
