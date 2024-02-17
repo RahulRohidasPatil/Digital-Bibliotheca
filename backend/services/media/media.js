@@ -1,5 +1,9 @@
 var connection = require("../../utils/connection");
 const formidable = require("express-formidable");
+const axios = require("axios");
+const fs = require("fs");
+const vision = require('@google-cloud/vision');
+const client = new vision.ImageAnnotatorClient({keyFilename:'services/media/braided-circuit-412812-0eee33305eeb.json'});
 
 const {
   applyFiltersOnQuery,
@@ -55,6 +59,15 @@ const media = {
         response[0].DemoFilePath = null;
       }
 
+      const commentsResponse = await connection.query(
+        "select * from comment where MediaId=?",
+        [req.params.id]
+      );
+      response[0].comments = commentsResponse;
+
+      const averageStarsResponse = await connection.query("SELECT AVG(stars) as averageStars FROM comment WHERE MediaId = ?", [req.params.id])
+      response[0].averageStars = Math.round(averageStarsResponse[0].averageStars)
+
       res.status(200).send({ data: response });
     } catch (e) {
       console.log("Error", e);
@@ -69,20 +82,22 @@ const media = {
       }
       let insertId = null;
       try {
+        let now = new Date();
         let query =
-          "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`,`DemoFilePath`,`DeliveryMethod`) VALUES (?) ";
+          "insert into media(`OwnerId`,`Title`,`Description`,`MediaType`,`IsApproved`,`Price`,`IsActive`,`CreatedDate`,`DemoFilePath`,`DeliveryMethod`, `IsReported`) VALUES (?) ";
         const values = [
           req.user.Id,
           req.fields.Title,
           req.fields.Description,
           req.fields.MediaType,
-          req.fields.IsApproved == 0,
+          req.fields.IsApproved,
           req.fields.Price,
           parseInt(req.fields.IsActive || 0),
-          req.fields.CreatedDate,
+          now.toISOString().split("T")[0],
 
           req.fields.DemoFilePath,
           req.fields.DeliveryMethod,
+          req.fields.IsReported,
         ];
         let response = await connection.query(query, [values]);
         insertId = response.insertId;
@@ -240,6 +255,61 @@ const media = {
       console.log("Error", error);
       res.status(500).send({ message: "Internal Server Error" });
     }
+  },
+  addComment: async function (req, res) {
+    const { customerId, mediaId, stars, comment } = req.body
+    try {
+      if (!customerId || !mediaId || !stars || !comment) throw new Error("customerId, mediaId, sars, comment cannot be empty")
+
+      const query="insert into comment(CustomerId,MediaId,stars,CommentText,CreatedDate)values(?,?,?,?,?)"
+      await connection.query(query, [customerId, mediaId, stars, comment, new Date()]);
+      res.status(200).send({ message: "Comment Added Successfully" })
+    } catch (error) {
+      console.log("Error Adding Comment", error.message);
+      res.status(500).send({ message: "Internal Server Error" });
+    }
+  },
+
+  generateTags: async function (req, res) {
+    formidable({ multiples: true })(req, res, async (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+      try {
+        
+        // Calling Google Vision API
+
+        const imageFile = req.files.Files;
+
+        // Read the image file as binary data
+        const imageBuffer = fs.readFileSync(imageFile.path);
+        // Convert binary data to base64
+        const base64Image = imageBuffer.toString("base64");
+
+        // Make the POST request
+        const [result] = await client.labelDetection(
+          {
+            image: { content: base64Image },
+          }
+        );
+        
+          let tags = []
+
+        if(result?.labelAnnotations?.length){
+          for(const label of result?.labelAnnotations){
+            tags.push(label.description)
+          }
+        }
+        res
+            .status(200)
+            .send({ message: "Tags Generated Successful", tags: tags });
+       
+      } catch (e) {
+        console.log("Error", e);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+    });
   },
 };
 

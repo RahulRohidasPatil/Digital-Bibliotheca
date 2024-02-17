@@ -1,11 +1,11 @@
-import { Box, Button, Card, Chip, Container, Grid, Rating, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, Chip, Container, Divider, Grid, Paper, Rating, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 import { useUser } from 'src/hooks/use-user';
 import { purchaseMedia } from 'src/apis/purchase';
 
-import { isOwner, hasPurchased, getByID, reportMedia } from 'src/apis/media';
+import { isOwner, hasPurchased, getByID, reportMedia, addComment } from 'src/apis/media';
 import { useRouter } from 'src/routes/hooks';
 
 import Dialog from '@mui/material/Dialog';
@@ -28,6 +28,8 @@ export default function ProductInfoPage() {
   const [showDiscussionButton, setShowDiscussionButton] = useState(false);
   const [showReportMediaDialog, setShowReportMediaDialog] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [comment, setComment] = useState("")
+  const [stars, setStars] = useState(0)
 
   const [reportReasoon, setReportReason] = useState('');
   const router = useRouter();
@@ -95,6 +97,14 @@ export default function ProductInfoPage() {
     setShowReportMediaDialog(true);
   };
 
+  function onAddComment(e) {
+    e.preventDefault()
+    setLoading(true)
+    addComment({ customerId: user.Id, mediaId: id, stars, comment })
+    getByID(id).then((response) => setproduct(response.data.data[0]));
+    setLoading(false)
+  }
+
   return (
     <>
       <Helmet>
@@ -146,25 +156,28 @@ export default function ProductInfoPage() {
             <Typography sx={{ marginTop: 2, fontSize: 20 }} variant="caption" component="div">
               Reviews:
             </Typography>
-            <Rating value={5} readOnly />
-            <Box
-              sx={{
-                width: '400px', // Adjust width as needed
-                height: '150px', // Adjust height as needed
-                borderRadius: '10px', // Adjust border-radius for rounded corners
-                backgroundColor: '#f0f0f0', // Placeholder color
-                marginTop: '10px', // Adjust margin as needed
-              }}
-            />
-            <Box
-              sx={{
-                width: '400px', // Adjust width as needed
-                height: '150px', // Adjust height as needed
-                borderRadius: '10px', // Adjust border-radius for rounded corners
-                backgroundColor: '#f0f0f0', // Placeholder color
-                marginTop: '10px', // Adjust margin as needed
-              }}
-            />
+            <Rating value={product?.averageStars || 0} readOnly />
+            <Box my={3} p={3} component={Paper} elevation={3}>
+              <Typography variant="h5" gutterBottom>
+                Comments
+              </Typography>
+              {product?.comments.map((commentObj) => (
+                <Box key={commentObj.Id} mb={3}>
+                  <Box display="flex" alignItems="center">
+                    <Avatar src={comment.avatar} alt={comment.user} />
+                    <Box ml={2}>
+                      <Rating readOnly value={commentObj.stars} />
+                      <Typography variant="subtitle1">{commentObj.CustomerId}</Typography>
+                      <Typography variant="body1">{commentObj.CommentText}</Typography>
+                    </Box>
+                  </Box>
+                  <Box mt={2}>
+                    <Typography>{comment.comment}</Typography>
+                  </Box>
+                  <Divider mt={2} />
+                </Box>
+              ))}
+            </Box>
             <Button
               sx={{ marginTop: 1 }}
               variant="outlined"
@@ -194,6 +207,31 @@ export default function ProductInfoPage() {
             >
               Report Media
             </Button>
+            {showDiscussionButton && <form onSubmit={onAddComment}>
+              <Rating
+                value={stars}
+                onChange={e => setStars(e.target.value)}
+                size='small'
+                sx={{ mt: 2 }}
+              />
+              <TextField
+                label="Write Your Comment"
+                type="text"
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                fullWidth
+                sx={{ my: 1 }}
+              />
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                loading={loading}
+                style={{ padding: '10px 32px' }}
+                disabled={!comment}
+              >
+                Submit
+              </LoadingButton>
+            </form>}
           </Grid>
         </Grid>
         <Dialog

@@ -7,13 +7,27 @@ import { getUnapprovedMedia, verifyMedia } from 'src/apis/admin';
 import ProductCard from '../sections/products/product-card';
 
 export default function AdminMediaApprovalDashboard() {
+  /* 
+  Peer Review by Rahul - use camelCase for state variable
+  Reference: https://react.dev/learn/state-a-components-memory#anatomy-of-usestate
+  */
+ /* Response to Peer Review by Hauva - Thank you for the suggestion.Will keep this in mind*/
   const [PendingApprovalMedia, setPendingApprovalMedia] = useState([]);
 
-
+  /* 
+  Peer Review by Rahul - Implement Error Handling in case there is an error in the API call
+  */
+//  Response to Peer Review by Hauva - Implemented the advised changes
   const fetchPendingMedia = async () => {
-    const data = await getUnapprovedMedia();
-    setPendingApprovalMedia(data?.data || []);
+    try {
+      const data = await getUnapprovedMedia();
+      setPendingApprovalMedia(data?.data || []);
+ 
+    } catch (error) {
+      console.log(error, "error in fetching  unapproved data")
+    }
   };
+
 
   useEffect(() => {
     fetchPendingMedia();
@@ -35,8 +49,8 @@ export default function AdminMediaApprovalDashboard() {
         Media Approval Dashboard
       </Typography>
       <Grid container spacing={3}>
-        {PendingApprovalMedia.length ? (
-          PendingApprovalMedia.map((media) => (
+        {pendingApprovalMedia.length ? (
+          pendingApprovalMedia.map((media) => (
             <Grid item key={media.Id} xs={12} sm={6} md={4}>
               <ProductCard
                 product={media}

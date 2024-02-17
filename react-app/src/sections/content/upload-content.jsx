@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Alert from '@mui/material/Alert';
-import { TextField, Button, Grid, Container } from '@mui/material';
+import {Box,Typography,TextField, Button, Grid, Container,CircularProgress, IconButton} from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Snackbar from '@mui/material/Snackbar';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import { addMedia } from 'src/apis/media';
+import { addMedia, generateTags } from 'src/apis/media';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import watermark from 'watermarkjs';
 
@@ -17,6 +17,79 @@ import Iconify from 'src/components/iconify';
 
 import SelectInputWithChip from './Select-Input';
 import FileUploader from './file-uploader/FileUploader';
+
+// eslint-disable-next-line react/prop-types
+const TagGenerationDialog = ({ open, onClose }) => {
+  const [imageFile, setImageFile] = useState(null);
+  const [Tags, setTags] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleImageChange = (e) => {
+    if (e.target.files.length > 0) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleGenerateTags = async () => {
+    try {
+      console.log(imageFile, 'in upload');
+
+      const data = await generateTags(imageFile);
+
+      setTags(data.data.tags);
+    } catch (error) {
+      console.log(error, 'error in fetching  unapproved data');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const copyTagsToClipboard = () => {
+    navigator.clipboard.writeText(Tags.join(', #'));
+  };
+  const handleClose = () => {
+    // Clear the tags array when the dialog is closed
+    setTags([]);
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>AI Tag Generator</DialogTitle>
+      <DialogContent>
+        {' '}
+        <p>
+          {' '}
+          Elevate your content`s visibility effortlessly with #Tags. Upload relevant image of your
+          content to generate tags. [ eg : DemoFile ] &nbsp;{' '}
+        </p>
+      </DialogContent>
+      <DialogContent>
+        <TextField type="file" accept="image/*" onChange={handleImageChange} />
+      </DialogContent>
+      {Tags && ( // Check if generatedTags is available
+        <DialogContent>
+           <Box display="flex" alignItems="center">
+            <Typography>Generated Tags:</Typography>
+            <Box border={1} borderColor="primary.main" borderRadius={5} p={2} ml={1} flexGrow={1}>
+              {Tags.map((tag, index) => (
+                <Typography key={index}>#{tag}</Typography>
+              ))}
+            </Box>
+            <IconButton onClick={copyTagsToClipboard}>
+              <Iconify icon="ph:copy-duotone" />
+            </IconButton>
+          </Box>
+        </DialogContent>
+      )}
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleGenerateTags} disabled={!imageFile || loading}>
+          {loading ? <CircularProgress size={24} /> : 'Generate'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 const mediaTypeNames = ['Image', 'Video', 'Audio', 'Document', 'Link'];
 
@@ -42,12 +115,22 @@ const UploadContent = () => {
   const [successDialog, setSuccessDialog] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [openTagDialog, setOpenTagDialog] = useState(false);
+
+  const handleOpenTagDialog = () => {
+    setOpenTagDialog(true);
+  };
+
+  const handleCloseTagDialog = () => {
+    setOpenTagDialog(false);
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: type === 'file' ? e.target.files : value,
+      // eslint-disable-next-line no-restricted-globals
+      [name]: type === 'file' ? event.target.files : value,
     }));
   };
 
@@ -71,6 +154,7 @@ const UploadContent = () => {
     setSnackbarMessage(text);
     setSnackBarSeverity(severity);
     showSnackbar(show);
+    setLoading(false);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,26 +168,19 @@ const UploadContent = () => {
       handleShowSnackbar('Please Select a Demo File', 'error', true);
     } else if (formData && formData.uploadFiles && formData.uploadFiles.length === 0) {
       handleShowSnackbar('Please Select Files', 'error', true);
-    }
-
-    if (formData.mediaType === 1) {
-      setLoading(true);
-
+    } else {
       const img = formData.demoFile[0];
       await watermark([img])
         .blob(rotate)
         .then(async (waterMarkedImage) => {
           await setFormData({ ...formData, demoFile: [waterMarkedImage] });
-          await setToUpload(true);
         });
-    } else {
       uploadMedia();
     }
   };
 
   const uploadMedia = () => {
     setLoading(true);
-
     addMedia(formData)
       .then((response) => {
         console.log(response.data);
@@ -175,20 +252,33 @@ const UploadContent = () => {
                 required
               />
             </div>
+            <div>
+              <Button variant="outlined" onClick={handleOpenTagDialog}>
+                AI hashtag generator
+              </Button>
+              
+            </div>
 
             <div>
+              {/*
+              (Amar Sharma)
+              Peer Review for Monoraul -  Handle negative input for price field 
+              */}
+
               <TextField
                 key={resetKey}
                 label="Price"
-                type="number"
+                type="text"
                 name="price"
                 value={formData.price}
                 placeholder="Enter Price"
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
+                inputProps={{ min: 0, inputMode: 'decimal', pattern: '^\\d+(\\.\\d{0,2})?$' }}
                 required
               />
+              {/** Peer Review Response by Monoraul - Negative input field for price is handled */}
             </div>
             <div
               style={{
@@ -234,6 +324,7 @@ const UploadContent = () => {
                 setFormData={setFormData}
                 name="demoFile"
                 multiple={false}
+                isDemo
               />
             </div>
             <div>
@@ -317,6 +408,7 @@ const UploadContent = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      <TagGenerationDialog open={openTagDialog} onClose={handleCloseTagDialog} />
     </Container>
   );
 };
