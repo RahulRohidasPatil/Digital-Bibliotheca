@@ -11,23 +11,21 @@ export default function AdminMediaApprovalDashboard() {
   Peer Review by Rahul - use camelCase for state variable
   Reference: https://react.dev/learn/state-a-components-memory#anatomy-of-usestate
   */
- /* Response to Peer Review by Hauva - Thank you for the suggestion.Will keep this in mind*/
-  const [PendingApprovalMedia, setPendingApprovalMedia] = useState([]);
+  /* Response to Peer Review by Hauva - Thank you for the suggestion.Will keep this in mind*/
+  const [pendingApprovalMedia, setPendingApprovalMedia] = useState([]);
 
   /* 
   Peer Review by Rahul - Implement Error Handling in case there is an error in the API call
   */
-//  Response to Peer Review by Hauva - Implemented the advised changes
+  //  Response to Peer Review by Hauva - Implemented the advised changes
   const fetchPendingMedia = async () => {
     try {
       const data = await getUnapprovedMedia();
       setPendingApprovalMedia(data?.data || []);
- 
     } catch (error) {
-      console.log(error, "error in fetching  unapproved data")
+      console.log(error, 'error in fetching  unapproved data');
     }
   };
-
 
   useEffect(() => {
     fetchPendingMedia();
@@ -36,9 +34,7 @@ export default function AdminMediaApprovalDashboard() {
   const onHandleAction = async (id, value) => {
     await verifyMedia(id, value);
     fetchPendingMedia();
-  }
-
-
+  };
 
   return (
     // <Helmet>
@@ -64,17 +60,13 @@ export default function AdminMediaApprovalDashboard() {
                     </Button>
                   </CardActions>
                 }
-              />             
+              />
             </Grid>
           ))
         ) : (
-        
-            <Typography variant="h4"  xs={12} sm={6} md={6}>
+          <Typography variant="h4" xs={12} sm={6} md={6}>
             There are no pending approvals
-            </Typography>
-          
-            
-          
+          </Typography>
         )}
       </Grid>
       {/* Display approved and rejected media ids for demonstration purposes */}
