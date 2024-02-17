@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { createContext, useMemo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,27 +12,42 @@ import { customShadows } from './custom-shadows';
 
 // ----------------------------------------------------------------------
 
+export const themeContext = createContext(null);
+
 export default function ThemeProvider({ children }) {
+  const [themeMode, setThemeMode] = useState(localStorage.getItem('theme'));
+
+  const toggleThemeMode = () => {
+    setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+  };
   const memoizedValue = useMemo(
     () => ({
-      palette: palette(),
-      typography,
-      shadows: shadows(),
-      customShadows: customShadows(),
-      shape: { borderRadius: 8 },
+      switchThemeMode: toggleThemeMode,
+      theme: createTheme({
+        palette: palette(themeMode),
+        typography,
+        shadows: shadows(),
+        customShadows: customShadows(),
+        shape: { borderRadius: 8 },
+        mode: themeMode,
+      }),
     }),
-    []
+    [themeMode]
   );
 
-  const theme = createTheme(memoizedValue);
+  useEffect(()=>{
+    localStorage.setItem('theme', themeMode)
+  }, [themeMode])
 
-  theme.components = overrides(theme);
+  memoizedValue.theme.components = overrides(memoizedValue.theme);
 
   return (
-    <MUIThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </MUIThemeProvider>
+    <themeContext.Provider value={memoizedValue}>
+      <MUIThemeProvider theme={memoizedValue.theme}>
+        <CssBaseline />
+        {children}
+      </MUIThemeProvider>
+    </themeContext.Provider>
   );
 }
 
