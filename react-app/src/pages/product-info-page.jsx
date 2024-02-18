@@ -18,6 +18,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { LoadingButton } from '@mui/lab';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 export default function ProductInfoPage() {
   const { id } = useParams();
@@ -30,6 +32,9 @@ export default function ProductInfoPage() {
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState("")
   const [stars, setStars] = useState(0)
+
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(false);
 
   const [reportReasoon, setReportReason] = useState('');
   const router = useRouter();
@@ -71,6 +76,8 @@ export default function ProductInfoPage() {
     purchaseMedia({ customerId: user.Id, mediaId: id });
     setShowPurchasebutton(false);
     setShowDiscussionButton(true);
+    setShowSnackbar(true);
+    setSnackbarMessage('Purchase Successful.');
   };
 
   const joinChat = () => {
@@ -167,7 +174,8 @@ export default function ProductInfoPage() {
                     <Avatar src={comment.avatar} alt={comment.user} />
                     <Box ml={2}>
                       <Rating readOnly value={commentObj.stars} />
-                      <Typography variant="subtitle1">{commentObj.CustomerId}</Typography>
+                      {/* eslint-disable-next-line prefer-template */}
+                      <Typography variant="subtitle1">{commentObj.FirstName + ' ' + commentObj.FamilyName}</Typography>
                       <Typography variant="body1">{commentObj.CommentText}</Typography>
                     </Box>
                   </Box>
@@ -299,6 +307,17 @@ export default function ProductInfoPage() {
             </Button>
           </DialogActions>
         </Dialog>
+        <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={showSnackbar}
+        autoHideDuration={2000}
+        onClose={() => setShowSnackbar(false)}
+        message={snackbarMessage}
+      >
+        <Alert onClose={() => setShowSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       </Container>
     </>
   );
