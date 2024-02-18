@@ -174,7 +174,8 @@ export default function ProductInfoPage() {
                     <Avatar src={comment.avatar} alt={comment.user} />
                     <Box ml={2}>
                       <Rating readOnly value={commentObj.stars} />
-                      <Typography variant="subtitle1">{commentObj.CustomerId}</Typography>
+                      {/* eslint-disable-next-line prefer-template */}
+                      <Typography variant="subtitle1">{commentObj.FirstName + ' ' + commentObj.FamilyName}</Typography>
                       <Typography variant="body1">{commentObj.CommentText}</Typography>
                     </Box>
                   </Box>

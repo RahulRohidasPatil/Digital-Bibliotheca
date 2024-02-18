@@ -60,7 +60,7 @@ const media = {
       }
 
       const commentsResponse = await connection.query(
-        "select * from comment where MediaId=?",
+        "select * from comment inner join user on comment.CustomerId = user.Id where MediaId=?",
         [req.params.id]
       );
       response[0].comments = commentsResponse;
