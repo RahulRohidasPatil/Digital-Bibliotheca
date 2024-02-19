@@ -48,14 +48,20 @@ const navConfig = [
     title: 'Admin Approval Dashboard',
     path: '/admin-approval-dashboard',
     icon: <Iconify icon="fluent-mdl2:document-approval" />,
-    isAdminPath: true
+    isAdminPath: true,
   },
   {
     title: 'User Management',
     path: '/user-management',
     icon: <Iconify icon="ri:admin-line" />,
-    isAdminPath: true
-  }
+    isAdminPath: true,
+  },
+  {
+    title: 'Reported Media',
+    path: '/reported-media',
+    icon: <Iconify icon="ic:round-report" />,
+    isAdminPath: true,
+  },
 ];
 
 export default navConfig;

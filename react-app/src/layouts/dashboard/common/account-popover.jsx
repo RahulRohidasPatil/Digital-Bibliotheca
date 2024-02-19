@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext,Fragment } from 'react';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -11,6 +11,8 @@ import IconButton from '@mui/material/IconButton';
 
 import { useUser } from 'src/hooks/use-user';
 
+import { themeContext } from 'src/theme';
+
 // import { account } from 'src/_mock/account';
 import { useRouter } from 'src/routes/hooks';
 import { deleteCookie, hasCookie } from 'cookies-next';
@@ -21,17 +23,17 @@ const MENU_OPTIONS = [
   {
     label: 'Home',
     icon: 'eva:home-fill',
-    url: ''
+    url: '',
   },
   {
     label: 'Profile',
     icon: 'eva:person-fill',
-    url: '/edit-profile'
+    url: '/edit-profile',
   },
   {
     label: 'Settings',
     icon: 'eva:settings-2-fill',
-    url: ''
+    url: '',
   },
 ];
 
@@ -39,6 +41,8 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
   const router = useRouter();
+
+  const { switchThemeMode } = useContext(themeContext)
 
   const [open, setOpen] = useState(null);
 
@@ -49,15 +53,14 @@ export default function AccountPopover() {
   };
 
   const handleClose = () => {
-      setOpen(null);
+    setOpen(null);
   };
 
   const handleMenuItemClick = (option) => () => {
-    if(option.url !== ''){
+    if (option.url !== '') {
       router.replace(option.url);
       setOpen(null);
-    }
-    else{
+    } else {
       setOpen(null);
     }
   };
@@ -124,6 +127,15 @@ export default function AccountPopover() {
           </MenuItem>
         ))}
 
+        <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
+        <MenuItem
+          disableRipple
+          disableTouchRipple
+          onClick={switchThemeMode}
+          sx={{ typography: 'body2', py: 1.5 }}
+        >
+          Change Theme
+        </MenuItem>
         <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
 
         <MenuItem

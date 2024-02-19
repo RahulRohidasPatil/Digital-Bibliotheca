@@ -99,25 +99,52 @@ const base = {
   action,
 };
 
+const lightPalette = {
+  ...base,
+  mode: 'light',
+  text: {
+    primary: grey[800],
+    secondary: grey[600],
+    disabled: grey[500],
+  },
+  background: {
+    paper: '#FFFFFF',
+    default: grey[100],
+    neutral: grey[200],
+  },
+  action: {
+    ...base.action,
+    active: grey[600],
+  },
+};
+
+const darkPalette = {
+  ...base,
+  mode: 'dark',
+  text: {
+    primary: grey[100],
+    secondary: grey[300],
+    disabled: grey[500],
+  },
+  background: {
+    paper: grey[800],
+    default: grey[900],
+    neutral: grey[700],
+  },
+  action: {
+    hover: alpha(grey[500], 0.08),
+    selected: alpha(grey[500], 0.16),
+    disabled: alpha(grey[500], 0.8),
+    disabledBackground: alpha(grey[500], 0.24),
+    focus: alpha(grey[500], 0.24),
+    hoverOpacity: 0.08,
+    disabledOpacity: 0.48,
+    active: grey[300],
+  },
+};
+
 // ----------------------------------------------------------------------
 
-export function palette() {
-  return {
-    ...base,
-    mode: 'light',
-    text: {
-      primary: grey[800],
-      secondary: grey[600],
-      disabled: grey[500],
-    },
-    background: {
-      paper: '#FFFFFF',
-      default: grey[100],
-      neutral: grey[200],
-    },
-    action: {
-      ...base.action,
-      active: grey[600],
-    },
-  };
+export function palette(themeMode) {
+  return themeMode === 'light' ? lightPalette : darkPalette;
 }

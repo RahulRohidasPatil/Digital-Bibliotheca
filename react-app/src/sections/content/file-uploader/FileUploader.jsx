@@ -10,40 +10,48 @@ FileUploader.propTypes = {
   multiple: PropTypes.bool,
   formData: PropTypes.object,
   setFormData: PropTypes.func,
+  isDemo: PropTypes.bool,
 };
 
-function FileUploader({ label, name, multiple = true, formData, setFormData }) {
+function FileUploader({ label, name, multiple = true, formData, setFormData, isDemo = false }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const fileInputRef = useRef(null);
   const [acceptValue, setAcceptValue] = useState('*')
 
   useEffect(()=>{
-    switch (formData.mediaType) {
-      case 1:
-        setAcceptValue('image/*');
-        break;
-      case 2:
-        setAcceptValue('video/*');
-        break;
-      case 3:
-        setAcceptValue('audio/*');
-        break;
-      case 4:
-        // You might want to specify document file types (e.g., application/pdf, application/msword)
-        setAcceptValue('application/pdf, application/msword');
-        break;
-      case 5:
-        // You might not need to specify an accept attribute for a link
-        setAcceptValue('');
-        break;
-      default:
-        // Default case, if mediaType does not match any of the above cases
-        setAcceptValue('*');
-        break;
+    if(!isDemo){
+      setUploadedFiles([])
+      switch (formData.mediaType) {
+        case 1:
+          setAcceptValue('image/*');
+          break;
+        case 2:
+          setAcceptValue('video/*');
+          break;
+        case 3:
+          setAcceptValue('audio/*');
+          break;
+        case 4:
+          // You might want to specify document file types (e.g., application/pdf, application/msword)
+          setAcceptValue('application/pdf, application/msword');
+          break;
+        case 5:
+          // You might not need to specify an accept attribute for a link
+          setAcceptValue('');
+          break;
+        default:
+          // Default case, if mediaType does not match any of the above cases
+          setAcceptValue('*');
+          break;
+      }
     }
-  }, [formData.mediaType, setAcceptValue])
+    else{
+      setAcceptValue('image/*');
+    }
+  }, [formData.mediaType, setAcceptValue, isDemo])
 
   const handleFileChange = (event) => {
+    event.preventDefault()
     const { files } = event.target; // Destructuring assignment
     handleFiles(files);
   };
