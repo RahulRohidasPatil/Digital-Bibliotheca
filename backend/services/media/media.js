@@ -259,7 +259,7 @@ const media = {
   addComment: async function (req, res) {
     const { customerId, mediaId, stars, comment } = req.body
     try {
-      if (!customerId || !mediaId || !stars || !comment) throw new Error("customerId, mediaId, sars, comment cannot be empty")
+      if (!customerId || !mediaId || !stars || !comment) throw new Error("customerId, mediaId, stars, comment cannot be empty")
 
       const query="insert into comment(CustomerId,MediaId,stars,CommentText,CreatedDate)values(?,?,?,?,?)"
       await connection.query(query, [customerId, mediaId, stars, comment, new Date()]);
