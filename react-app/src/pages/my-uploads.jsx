@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { getByUserId, deleteMedia, reactivateMedia } from 'src/apis/media';
 import { useUser } from 'src/hooks/use-user';
 import { useRouter } from 'src/routes/hooks';
+import { responsiveFontSizes } from 'src/theme/typography';
 
 export default function MyUploadsPage() {
     const [mediaItems, setMediaItems] = useState([]);
@@ -36,6 +37,8 @@ export default function MyUploadsPage() {
     const redirectToEdit = (id) => () => {
         router.replace(`/product/edit/${id}`);
     }
+
+    const resolveDeliveryMethod = (deliveryMethod) => deliveryMethod === 2 ? 'Contact' : 'Instant';
 
     return(
      <>
@@ -69,7 +72,7 @@ export default function MyUploadsPage() {
                                 </TableCell>
                                 <TableCell align="center">{row.CreatedDate.split('T')[0]}</TableCell>
                                 <TableCell align="center">{row.Price}</TableCell>
-                                <TableCell align="center">{row.DeliveryMethod}</TableCell>
+                                <TableCell align="center">{resolveDeliveryMethod(row.DeliveryMethod)}</TableCell>
                                 <TableCell align="center">{row.IsApproved === 1 ? 'Approved' : 'Pending'}</TableCell>
                                 <TableCell align="center">
                                     <Icon icon="mdi-light:pencil" onClick={redirectToEdit(row.Id)} fontSize={20} style={{ marginRight: 10, cursor: 'pointer' }} />
