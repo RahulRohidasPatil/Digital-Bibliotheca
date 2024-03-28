@@ -27,10 +27,10 @@ export const SORT_OPTIONS = [
   { value: 'priceAsc', label: 'Price: Low-High' },
 ];
 export const MEDIA_TYPE_OPTIONS = [
-  { value: 0, label: 'Audio' },
-  { value: 1, label: 'Video' },
-  { value: 2, label: 'Image' },
-  { value: 3, label: 'Document' }
+  { value: 3, label: 'Audio' },
+  { value: 2, label: 'Video' },
+  { value: 1, label: 'Image' },
+  { value: 4, label: 'Document' }
 ];
 export const UPLOADED_OPTIONS = [
   { value: 0, label: '1 Week Ago' },

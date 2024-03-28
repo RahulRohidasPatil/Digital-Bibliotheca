@@ -109,7 +109,6 @@ export default function ProductInfoPage() {
     setLoading(true)
     addComment({ customerId: user.Id, mediaId: id, stars, comment })
     getByID(id).then((response) => setproduct(response.data.data[0]));
-    setComment("");
     setLoading(false)
   }
 
@@ -169,8 +168,8 @@ export default function ProductInfoPage() {
               <Typography variant="h5" gutterBottom>
                 Comments
               </Typography>
-              {product?.comments.map((commentObj, index) => (
-                <Box key={index} mb={3}>
+              {product?.comments.map((commentObj) => (
+                <Box key={commentObj.Id} mb={3}>
                   <Box display="flex" alignItems="center">
                     <Avatar src={comment.avatar} alt={comment.user} />
                     <Box ml={2}>
@@ -236,7 +235,7 @@ export default function ProductInfoPage() {
                 variant="contained"
                 loading={loading}
                 style={{ padding: '10px 32px' }}
-                disabled={!comment || !stars}
+                disabled={!comment}
               >
                 Submit
               </LoadingButton>
